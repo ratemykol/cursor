@@ -10,7 +10,7 @@ import {
   type InsertRating,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, or, ilike, desc } from "drizzle-orm";
+import { eq, or, ilike, desc, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -133,9 +133,9 @@ export class DatabaseStorage implements IStorage {
       await db.delete(ratings).where(eq(ratings.traderId, id));
       
       // Then delete the trader
-      const result = await db.delete(traders).where(eq(traders.id, id));
+      const deletedTraders = await db.delete(traders).where(eq(traders.id, id)).returning();
       
-      return result.rowCount !== null && result.rowCount > 0;
+      return deletedTraders.length > 0;
     } catch (error) {
       console.error('Error deleting trader:', error);
       return false;
