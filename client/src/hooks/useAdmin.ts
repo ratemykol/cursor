@@ -7,7 +7,7 @@ export function useAdmin() {
   });
 
   return {
-    isAdmin: data?.isAdmin || false,
+    isAdmin: (data as any)?.isAdmin || false,
     isLoading,
   };
 }

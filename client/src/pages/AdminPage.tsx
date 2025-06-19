@@ -8,11 +8,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { apiRequest } from "@/lib/queryClient";
 import { Header } from "@/components/Header";
 import { Edit, Plus, Save, X, Upload, Image, Trash2 } from "lucide-react";
 
 export const AdminPage = (): JSX.Element => {
+  const { isAuthenticated } = useAuth();
+  const { isAdmin, isLoading: adminLoading } = useAdmin();
   const [view, setView] = useState<"list" | "create" | "edit" | "reviews">("list");
   const [editingTrader, setEditingTrader] = useState<any>(null);
   const [editingReview, setEditingReview] = useState<any>(null);
@@ -26,6 +30,41 @@ export const AdminPage = (): JSX.Element => {
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Check authentication and admin status
+  if (!isAuthenticated || adminLoading) {
+    return (
+      <div className="bg-white flex flex-row justify-center w-full">
+        <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
+          <Header currentPage="admin" />
+          <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-20">
+            <div className="text-center">Loading...</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="bg-white flex flex-row justify-center w-full">
+        <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
+          <Header currentPage="admin" />
+          <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-20">
+            <Card className="w-full max-w-md">
+              <CardContent className="p-8 text-center">
+                <h2 className="text-2xl font-semibold text-gray-900 mb-4">Access Denied</h2>
+                <p className="text-gray-600 mb-6">You don't have permission to access the admin panel.</p>
+                <Button onClick={() => window.location.href = "/"} className="bg-[#ab9ff2] text-white">
+                  Go to Home
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Fetch all traders
   const { data: traders = [], isLoading } = useQuery({
