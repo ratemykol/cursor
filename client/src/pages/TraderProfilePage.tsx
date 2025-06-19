@@ -14,6 +14,7 @@ export const TraderProfilePage = (): JSX.Element => {
   const { id } = useParams();
   const [editingReview, setEditingReview] = useState<any>(null);
   const [isAdminMode, setIsAdminMode] = useState(false);
+  const [visibleReviews, setVisibleReviews] = useState(20);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -303,7 +304,7 @@ export const TraderProfilePage = (): JSX.Element => {
                 </div>
               ) : (
                 <div className="space-y-6">
-                  {ratings.map((rating: any) => (
+                  {ratings.slice(0, visibleReviews).map((rating: any) => (
                     <div key={rating.id} className="border-b border-gray-100 pb-6 last:border-b-0 last:pb-0">
                       {/* User avatar and header */}
                       <div className="flex items-start gap-4">
@@ -530,6 +531,19 @@ export const TraderProfilePage = (): JSX.Element => {
                       </div>
                     </div>
                   ))}
+                  
+                  {/* Load More Button */}
+                  {Array.isArray(ratings) && ratings.length > visibleReviews && (
+                    <div className="text-center pt-6 border-t border-gray-100">
+                      <Button
+                        onClick={() => setVisibleReviews(prev => prev + 10)}
+                        variant="outline"
+                        className="bg-white hover:bg-[#f8f9fa] border-gray-300 text-gray-700"
+                      >
+                        Load More ({ratings.length - visibleReviews} remaining)
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>
