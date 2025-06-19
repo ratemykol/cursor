@@ -118,6 +118,8 @@ Changelog:
 - June 19, 2025. Implemented profile image support across all pages with URL-based storage
 - June 19, 2025. Implemented dropdown search functionality with instant results on homepage
 - June 19, 2025. Redesigned trader profile page with clean card layout matching user reference
+- June 19, 2025. Fixed rating submission database errors by updating schema and creating anonymous user
+- June 19, 2025. Reformatted review display with user avatars, rating bars, and improved timestamp formatting
 ```
 
 ## User Preferences
