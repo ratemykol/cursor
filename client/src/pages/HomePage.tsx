@@ -40,14 +40,23 @@ export const HomePage = (): JSX.Element => {
             <Button
               variant="ghost"
               className="rounded-full font-semibold text-[#3c315b]"
+              onClick={() => setLocation("/")}
             >
               Home
             </Button>
             <Button
               variant="ghost"
               className="rounded-full font-medium text-[#3c315b]"
+              onClick={() => setLocation("/search")}
             >
-              SearchIcon
+              Search
+            </Button>
+            <Button
+              variant="ghost"
+              className="rounded-full font-medium text-[#3c315b]"
+              onClick={() => setLocation("/admin")}
+            >
+              Admin
             </Button>
             <Button className="bg-[#ab9ff2] text-[#3c315b] rounded-full hover:bg-[#9b8de2]">
               Sign In
