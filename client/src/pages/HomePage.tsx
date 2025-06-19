@@ -119,27 +119,27 @@ export const HomePage = (): JSX.Element => {
         <Header currentPage="home" />
 
         {/* Hero Section */}
-        <section className="relative px-20 mt-[99px] mb-[99px]">
-          {/* Decorative elements */}
+        <section className="relative px-4 sm:px-8 md:px-12 lg:px-20 mt-16 sm:mt-20 md:mt-24 lg:mt-[99px] mb-16 sm:mb-20 md:mb-24 lg:mb-[99px] overflow-hidden">
+          {/* Decorative elements with responsive positioning */}
           <img
-            className="w-[73px] h-[74px] absolute left-[360px] top-[146px] mt-[-231px] mb-[-231px] ml-[-61px] mr-[-61px]"
+            className="w-12 h-12 md:w-[73px] md:h-[74px] absolute left-[25%] top-[20%] z-[1]"
             alt="Star"
             src="/figmaAssets/star-2.svg"
           />
-          <div className="absolute w-[27px] h-[35px] top-[173px] left-[522px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] ml-[-26px] mr-[-26px] mt-[-256px] mb-[-256px]" />
-          <div className="absolute w-[73px] h-[97px] top-[265px] left-[517.08px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] mt-[-296px] mb-[-296px] ml-[-26px] mr-[-26px] z-[1]" />
-          <div className="absolute w-[92px] h-[71px] top-[217px] left-[603px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] ml-[-26px] mr-[-26px] mt-[-296px] mb-[-296px]" />
+          <div className="absolute w-4 h-5 md:w-[27px] md:h-[35px] top-[25%] left-[36%] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] z-[1]" />
+          <div className="absolute w-10 h-12 md:w-[73px] md:h-[97px] top-[35%] left-[36%] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] z-[1]" />
+          <div className="absolute w-12 h-9 md:w-[92px] md:h-[71px] top-[30%] left-[42%] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] z-[1]" />
           <img
-            className="absolute w-[76px] h-[61px] top-[329px] left-[1216px] mt-[-300px] mb-[-300px]"
+            className="w-10 h-8 md:w-[76px] md:h-[61px] absolute top-[45%] right-[15%] z-[1]"
             alt="Polygon"
             src="/figmaAssets/polygon-1.svg"
           />
 
           <div className="max-w-3xl mx-auto text-center relative z-[5]">
-            <h2 className="font-medium text-[#3c315b] text-[69px] leading-tight">
+            <h2 className="font-medium text-[#3c315b] text-3xl sm:text-4xl md:text-5xl lg:text-[69px] leading-tight">
               Rate Your Crypto KOLs
             </h2>
-            <p className="font-medium text-[#9f98b3] text-[22px] mt-4">
+            <p className="font-medium text-[#9f98b3] text-base sm:text-lg md:text-xl lg:text-[22px] mt-4">
               Find and review KOLs based on their performance, reliability, and
               trading strategies
             </p>
