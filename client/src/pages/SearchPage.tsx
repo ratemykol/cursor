@@ -86,7 +86,7 @@ export const SearchPage = (): JSX.Element => {
       />
       <div className="absolute w-[45px] h-[60px] top-[400px] left-[200px] bg-[#ab9ff2] rounded-[22.5px/30px] rotate-[45deg] z-[1]" />
       <div className="absolute w-[35px] h-[45px] top-[180px] left-[150px] bg-[#ff7243] rounded-[17.5px/22.5px] rotate-[-30deg] z-[1]" />
-      <div className="absolute w-[50px] h-[65px] top-[500px] left-[1150px] bg-[#2ec08b] rounded-[25px/32.5px] rotate-[60deg] z-[1]" />
+      <div className="absolute w-[150px] h-[195px] top-[500px] left-[1150px] bg-[#2ec08b] rounded-[75px/97.5px] rotate-[60deg] z-[1]" />
 
       <div className="container mx-auto px-8 py-8 relative z-[5]">
         {/* Search Bar */}
