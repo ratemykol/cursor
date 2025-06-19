@@ -207,7 +207,22 @@ export const TraderProfilePage = (): JSX.Element => {
 
                   {/* Wallet Address */}
                   <div className="mb-4">
-                    <p className="text-sm text-gray-600 mb-1">Wallet: <span className="font-mono text-gray-800">{trader.walletAddress}</span></p>
+                    <p className="text-sm text-gray-600 mb-1">
+                      Wallet: 
+                      <span 
+                        className="font-mono text-gray-800 cursor-pointer hover:text-[#ab9ff2] transition-colors duration-200 ml-1"
+                        onClick={() => {
+                          navigator.clipboard.writeText(trader.walletAddress);
+                          toast({
+                            title: "Copied to clipboard",
+                            description: "Wallet address copied successfully",
+                          });
+                        }}
+                        title="Click to copy wallet address"
+                      >
+                        {trader.walletAddress}
+                      </span>
+                    </p>
                   </div>
 
                   {/* Bio */}
