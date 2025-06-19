@@ -46,7 +46,7 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
         >
           Admin
         </Button>
-        <Button className="bg-[#ab9ff2] text-[#3c315b] rounded-full transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#9b8de2] hover:shadow-lg transform-gpu">
+        <Button className="bg-[#ab9ff2] text-[#3c315b] rounded-full transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu">
           Sign In
         </Button>
       </div>
