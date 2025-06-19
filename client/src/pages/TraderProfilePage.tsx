@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
+import { SocialShareBadges } from "@/components/SocialShareBadges";
 import { ArrowLeft, Star, Image as ImageIcon, Edit, Trash2 } from "lucide-react";
 
 export const TraderProfilePage = (): JSX.Element => {
@@ -269,6 +270,14 @@ export const TraderProfilePage = (): JSX.Element => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Social Share Badges */}
+          <SocialShareBadges 
+            traderName={trader?.name}
+            traderRating={averageRating}
+            walletAddress={trader?.walletAddress}
+            className="mb-6"
+          />
 
           {/* Rating Breakdown */}
           <Card className="mb-6 border border-gray-200 shadow-sm">
