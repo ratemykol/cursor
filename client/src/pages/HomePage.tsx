@@ -51,7 +51,7 @@ export const HomePage = (): JSX.Element => {
           <div className="absolute w-[73px] h-[97px] top-[265px] left-[517.08px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] mt-[-296px] mb-[-296px] ml-[-26px] mr-[-26px]" />
           <div className="absolute w-[92px] h-[71px] top-[217px] left-[603px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] ml-[-26px] mr-[-26px] mt-[-296px] mb-[-296px]" />
           <img
-            className="absolute w-[76px] h-[61px] top-[329px] left-[1216px]"
+            className="absolute w-[76px] h-[61px] top-[329px] left-[1216px] mt-[-300px] mb-[-300px]"
             alt="Polygon"
             src="/figmaAssets/polygon-1.svg"
           />
