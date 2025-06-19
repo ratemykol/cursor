@@ -234,8 +234,10 @@ export const HomePage = (): JSX.Element => {
               >
                 <CardContent className="p-0 flex flex-col items-center px-4">
                   <div className="w-[91px] h-[97px] mt-[30px] bg-white rounded-[45.5px/48.5px]" />
-                  <div className="font-medium text-black text-sm text-center mt-4">
-                    Rank: {trader.rank}
+                  <div className="mt-4">
+                    <span className="bg-[#e8f4fd] text-[#4a90e2] px-3 py-1 rounded-full text-xs font-medium">
+                      Rank: {trader.rank}
+                    </span>
                   </div>
                   
                   {/* Specialty Tag */}
@@ -266,7 +268,7 @@ export const HomePage = (): JSX.Element => {
                   </div>
                   
                   <div className="flex justify-center w-full mb-6">
-                    <Button className="w-[168px] h-12 bg-white text-black font-medium text-lg transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#AB9FF2] hover:shadow-lg transform-gpu">
+                    <Button className="w-[168px] h-12 bg-white text-black font-medium text-lg transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#AB9FF2] hover:shadow-lg transform-gpu mt-[51px] mb-[51px]">
                       View Profile
                     </Button>
                   </div>
