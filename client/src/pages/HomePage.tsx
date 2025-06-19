@@ -91,7 +91,7 @@ export const HomePage = (): JSX.Element => {
         </section>
 
         {/* Top Traders Section */}
-        <section className="mt-32 relative">
+        <section className="mt-72 relative">
           {/* Decorative elements */}
           <img
             className="w-[175px] h-44 absolute left-[39px] top-[392px] mt-[-590px] mb-[-590px]"
@@ -139,8 +139,11 @@ export const HomePage = (): JSX.Element => {
           </div>
         </section>
 
+        {/* Spacer */}
+        <div className="h-48"></div>
+        
         {/* Footer */}
-        <footer className="w-full h-[457px] bg-[#ab9ff2] mt-32" />
+        <footer className="w-full h-[700px] bg-[#ab9ff2] mt-64" />
       </div>
     </div>
   );
