@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { CryptoAchievementBadges, getAchievementSummary } from "@/components/CryptoAchievementBadges";
 import { 
   Share2, 
   Twitter, 
@@ -19,6 +20,9 @@ interface SocialShareBadgesProps {
   walletAddress?: string;
   className?: string;
   variant?: "default" | "compact" | "floating";
+  totalRatings?: number;
+  rank?: number;
+  specialty?: string;
 }
 
 export const SocialShareBadges = ({ 
@@ -26,7 +30,10 @@ export const SocialShareBadges = ({
   traderRating = 0,
   walletAddress,
   className,
-  variant = "default"
+  variant = "default",
+  totalRatings,
+  rank,
+  specialty
 }: SocialShareBadgesProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { toast } = useToast();
