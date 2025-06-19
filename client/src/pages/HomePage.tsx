@@ -141,7 +141,7 @@ export const HomePage = (): JSX.Element => {
         {/* Floating Shape Editor Button */}
         <Button
           onClick={() => setShowShapeEditor(true)}
-          className="fixed bottom-6 right-6 z-50 rounded-full w-12 h-12 p-0 bg-purple-600 hover:bg-purple-700"
+          className="fixed bottom-6 left-6 z-50 rounded-full w-12 h-12 p-0 bg-purple-600 hover:bg-purple-700"
           title="Edit Shape Positions"
         >
           <Settings className="w-5 h-5" />
