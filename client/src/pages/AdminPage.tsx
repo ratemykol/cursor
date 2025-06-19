@@ -515,8 +515,10 @@ export const AdminPage = (): JSX.Element => {
                               size="sm" 
                               variant="outline"
                               onClick={() => setEditingReview(review)}
+                              className="flex items-center gap-2"
                             >
                               <Edit size={16} />
+                              Edit Review
                             </Button>
                             <Button 
                               size="sm" 
@@ -526,8 +528,10 @@ export const AdminPage = (): JSX.Element => {
                                   deleteReviewMutation.mutate(review.id);
                                 }
                               }}
+                              className="flex items-center gap-2"
                             >
                               <Trash2 size={16} />
+                              Delete
                             </Button>
                           </div>
                         </div>
