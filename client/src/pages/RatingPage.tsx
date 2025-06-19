@@ -107,9 +107,10 @@ export const RatingPage = (): JSX.Element => {
           type="range"
           min="1"
           max="5"
-          step="1"
+          step="0.1"
           value={value[0]}
-          onChange={(e) => onChange([parseInt(e.target.value)])}
+          onChange={(e) => onChange([Math.round(parseFloat(e.target.value))])}
+          onInput={(e) => onChange([Math.round(parseFloat((e.target as HTMLInputElement).value))])}
           className="w-full custom-slider"
         />
       </div>
