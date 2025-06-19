@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { SocialShareBadges } from "@/components/SocialShareBadges";
+import { CryptoAchievementBadges } from "@/components/CryptoAchievementBadges";
+import { CryptoMilestoneBadge, getMilestoneType } from "@/components/CryptoMilestoneBadge";
 import { ArrowLeft, Star, Image as ImageIcon, Edit, Trash2 } from "lucide-react";
 
 export const TraderProfilePage = (): JSX.Element => {
@@ -206,6 +208,15 @@ export const TraderProfilePage = (): JSX.Element => {
                     </span>
                   </div>
 
+                  {/* Crypto Achievement Badges */}
+                  <CryptoAchievementBadges 
+                    traderRating={averageRating}
+                    totalRatings={totalRatings}
+                    rank={trader?.rank}
+                    specialty={trader?.specialty}
+                    className="mb-4"
+                  />
+
                   {/* Wallet Address */}
                   <div className="mb-4">
                     <p className="text-sm text-gray-600 mb-1">
@@ -271,11 +282,28 @@ export const TraderProfilePage = (): JSX.Element => {
             </CardContent>
           </Card>
 
+          {/* Crypto Milestone Badge */}
+          {(() => {
+            const milestoneType = getMilestoneType(averageRating, totalRatings, trader?.rank);
+            return milestoneType ? (
+              <CryptoMilestoneBadge 
+                traderName={trader?.name || "Crypto Trader"}
+                milestone={milestoneType}
+                traderRating={averageRating}
+                rank={trader?.rank}
+                className="mb-6"
+              />
+            ) : null;
+          })()}
+
           {/* Social Share Badges */}
           <SocialShareBadges 
             traderName={trader?.name}
             traderRating={averageRating}
             walletAddress={trader?.walletAddress}
+            totalRatings={totalRatings}
+            rank={trader?.rank}
+            specialty={trader?.specialty}
             className="mb-6"
           />
 
