@@ -128,11 +128,6 @@ export const SearchPage = (): JSX.Element => {
         {/* Search Results State */}
         {debouncedSearch && (
           <>
-            {/* Results count */}
-            <p className="text-gray-600 mb-6">
-              Found {Array.isArray(searchResults) ? searchResults.length : 0} traders matching "{debouncedSearch}"
-            </p>
-
             {isLoading ? (
               <div className="text-center py-8">Loading...</div>
             ) : !Array.isArray(searchResults) || searchResults.length === 0 ? (
