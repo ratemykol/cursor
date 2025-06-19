@@ -315,7 +315,8 @@ export const HomePage = (): JSX.Element => {
               width: '17.6875rem',
               height: '24.75rem',
               borderRadius: '8.8375rem/12.38125rem',
-              top: 'calc(10% - 25rem)'
+              top: 'calc(10% - 25rem)',
+              transform: 'translateX(6.25rem) rotate(-76deg)'
             }}
           />
           <div 
