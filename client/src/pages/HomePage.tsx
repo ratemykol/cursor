@@ -91,10 +91,10 @@ export const HomePage = (): JSX.Element => {
         </section>
 
         {/* Top Traders Section */}
-        <section className="mt-72 relative">
+        <section className="mt-96 relative">
           {/* Decorative elements */}
           <img
-            className="w-[175px] h-44 absolute left-[39px] top-[392px] mt-[-590px] mb-[-590px]"
+            className="w-[175px] h-44 absolute left-[39px] top-[392px] mt-[-1013px] mb-[-1013px]"
             alt="Star"
             src="/figmaAssets/star-1.svg"
           />
@@ -140,10 +140,10 @@ export const HomePage = (): JSX.Element => {
         </section>
 
         {/* Spacer */}
-        <div className="h-48"></div>
+        <div className="h-64"></div>
         
         {/* Footer */}
-        <footer className="w-full h-[700px] bg-[#ab9ff2] mt-64" />
+        <footer className="w-full h-[800px] bg-[#ab9ff2] mt-80" />
       </div>
     </div>
   );
