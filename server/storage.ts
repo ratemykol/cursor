@@ -153,6 +153,7 @@ export class DatabaseStorage implements IStorage {
           ...trader,
           averageRating: stats.averageRating,
           totalRatings: stats.totalRatings,
+          fiveStarCount: stats.fiveStarCount,
           featured: false
         };
       })
@@ -185,6 +186,7 @@ export class DatabaseStorage implements IStorage {
     averageCommunication: number;
     averageReliability: number;
     averageProfitability: number;
+    fiveStarCount: number;
   }> {
     const traderRatings = await this.getTraderRatings(traderId);
     
@@ -196,6 +198,7 @@ export class DatabaseStorage implements IStorage {
         averageCommunication: 0,
         averageReliability: 0,
         averageProfitability: 0,
+        fiveStarCount: 0,
       };
     }
 
@@ -205,6 +208,7 @@ export class DatabaseStorage implements IStorage {
     const averageCommunication = traderRatings.reduce((sum, r) => sum + Number(r.communicationRating), 0) / totalRatings;
     const averageReliability = traderRatings.reduce((sum, r) => sum + Number(r.reliabilityRating), 0) / totalRatings;
     const averageProfitability = traderRatings.reduce((sum, r) => sum + Number(r.profitabilityRating), 0) / totalRatings;
+    const fiveStarCount = traderRatings.filter(r => Number(r.overallRating) === 5).length;
 
     return {
       averageRating: Math.round(averageRating * 10) / 10,
@@ -213,6 +217,7 @@ export class DatabaseStorage implements IStorage {
       averageCommunication: Math.round(averageCommunication * 10) / 10,
       averageReliability: Math.round(averageReliability * 10) / 10,
       averageProfitability: Math.round(averageProfitability * 10) / 10,
+      fiveStarCount,
     };
   }
 }
