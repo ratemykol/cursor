@@ -16,9 +16,7 @@ export const RatingPage = (): JSX.Element => {
   const { id } = useParams();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
-
-  const [yourName, setYourName] = useState("");
+  const { isAuthenticated, isLoading: authLoading, user } = useAuth();
   const [overallRating, setOverallRating] = useState([3]);
   const [profitabilityRating, setProfitabilityRating] = useState([3]);
   const [communicationRating, setCommunicationRating] = useState([3]);
@@ -99,15 +97,6 @@ export const RatingPage = (): JSX.Element => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!yourName.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter your name.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (review.length < 50) {
       toast({
         title: "Review too short",
@@ -118,7 +107,7 @@ export const RatingPage = (): JSX.Element => {
     }
 
     const ratingData = {
-      reviewerName: yourName.trim(),
+      reviewerName: user?.username || "Anonymous",
       overallRating: overallRating[0],
       strategyRating: Math.round((profitabilityRating[0] + communicationRating[0] + reliabilityRating[0]) / 3),
       communicationRating: communicationRating[0],
@@ -210,25 +199,21 @@ export const RatingPage = (): JSX.Element => {
                 {/* Header */}
                 <div className="mb-6">
                   <h1 className="text-2xl font-semibold text-gray-900 mb-2">
-                    Rate {trader.name}
+                    Rate {(trader as any)?.name || "Trader"}
                   </h1>
                   <p className="text-gray-600">
                     Share your experience with this trader to help others make informed decisions.
                   </p>
                 </div>
 
-                {/* Your Name */}
+                {/* Reviewing As */}
                 <div className="mb-6">
-                  <label htmlFor="yourName" className="text-sm font-medium text-gray-900 mb-2 block">
-                    Your Name
+                  <label className="text-sm font-medium text-gray-900 mb-2 block">
+                    Reviewing as
                   </label>
-                  <Input
-                    id="yourName"
-                    placeholder="Enter your name or pseudonym"
-                    value={yourName}
-                    onChange={(e) => setYourName(e.target.value)}
-                    className="w-full"
-                  />
+                  <div className="p-3 bg-gray-50 rounded-md border">
+                    <span className="text-gray-900 font-medium">{user?.username || "Loading..."}</span>
+                  </div>
                 </div>
 
                 {/* Overall Rating */}
