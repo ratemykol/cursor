@@ -313,11 +313,29 @@ export const TraderProfilePage = (): JSX.Element => {
                   <p className="text-gray-600 mb-4">
                     No reviews yet. Be the first to rate this trader!
                   </p>
-                  <Link href={`/trader/${id}/rate`}>
-                    <Button className="bg-[#ab9ff2] text-black rounded-md transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu">
-                      Write First Review
-                    </Button>
-                  </Link>
+                  {isAuthenticated ? (
+                    <Link href={`/trader/${id}/rate`}>
+                      <Button className="bg-[#ab9ff2] text-black rounded-md transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu">
+                        Write First Review
+                      </Button>
+                    </Link>
+                  ) : (
+                    <div className="space-y-3">
+                      <p className="text-sm text-gray-500">Sign in to leave a review</p>
+                      <div className="flex gap-2 justify-center">
+                        <Link href="/signin">
+                          <Button className="bg-[#ab9ff2] text-black rounded-md transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu">
+                            Sign In
+                          </Button>
+                        </Link>
+                        <Link href="/signup">
+                          <Button variant="outline" className="border-[#ab9ff2] text-[#ab9ff2] rounded-md transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#ab9ff2] hover:text-black transform-gpu">
+                            Sign Up
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="space-y-6">

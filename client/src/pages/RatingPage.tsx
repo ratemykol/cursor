@@ -78,12 +78,21 @@ export const RatingPage = (): JSX.Element => {
       });
       setLocation(`/trader/${id}`);
     },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to submit rating. Please try again.",
-        variant: "destructive",
-      });
+    onError: (error: any) => {
+      if (error.message.includes("Authentication required")) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to leave a review",
+          variant: "destructive",
+        });
+        setLocation("/signin");
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to submit rating. Please try again.",
+          variant: "destructive",
+        });
+      }
     },
   });
 
