@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
+import { SocialShareBadges } from "@/components/SocialShareBadges";
 import { Star, Image, Search, TrendingUp, Crown } from "lucide-react";
 
 export const HomePage = (): JSX.Element => {
@@ -380,6 +381,13 @@ export const HomePage = (): JSX.Element => {
         
         {/* Footer */}
         <footer className="w-full h-[400px] bg-[#ab9ff2] mt-80" />
+        
+        {/* Floating Social Share Badge */}
+        <SocialShareBadges 
+          variant="floating"
+          traderName="Top Crypto Traders"
+          className="z-50"
+        />
       </div>
     </div>
   );
