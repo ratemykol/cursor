@@ -21,6 +21,20 @@
   animation: scroll 30s linear infinite;
 }
 
+.animate-scroll.paused {
+  animation-play-state: paused;
+}
+
+/* Enhanced 3D pop-out effect for trader cards */
+.trader-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.trader-card:hover {
+  transform: translateY(-20px) translateZ(50px) scale(1.08);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

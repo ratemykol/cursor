@@ -256,7 +256,7 @@ export const HomePage = (): JSX.Element => {
           {/* Trader Cards */}
           <div className="relative w-full overflow-hidden">
             <div 
-              className={`trader-scroll-container flex gap-6 will-change-transform ${scrollPaused ? '' : 'animate-scroll'}`}
+              className={`trader-scroll-container flex gap-6 will-change-transform animate-scroll ${scrollPaused ? 'paused' : ''}`}
               style={{ 
                 width: `${rankedTraders.length * 3 * 250}px`,
                 minWidth: '100vw'
@@ -282,7 +282,7 @@ export const HomePage = (): JSX.Element => {
                 [...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
                   <Card
                     key={`${trader.id}-${index}`}
-                    className={`flex-shrink-0 w-[234px] h-[420px] ${trader.bgColor} rounded-[15px] border-none shadow-none transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:z-10 relative cursor-pointer trader-card ml-6`}
+                    className={`flex-shrink-0 w-[234px] h-[420px] ${trader.bgColor} rounded-[15px] border-none shadow-none relative cursor-pointer trader-card ml-6`}
                     onMouseEnter={() => setScrollPaused(true)}
                     onMouseLeave={() => setScrollPaused(false)}
                   >
