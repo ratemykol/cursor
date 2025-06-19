@@ -5,15 +5,35 @@ import { Input } from "@/components/ui/input";
 import { useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
-import { Star, Image, Search, TrendingUp, Crown } from "lucide-react";
+import { ShapeEditor } from "@/components/ShapeEditor";
+import { Star, Image, Search, TrendingUp, Crown, Settings } from "lucide-react";
 
 export const HomePage = (): JSX.Element => {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [scrollPaused, setScrollPaused] = useState(false);
+  const [showShapeEditor, setShowShapeEditor] = useState(false);
+  const [shapePositions, setShapePositions] = useState({
+    star: { x: 2.5, y: -19 },
+    'purple-eclipse': { x: -12, y: -15 },
+    'black-eclipse': { x: 5, y: -13 },
+    'pink-eclipse': { x: 26, y: -16 },
+    'orange-eclipse': { x: 11, y: -18 },
+    'green-eclipse': { x: 12, y: -15 },
+    'light-purple-eclipse': { x: 19, y: -16 },
+    'yellow-eclipse': { x: 20, y: -14 },
+    'grey-eclipse': { x: 20, y: -26 }
+  });
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleShapeUpdate = (shapeId: string, x: number, y: number) => {
+    setShapePositions(prev => ({
+      ...prev,
+      [shapeId]: { x, y }
+    }));
+  };
 
   // Fetch search results when search query exists
   const { data: searchResults = [], isLoading } = useQuery({
@@ -117,6 +137,15 @@ export const HomePage = (): JSX.Element => {
     <div className="bg-white w-full min-h-screen">
       <div className="bg-white overflow-hidden w-full relative">
         <Header currentPage="home" />
+        
+        {/* Floating Shape Editor Button */}
+        <Button
+          onClick={() => setShowShapeEditor(true)}
+          className="fixed bottom-6 right-6 z-50 rounded-full w-12 h-12 p-0 bg-purple-600 hover:bg-purple-700"
+          title="Edit Shape Positions"
+        >
+          <Settings className="w-5 h-5" />
+        </Button>
 
         {/* Hero Section */}
         <section className="relative px-4 sm:px-8 md:px-12 lg:px-20 mt-16 sm:mt-20 md:mt-24 lg:mt-[99px] mb-16 sm:mb-20 md:mb-24 lg:mb-[99px] overflow-hidden">
@@ -262,88 +291,96 @@ export const HomePage = (): JSX.Element => {
 
         {/* Top Traders Section */}
         <section className="mt-96 relative">
-          {/* Decorative elements - moved 400px upward */}
+          {/* Decorative elements - dynamic positioning */}
           <img
-            className="absolute left-[2.5%] z-[1]"
+            className="absolute z-[1]"
             style={{
               width: '10.9375rem',
               height: '11rem',
-              top: 'calc(6% - 25rem)'
+              left: `${shapePositions.star.x}%`,
+              top: `${shapePositions.star.y}%`
             }}
             alt="Star"
             src="/figmaAssets/star-1.svg"
           />
           <div 
-            className="absolute left-[-12%] bg-[#ab9ff2] rotate-[-76deg] z-[0]"
+            className="absolute bg-[#ab9ff2] rotate-[-76deg] z-[0]"
             style={{
               width: '17.6875rem',
               height: '24.75rem',
               borderRadius: '8.8375rem/12.38125rem',
-              top: 'calc(10% - 25rem)'
+              left: `${shapePositions['purple-eclipse'].x}%`,
+              top: `${shapePositions['purple-eclipse'].y}%`
             }}
           />
           <div 
-            className="absolute left-[5%] bg-black rotate-[15deg] z-[1]"
+            className="absolute bg-black rotate-[15deg] z-[1]"
             style={{
               width: '7.875rem',
               height: '11.625rem',
               borderRadius: '3.93125rem/5.7975rem',
-              top: 'calc(12% - 25rem)'
+              left: `${shapePositions['black-eclipse'].x}%`,
+              top: `${shapePositions['black-eclipse'].y}%`
             }}
           />
           <div 
-            className="absolute left-[26%] bg-[#ffdadc] rotate-[96deg] z-[1]"
+            className="absolute bg-[#ffdadc] rotate-[96deg] z-[1]"
             style={{
               width: '5.9375rem',
               height: '10.3125rem',
               borderRadius: '2.976875rem/5.15875rem',
-              top: 'calc(9% - 25rem)'
+              left: `${shapePositions['pink-eclipse'].x}%`,
+              top: `${shapePositions['pink-eclipse'].y}%`
             }}
           />
           <div 
-            className="absolute right-[11%] bg-[#ff7243] rotate-[15deg] z-[1]"
+            className="absolute bg-[#ff7243] rotate-[15deg] z-[1]"
             style={{
               width: '7.875rem',
               height: '11.625rem',
               borderRadius: '3.93125rem/5.7975rem',
-              top: 'calc(7% - 25rem)'
+              right: `${shapePositions['orange-eclipse'].x}%`,
+              top: `${shapePositions['orange-eclipse'].y}%`
             }}
           />
           <div 
-            className="absolute right-[12%] bg-[#2ec08b] rotate-[-76deg] z-[0]"
+            className="absolute bg-[#2ec08b] rotate-[-76deg] z-[0]"
             style={{
               width: '17.6875rem',
               height: '24.75rem',
               borderRadius: '8.8375rem/12.38125rem',
-              top: 'calc(10% - 25rem)',
-              transform: 'translateX(6.25rem) rotate(-76deg)'
+              right: `${shapePositions['green-eclipse'].x}%`,
+              top: `${shapePositions['green-eclipse'].y}%`
             }}
           />
           <div 
-            className="absolute right-[19%] bg-[#e2dffd] rotate-[-18deg] z-[1]"
+            className="absolute bg-[#e2dffd] rotate-[-18deg] z-[1]"
             style={{
               width: '7.875rem',
               height: '11.625rem',
               borderRadius: '3.93125rem/5.7975rem',
-              top: 'calc(9% - 25rem)'
+              right: `${shapePositions['light-purple-eclipse'].x}%`,
+              top: `${shapePositions['light-purple-eclipse'].y}%`
             }}
           />
           <div 
-            className="absolute right-[20%] bg-[#ffffc4] rotate-[32deg] z-[1]"
+            className="absolute bg-[#ffffc4] rotate-[32deg] z-[1]"
             style={{
               width: '3.25rem',
               height: '4.5625rem',
               borderRadius: '1.619375rem/2.271875rem',
-              top: 'calc(11% - 25rem)'
+              right: `${shapePositions['yellow-eclipse'].x}%`,
+              top: `${shapePositions['yellow-eclipse'].y}%`
             }}
           />
           <div 
-            className="absolute right-[20%] bg-[#d9d9d9] rotate-[-15deg] z-[-1]"
+            className="absolute bg-[#d9d9d9] rotate-[-15deg] z-[-1]"
             style={{
               width: '25.104rem',
               height: '16.217rem',
               borderRadius: '12.552rem/8.1085rem',
-              top: 'calc(-1% - 25rem)'
+              right: `${shapePositions['grey-eclipse'].x}%`,
+              top: `${shapePositions['grey-eclipse'].y}%`
             }}
           />
 
@@ -480,6 +517,13 @@ export const HomePage = (): JSX.Element => {
         {/* Footer */}
         <footer className="w-full h-[400px] bg-[#ab9ff2] mt-80" />
       </div>
+
+      {/* Shape Editor Modal */}
+      <ShapeEditor
+        isOpen={showShapeEditor}
+        onClose={() => setShowShapeEditor(false)}
+        onUpdateShape={handleShapeUpdate}
+      />
     </div>
   );
 };
