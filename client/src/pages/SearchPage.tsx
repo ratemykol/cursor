@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Star } from "lucide-react";
+import { Header } from "@/components/Header";
 
 export const SearchPage = (): JSX.Element => {
   const [location] = useLocation();
@@ -18,30 +19,7 @@ export const SearchPage = (): JSX.Element => {
 
   return (
     <div className="bg-white min-h-screen">
-      {/* Header */}
-      <header className="flex justify-between items-center px-8 py-4 border-b">
-        <Link href="/">
-          <h1 className="font-bold text-xl text-[#3c315b]">RMP</h1>
-        </Link>
-        
-        <div className="flex items-center gap-4 flex-1 max-w-md mx-8">
-          <Input
-            className="flex-1"
-            placeholder="Professor name"
-            defaultValue={query}
-          />
-          <Input
-            className="flex-1"
-            placeholder="Your school"
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button variant="ghost">Log In</Button>
-          <Button>Sign Up</Button>
-          <Button variant="ghost">Help</Button>
-        </div>
-      </header>
+      <Header currentPage="search" />
 
       <div className="container mx-auto px-8 py-8">
         <h2 className="text-2xl font-bold mb-6">
