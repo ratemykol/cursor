@@ -77,6 +77,20 @@
   border-radius: 15px;
 }
 
+/* CA Overlay slide-up animation */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
