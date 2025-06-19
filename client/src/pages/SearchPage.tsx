@@ -24,7 +24,18 @@ export const SearchPage = (): JSX.Element => {
   }, [searchInput]);
 
   const { data: searchResults = [], isLoading } = useQuery({
-    queryKey: debouncedSearch ? ['/api/traders', { q: debouncedSearch }] : ['/api/traders'],
+    queryKey: ['/api/traders/search', debouncedSearch],
+    queryFn: async () => {
+      const query = debouncedSearch.trim();
+      if (!query) return [];
+      
+      const url = new URL('/api/traders', window.location.origin);
+      url.searchParams.set('q', query);
+      
+      const response = await fetch(url.toString());
+      if (!response.ok) throw new Error('Search failed');
+      return response.json();
+    },
     enabled: true
   });
 
