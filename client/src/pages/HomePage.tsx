@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
-import { Star, Image } from "lucide-react";
+import { Star, Image, Search } from "lucide-react";
 
 export const HomePage = (): JSX.Element => {
   const [, setLocation] = useLocation();
@@ -125,14 +125,14 @@ export const HomePage = (): JSX.Element => {
               />
               <div className="absolute right-0 top-0 h-full flex items-center">
                 <Button 
-                  className="w-[104px] h-10 bg-[#ab9ff2] text-[#3c315b] rounded-[5px] font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu"
+                  className="w-[104px] h-10 bg-[#ab9ff2] text-[#3c315b] rounded-[5px] font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center justify-center"
                   onClick={() => {
                     if (searchQuery.trim()) {
                       setLocation(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
                     }
                   }}
                 >
-                  Search
+                  <Search size={20} />
                 </Button>
               </div>
             </div>
