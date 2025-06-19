@@ -34,9 +34,9 @@ export const HomePage = (): JSX.Element => {
   // Data for trader cards
   const traders = [
     { id: 1, rank: 1, bgColor: "bg-[#ffdadc]" },
-    { id: 2, rank: 4, bgColor: "bg-[#ffffc4]" },
+    { id: 2, rank: 2, bgColor: "bg-[#ffffc4]" },
     { id: 3, rank: 3, bgColor: "bg-[#3c315b]" },
-    { id: 4, rank: 2, bgColor: "bg-[#2ec08b]" },
+    { id: 4, rank: 4, bgColor: "bg-[#2ec08b]" },
     { id: 5, rank: 5, bgColor: "bg-[#4a87f2]" },
   ];
 
