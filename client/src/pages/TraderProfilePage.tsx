@@ -54,15 +54,32 @@ export const TraderProfilePage = (): JSX.Element => {
           <div className="lg:col-span-2">
             {/* Trader Info */}
             <div className="bg-white rounded-lg p-6 mb-6">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h1 className="text-3xl font-bold">{trader?.name}</h1>
-                  <p className="text-gray-600">{trader?.specialty || 'Crypto Trader'}</p>
-                  <p className="text-sm text-gray-500">Wallet: {trader?.walletAddress}</p>
+              <div className="flex items-start gap-6 mb-4">
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                  {trader?.profileImage ? (
+                    <img 
+                      src={trader.profileImage} 
+                      alt={trader.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-300">
+                      <div className="w-12 h-12 bg-gray-500 rounded-full"></div>
+                    </div>
+                  )}
                 </div>
-                {trader?.verified && (
-                  <Badge className="bg-blue-100 text-blue-800">Verified</Badge>
-                )}
+                <div className="flex-1">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h1 className="text-3xl font-bold">{trader?.name}</h1>
+                      <p className="text-gray-600">{trader?.specialty || 'Crypto Trader'}</p>
+                      <p className="text-sm text-gray-500">Wallet: {trader?.walletAddress}</p>
+                    </div>
+                    {trader?.verified && (
+                      <Badge className="bg-blue-100 text-blue-800">Verified</Badge>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {/* Rating Overview */}

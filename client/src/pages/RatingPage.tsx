@@ -119,9 +119,24 @@ export const RatingPage = (): JSX.Element => {
       <Header />
 
       <div className="container mx-auto px-8 py-8 max-w-2xl">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold mb-2">{trader?.name}</h1>
-          <p className="text-gray-600">{trader?.specialty || 'Crypto Trading'}</p>
+        <div className="mb-6 flex items-center gap-4">
+          <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+            {trader?.profileImage ? (
+              <img 
+                src={trader.profileImage} 
+                alt={trader.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-300">
+                <div className="w-8 h-8 bg-gray-500 rounded-full"></div>
+              </div>
+            )}
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold mb-2">{trader?.name}</h1>
+            <p className="text-gray-600">{trader?.specialty || 'Crypto Trading'}</p>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
