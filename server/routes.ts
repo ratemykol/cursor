@@ -1,15 +1,87 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { insertTraderSchema, insertRatingSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // put application routes here
-  // prefix all routes with /api
+  // Trader routes
+  app.get("/api/traders", async (req, res) => {
+    try {
+      const { q } = req.query;
+      if (q && typeof q === "string") {
+        const traders = await storage.searchTraders(q);
+        res.json(traders);
+      } else {
+        const traders = await storage.getAllTraders();
+        res.json(traders);
+      }
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
 
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+  app.get("/api/traders/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const trader = await storage.getTrader(id);
+      
+      if (!trader) {
+        return res.status(404).json({ error: "Trader not found" });
+      }
+      
+      const stats = await storage.getRatingStats(id);
+      res.json({ ...trader, stats });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/traders", async (req, res) => {
+    try {
+      const validatedData = insertTraderSchema.parse(req.body);
+      const trader = await storage.createTrader(validatedData);
+      res.status(201).json(trader);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  // Rating routes
+  app.get("/api/traders/:id/ratings", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const ratings = await storage.getTraderRatings(id);
+      res.json(ratings);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/traders/:id/ratings", async (req, res) => {
+    try {
+      const traderId = parseInt(req.params.id);
+      const validatedData = insertRatingSchema.parse({
+        ...req.body,
+        traderId,
+        userId: "anonymous-user", // For now, use anonymous user
+      });
+      const rating = await storage.createRating(validatedData);
+      res.status(201).json(rating);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/traders/:id/stats", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const stats = await storage.getRatingStats(id);
+      res.json(stats);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
 
   const httpServer = createServer(app);
-
   return httpServer;
 }

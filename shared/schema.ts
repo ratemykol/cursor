@@ -1,17 +1,112 @@
-import { pgTable, text, serial, integer, boolean } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  varchar,
+  timestamp,
+  jsonb,
+  index,
+  integer,
+  serial,
+  decimal,
+  boolean,
+} from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { relations } from "drizzle-orm";
 
+// Session storage table.
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: jsonb("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)],
+);
+
+// User storage table.
 export const users = pgTable("users", {
+  id: varchar("id").primaryKey().notNull(),
+  email: varchar("email").unique(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  profileImageUrl: varchar("profile_image_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Crypto traders table
+export const traders = pgTable("traders", {
   id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
+  walletAddress: varchar("wallet_address", { length: 42 }).notNull().unique(),
+  bio: text("bio"),
+  profileImage: varchar("profile_image"),
+  specialty: varchar("specialty"),
+  verified: boolean("verified").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
+// Ratings table
+export const ratings = pgTable("ratings", {
+  id: serial("id").primaryKey(),
+  traderId: integer("trader_id").notNull().references(() => traders.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  overallRating: decimal("overall_rating", { precision: 2, scale: 1 }).notNull(),
+  difficulty: decimal("difficulty", { precision: 2, scale: 1 }).notNull(),
+  wouldTakeAgain: boolean("would_take_again").notNull(),
+  attendance: varchar("attendance").notNull(),
+  grade: varchar("grade"),
+  textbook: boolean("textbook").notNull(),
+  review: text("review"),
+  tags: text("tags").array(),
+  helpful: integer("helpful").default(0),
+  notHelpful: integer("not_helpful").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export type InsertUser = z.infer<typeof insertUserSchema>;
+// Relations
+export const tradersRelations = relations(traders, ({ many }) => ({
+  ratings: many(ratings),
+}));
+
+export const ratingsRelations = relations(ratings, ({ one }) => ({
+  trader: one(traders, {
+    fields: [ratings.traderId],
+    references: [traders.id],
+  }),
+  user: one(users, {
+    fields: [ratings.userId],
+    references: [users.id],
+  }),
+}));
+
+export const usersRelations = relations(users, ({ many }) => ({
+  ratings: many(ratings),
+}));
+
+// Insert schemas
+export const insertTraderSchema = createInsertSchema(traders).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertRatingSchema = createInsertSchema(ratings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  helpful: true,
+  notHelpful: true,
+});
+
+// Types
+export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+export type Trader = typeof traders.$inferSelect;
+export type InsertTrader = z.infer<typeof insertTraderSchema>;
+export type Rating = typeof ratings.$inferSelect;
+export type InsertRating = z.infer<typeof insertRatingSchema>;
