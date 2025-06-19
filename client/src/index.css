@@ -5,6 +5,61 @@
   .all-\[unset\] {
     all: unset;
   }
+  
+  /* Custom Slider Styles */
+  .custom-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: #d1d5db;
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+  
+  .custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background: #2563eb;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+  }
+  
+  .custom-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+  }
+  
+  .custom-slider::-moz-range-thumb {
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background: #2563eb;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+  }
+  
+  .custom-slider::-moz-range-thumb:hover {
+    transform: scale(1.1);
+  }
+  
+  .custom-slider::-webkit-slider-track {
+    height: 4px;
+    background: #d1d5db;
+    border-radius: 2px;
+  }
+  
+  .custom-slider::-moz-range-track {
+    height: 4px;
+    background: #d1d5db;
+    border-radius: 2px;
+    border: none;
+  }
 }
 
 @tailwind base;
