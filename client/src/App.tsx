@@ -24,6 +24,7 @@ function Router() {
       <Route path="/admin" component={AdminPage} />
       <Route path="/signup" component={SignUpPage} />
       <Route path="/signin" component={SignInPage} />
+      <Route path="/profile" component={UserProfilePage} />
       <Route component={NotFound} />
     </Switch>
   );
