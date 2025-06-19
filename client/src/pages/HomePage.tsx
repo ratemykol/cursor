@@ -128,7 +128,7 @@ export const HomePage = (): JSX.Element => {
           />
           <div className="absolute w-[27px] h-[35px] top-[87px] left-[36.25%] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] z-0" />
           <div className="absolute w-[73px] h-[97px] top-[179px] left-[35.9%] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] z-[1]" />
-          <div className="absolute w-[92px] h-[71px] top-[131px] left-[41.9%] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] z-0" />
+          <div className="absolute w-[92px] h-[71px] top-[131px] left-[41.9%] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] z-0 mt-[-204px] mb-[-204px]" />
           <img
             className="absolute w-[76px] h-[61px] top-[243px] right-[15.6%] z-0"
             alt="Polygon"
@@ -271,7 +271,7 @@ export const HomePage = (): JSX.Element => {
             >
               {isLoadingTraders ? (
                 // Loading skeleton
-                Array.from({ length: 10 }).map((_, index) => (
+                (Array.from({ length: 10 }).map((_, index) => (
                   <Card
                     key={index}
                     className={`flex-shrink-0 w-[234px] h-[420px] ${cardColors[index]} rounded-[15px] border-none shadow-none animate-pulse ml-6`}
@@ -283,10 +283,10 @@ export const HomePage = (): JSX.Element => {
                       <div className="mt-3 mb-4 bg-white/50 rounded-full w-24 h-6" />
                     </CardContent>
                   </Card>
-                ))
+                )))
               ) : (
                 // Duplicate cards for seamless scrolling
-                [...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
+                ([...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
                   <Card
                     key={`${trader.id}-${index}`}
                     className={`flex-shrink-0 w-[234px] h-[420px] ${trader.rank === 1 ? 'diamond-background golden-shine' : trader.bgColor} rounded-[15px] border-none shadow-none relative cursor-pointer trader-card ml-6`}
@@ -369,7 +369,7 @@ export const HomePage = (): JSX.Element => {
                       </div>
                     </CardContent>
                   </Card>
-                ))
+                )))
               )}
             </div>
           </div>
