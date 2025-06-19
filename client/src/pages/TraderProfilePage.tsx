@@ -57,6 +57,24 @@ export const TraderProfilePage = (): JSX.Element => {
     });
   }
 
+  // Calculate most common tags from reviews
+  const tagCounts: Record<string, number> = {};
+  if (Array.isArray(ratings)) {
+    ratings.forEach((rating: any) => {
+      if (rating.tags && Array.isArray(rating.tags)) {
+        rating.tags.forEach((tag: string) => {
+          tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        });
+      }
+    });
+  }
+
+  // Get top 6 most common tags
+  const popularTags = Object.entries(tagCounts)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 6)
+    .map(([tag]) => tag);
+
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
@@ -101,7 +119,7 @@ export const TraderProfilePage = (): JSX.Element => {
                   )}
                 </div>
 
-                {/* Content - Right Side */}
+                {/* Content - Middle */}
                 <div className="flex-1">
                   {/* Trader Name */}
                   <h1 className="text-2xl font-semibold text-gray-900 mb-1">
@@ -145,6 +163,24 @@ export const TraderProfilePage = (): JSX.Element => {
                     </Button>
                   </Link>
                 </div>
+
+                {/* Popular Tags - Right Side */}
+                {popularTags.length > 0 && (
+                  <div className="w-64 flex-shrink-0">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Popular Tags</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {popularTags.map((tag, index) => (
+                        <span 
+                          key={index}
+                          className="inline-block px-3 py-1 text-sm font-medium text-white rounded-full"
+                          style={{ backgroundColor: '#AB9FF2' }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
