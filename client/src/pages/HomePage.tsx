@@ -16,7 +16,18 @@ export const HomePage = (): JSX.Element => {
 
   // Fetch search results when search query exists
   const { data: searchResults = [], isLoading } = useQuery({
-    queryKey: searchQuery.trim() ? ['/api/traders', { q: searchQuery.trim() }] : ['/api/traders'],
+    queryKey: ['/api/traders', searchQuery.trim()],
+    queryFn: async () => {
+      const query = searchQuery.trim();
+      if (!query) return [];
+      
+      const url = new URL('/api/traders', window.location.origin);
+      url.searchParams.set('q', query);
+      
+      const response = await fetch(url.toString());
+      if (!response.ok) throw new Error('Search failed');
+      return response.json();
+    },
     enabled: searchQuery.trim().length > 0,
   });
 
