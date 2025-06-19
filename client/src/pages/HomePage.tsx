@@ -17,10 +17,7 @@ export const HomePage = (): JSX.Element => {
     <div className="bg-white flex flex-row justify-center w-full">
       <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
         {/* Header */}
-        <header className="flex justify-between items-center px-20 pt-8 mt-[37px] mb-[37px] relative">
-          {/* Grey eclipse behind Sign In button */}
-          <div className="absolute w-[401.66px] h-[259.47px] top-[-60px] right-[-100px] bg-[#d9d9d9] rounded-[200.83px/129.735px] rotate-[-15deg] z-[-1]" />
-          
+        <header className="flex justify-between items-center px-20 pt-8 mt-[37px] mb-[37px]">
           <h1 className="font-medium text-[#3c315b] text-[22px]">RateMyKOL</h1>
 
           <div className="flex items-center gap-4">
@@ -108,6 +105,7 @@ export const HomePage = (): JSX.Element => {
           <div className="absolute w-[283px] h-[396px] top-[678px] left-[1256px] bg-[#2ec08b] rounded-[141.4px/198.1px] rotate-[-76deg] mt-[-827px] mb-[-827px]" />
           <div className="absolute w-[126px] h-[186px] top-[587px] left-[1031px] bg-[#e2dffd] rounded-[62.9px/92.76px] rotate-[-18deg] mt-[-838px] mb-[-838px] ml-[-258px] mr-[-258px]" />
           <div className="absolute w-[52px] h-[73px] top-[706px] left-[1009px] bg-[#ffffc4] rounded-[25.91px/36.35px] rotate-[32deg] ml-[-249px] mr-[-249px] mt-[-834px] mb-[-834px]" />
+          <div className="absolute w-[401.66px] h-[259.47px] top-[-20px] left-[1100px] bg-[#d9d9d9] rounded-[200.83px/129.735px] rotate-[-15deg] z-[-1]" />
 
           <div className="text-center mb-16">
             <h2 className="font-medium text-[#3c315b] text-[69px]">
