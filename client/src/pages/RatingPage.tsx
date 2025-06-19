@@ -32,12 +32,19 @@ export const RatingPage = (): JSX.Element => {
   const availableTags = [
     "beginner friendly",
     "high profit",
-    "responsive",
     "detailed analysis",
     "long term",
     "day trading",
     "swing trading",
-    "risk management"
+    "risk management",
+    "Copy Trade",
+    "Chart Nuker",
+    "New Pairs",
+    "Scalper",
+    "Alpha",
+    "Bundler",
+    "Whale",
+    "Conviction"
   ];
 
   const mutation = useMutation({
