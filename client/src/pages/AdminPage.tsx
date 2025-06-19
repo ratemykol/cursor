@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { Header } from "@/components/Header";
 
 export const AdminPage = (): JSX.Element => {
   const [name, setName] = useState("");
@@ -106,6 +107,7 @@ export const AdminPage = (): JSX.Element => {
 
   return (
     <div className="bg-white min-h-screen">
+      <Header currentPage="admin" />
       <div className="container mx-auto px-8 py-8 max-w-2xl">
         <Card>
           <CardHeader>

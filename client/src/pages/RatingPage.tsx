@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { Header } from "@/components/Header";
 
 export const RatingPage = (): JSX.Element => {
   const { id } = useParams();
@@ -115,14 +116,7 @@ export const RatingPage = (): JSX.Element => {
 
   return (
     <div className="bg-white min-h-screen">
-      {/* Header */}
-      <header className="flex justify-between items-center px-8 py-4 border-b">
-        <h1 className="font-bold text-xl text-[#3c315b]">RateMyKOL</h1>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost">Log In</Button>
-          <Button>Sign Up</Button>
-        </div>
-      </header>
+      <Header />
 
       <div className="container mx-auto px-8 py-8 max-w-2xl">
         <div className="mb-6">

@@ -45,30 +45,8 @@ export const TraderProfilePage = (): JSX.Element => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Header */}
-      <header className="bg-black text-white flex justify-between items-center px-8 py-3">
-        <Link href="/">
-          <h1 className="font-bold text-xl">RMP</h1>
-        </Link>
-        
-        <div className="flex items-center gap-4">
-          <input
-            className="px-3 py-2 rounded text-black"
-            placeholder="Professor name"
-          />
-          <input
-            className="px-3 py-2 rounded text-black"
-            placeholder="Your school"
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" className="text-white">Log In</Button>
-          <Button className="bg-blue-600">Sign Up</Button>
-          <Button variant="ghost" className="text-white">Help</Button>
-        </div>
-      </header>
+    <div className="bg-white min-h-screen">
+      <Header />
 
       <div className="container mx-auto px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
