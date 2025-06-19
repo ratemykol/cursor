@@ -91,9 +91,36 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
           >
             Admin
           </Button>
-          <Button className="bg-[#ab9ff2] text-[#3c315b] rounded-full transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu">
-            Sign In
-          </Button>
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="bg-[#ab9ff2] text-[#3c315b] rounded-full transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center gap-2">
+                  <Avatar className="w-6 h-6">
+                    <AvatarImage src={user?.profileImageUrl} />
+                    <AvatarFallback className="text-xs">
+                      {user?.username?.charAt(0).toUpperCase() || user?.firstName?.charAt(0).toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  {user?.username || user?.firstName || "Profile"}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setLocation("/profile")}>
+                  My Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => logoutMutation.mutate()}>
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button 
+              className="bg-[#ab9ff2] text-[#3c315b] rounded-full transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu"
+              onClick={() => setLocation("/signin")}
+            >
+              Sign In
+            </Button>
+          )}
         </div>
       </header>
 
