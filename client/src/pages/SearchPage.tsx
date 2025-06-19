@@ -56,7 +56,7 @@ export const SearchPage = (): JSX.Element => {
   };
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-gray-50 min-h-screen">
       <Header currentPage="search" />
 
       <div className="container mx-auto px-8 py-8">
@@ -64,7 +64,7 @@ export const SearchPage = (): JSX.Element => {
         <div className="max-w-2xl mx-auto mb-8">
           <div className="relative">
             <Input
-              className="h-12 rounded-lg border-2 border-gray-300 pl-4 pr-20 text-lg"
+              className="h-12 rounded-lg border-2 border-gray-300 pl-4 pr-20 text-lg bg-white"
               placeholder="Search by trader name or wallet address..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
@@ -73,66 +73,77 @@ export const SearchPage = (): JSX.Element => {
             <div className="absolute right-2 top-2">
               <Button 
                 onClick={handleSearch}
-                className="h-8 bg-[#ab9ff2] text-[#3c315b] rounded-md hover:bg-[#9b8de2] px-4"
+                className="h-8 bg-blue-600 text-white rounded-md hover:bg-blue-700 px-4"
               >
-                <Search size={16} className="mr-2" />
-                Search
+                <Search size={16} />
               </Button>
             </div>
           </div>
-          <p className="text-center text-gray-600 text-sm mt-2">
-            Search examples: "CryptoKing2024" or "0x742d35Cc6634C0532925a3b8D404fA503e8d"
-          </p>
         </div>
 
-        {/* Results count */}
-        {debouncedSearch && (
-          <p className="text-gray-600 mb-6">
-            Found {Array.isArray(searchResults) ? searchResults.length : 0} traders matching "{debouncedSearch}"
-          </p>
+        {/* Empty State - Show when no search input */}
+        {!debouncedSearch && (
+          <div className="max-w-2xl mx-auto">
+            <Card className="border border-gray-200 bg-white">
+              <CardContent className="p-12 text-center">
+                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+                  Search for Crypto Traders
+                </h2>
+                <p className="text-gray-600">
+                  Enter a trader name or wallet address to find reviews and ratings.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         )}
 
-        {isLoading ? (
-          <div className="text-center py-8">Loading...</div>
-        ) : !Array.isArray(searchResults) || searchResults.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-gray-600">
-              {debouncedSearch ? `No traders found matching "${debouncedSearch}"` : 'Enter a search term to find traders'}
+        {/* Search Results State */}
+        {debouncedSearch && (
+          <>
+            {/* Results count */}
+            <p className="text-gray-600 mb-6">
+              Found {Array.isArray(searchResults) ? searchResults.length : 0} traders matching "{debouncedSearch}"
             </p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {searchResults.map((trader: any) => (
-              <Card key={trader.id} className="border border-gray-200 hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-4 flex-1">
-                      {/* Profile Image */}
-                      <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
-                        {trader.profileImage ? (
-                          <img 
-                            src={trader.profileImage} 
-                            alt={trader.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-600 font-medium">
-                            {trader.name ? trader.name.charAt(0).toUpperCase() : '?'}
+
+            {isLoading ? (
+              <div className="text-center py-8">Loading...</div>
+            ) : !Array.isArray(searchResults) || searchResults.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-600">
+                  No traders found matching "{debouncedSearch}"
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {searchResults.map((trader: any) => (
+                  <Card key={trader.id} className="border border-gray-200 hover:shadow-md transition-shadow bg-white">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-4 flex-1">
+                          {/* Profile Image */}
+                          <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                            {trader.profileImage ? (
+                              <img 
+                                src={trader.profileImage} 
+                                alt={trader.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-600 font-medium text-xl">
+                                {trader.name ? trader.name.charAt(0).toUpperCase() : '?'}
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                      
-                      {/* Trader Info */}
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <h3 className="text-xl font-semibold text-gray-900">
+                          
+                          {/* Trader Info */}
+                          <div className="flex-1">
+                            <h3 className="text-xl font-semibold text-gray-900 mb-1">
                               {trader.name}
                             </h3>
-                            <p className="text-gray-600 text-sm">{trader.specialty || 'Crypto Trader'}</p>
+                            <p className="text-gray-600 text-sm mb-2">{trader.specialty || 'Crypto Trader'}</p>
                             
                             {/* Rating Display */}
-                            <div className="flex items-center gap-2 mt-1">
+                            <div className="flex items-center gap-2 mb-2">
                               <div className="flex">
                                 {renderStars(Math.round(trader.averageRating || 0))}
                               </div>
@@ -145,28 +156,28 @@ export const SearchPage = (): JSX.Element => {
                             
                             {/* Bio/Description */}
                             {trader.bio && (
-                              <p className="text-gray-700 mt-2 text-sm leading-relaxed">
+                              <p className="text-gray-700 text-sm leading-relaxed">
                                 {trader.bio}
                               </p>
                             )}
                           </div>
                         </div>
+                        
+                        {/* View Profile Button */}
+                        <div className="ml-6">
+                          <Link href={`/trader/${trader.id}`}>
+                            <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2">
+                              View Profile
+                            </Button>
+                          </Link>
+                        </div>
                       </div>
-                    </div>
-                    
-                    {/* View Profile Button */}
-                    <div className="ml-6">
-                      <Link href={`/trader/${trader.id}`}>
-                        <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2">
-                          View Profile
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
