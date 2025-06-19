@@ -47,8 +47,8 @@ export const AdminPage = (): JSX.Element => {
 
   if (!isAuthenticated) {
     return (
-      <div className="bg-white flex flex-row justify-center w-full">
-        <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
+      <div className="bg-white w-full min-h-screen">
+        <div className="bg-white overflow-hidden w-full relative">
           <Header currentPage="admin" />
           <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-20">
             <Card className="w-full max-w-md">

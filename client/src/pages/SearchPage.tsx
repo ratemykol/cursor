@@ -67,7 +67,7 @@ export const SearchPage = (): JSX.Element => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen relative">
+    <div className="bg-gray-50 min-h-screen relative w-full">
       <Header currentPage="search" />
       {/* Decorative background elements */}
       <img
