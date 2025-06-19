@@ -20,6 +20,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/traders/search/:query?", async (req, res) => {
+    try {
+      const query = req.params.query || req.query.q as string || '';
+      if (!query.trim()) {
+        const traders = await storage.getAllTraders();
+        return res.json(traders);
+      }
+      const traders = await storage.searchTraders(query);
+      res.json(traders);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   app.get("/api/traders/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
