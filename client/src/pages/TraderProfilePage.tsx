@@ -129,10 +129,10 @@ export const TraderProfilePage = (): JSX.Element => {
     });
   }
 
-  // Get top 6 most common tags
+  // Get top 5 most common tags
   const popularTags = Object.entries(tagCounts)
     .sort(([, a], [, b]) => b - a)
-    .slice(0, 6)
+    .slice(0, 5)
     .map(([tag]) => tag);
 
   const renderStars = (rating: number) => {

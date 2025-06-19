@@ -250,7 +250,7 @@ export const RatingPage = (): JSX.Element => {
                         onClick={() => toggleTag(tag)}
                         className={`px-3 py-1 rounded-full text-sm border transition-colors ${
                           selectedTags.includes(tag)
-                            ? 'text-white border-transparent'
+                            ? 'text-black border-transparent'
                             : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                         }`}
                         style={selectedTags.includes(tag) ? { backgroundColor: '#AB9FF2' } : {}}
