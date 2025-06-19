@@ -123,9 +123,9 @@ export const HomePage = (): JSX.Element => {
                 onChange={handleSearchChange}
                 onKeyPress={handleKeyPress}
               />
-              <div className="absolute right-[2px] top-0 h-[calc(100%-4px)] flex items-center">
+              <div className="absolute right-[2px] top-[2px] h-[calc(100%-4px)] flex items-center">
                 <Button 
-                  className="w-[106px] h-[calc(100%+3px)] bg-[#ab9ff2] text-[#3c315b] rounded-[3px] font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center justify-center border-0"
+                  className="w-[104px] h-full bg-[#ab9ff2] text-[#3c315b] rounded-[3px] font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center justify-center border-0"
                   onClick={() => {
                     if (searchQuery.trim()) {
                       setLocation(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
