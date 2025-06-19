@@ -17,6 +17,7 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
   const [showCAOverlay, setShowCAOverlay] = useState(false);
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
+  const { isAdmin } = useAdmin();
   const queryClient = useQueryClient();
 
   const logoutMutation = useMutation({
@@ -83,15 +84,17 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
           >
             Search
           </Button>
-          <Button
-            variant="ghost"
-            className={`rounded-full font-medium text-[#3c315b] transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-md ${
-              currentPage === "admin" ? "font-semibold bg-[#f3f1ff] shadow-sm" : ""
-            }`}
-            onClick={() => setLocation("/admin")}
-          >
-            Admin
-          </Button>
+          {isAdmin && (
+            <Button
+              variant="ghost"
+              className={`rounded-full font-medium text-[#3c315b] transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-md ${
+                currentPage === "admin" ? "font-semibold bg-[#f3f1ff] shadow-sm" : ""
+              }`}
+              onClick={() => setLocation("/admin")}
+            >
+              Admin
+            </Button>
+          )}
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
