@@ -34,11 +34,13 @@ export const RatingPage = (): JSX.Element => {
 
   const mutation = useMutation({
     mutationFn: async (ratingData: any) => {
-      return await apiRequest(`/api/traders/${id}/ratings`, {
+      const response = await fetch(`/api/traders/${id}/ratings`, {
         method: "POST",
         body: JSON.stringify(ratingData),
         headers: { "Content-Type": "application/json" },
       });
+      if (!response.ok) throw new Error('Failed to submit rating');
+      return response.json();
     },
     onSuccess: () => {
       toast({
@@ -124,8 +126,8 @@ export const RatingPage = (): JSX.Element => {
 
       <div className="container mx-auto px-8 py-8 max-w-2xl">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold mb-2">{trader.name}</h1>
-          <p className="text-gray-600">{trader.specialty || 'Crypto Trading'}</p>
+          <h1 className="text-2xl font-bold mb-2">{trader?.name}</h1>
+          <p className="text-gray-600">{trader?.specialty || 'Crypto Trading'}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">

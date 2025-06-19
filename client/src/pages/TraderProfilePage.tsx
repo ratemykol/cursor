@@ -15,7 +15,7 @@ export const TraderProfilePage = (): JSX.Element => {
     enabled: !!id,
   });
 
-  const { data: ratings } = useQuery({
+  const { data: ratings = [] } = useQuery({
     queryKey: [`/api/traders/${id}/ratings`],
     enabled: !!id,
   });
@@ -36,7 +36,7 @@ export const TraderProfilePage = (): JSX.Element => {
     );
   }
 
-  const stats = trader.stats || {
+  const stats = trader?.stats || {
     averageRating: 0,
     totalRatings: 0,
     averageDifficulty: 0,
@@ -77,11 +77,11 @@ export const TraderProfilePage = (): JSX.Element => {
             <div className="bg-white rounded-lg p-6 mb-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h1 className="text-3xl font-bold">{trader.name}</h1>
-                  <p className="text-gray-600">{trader.specialty || 'Crypto Trader'}</p>
-                  <p className="text-sm text-gray-500">Wallet: {trader.walletAddress}</p>
+                  <h1 className="text-3xl font-bold">{trader?.name}</h1>
+                  <p className="text-gray-600">{trader?.specialty || 'Crypto Trader'}</p>
+                  <p className="text-sm text-gray-500">Wallet: {trader?.walletAddress}</p>
                 </div>
-                {trader.verified && (
+                {trader?.verified && (
                   <Badge className="bg-blue-100 text-blue-800">Verified</Badge>
                 )}
               </div>
@@ -117,7 +117,7 @@ export const TraderProfilePage = (): JSX.Element => {
               <div className="mb-6">
                 <h3 className="font-semibold mb-4">Rating Distribution</h3>
                 {[5, 4, 3, 2, 1].map((rating) => {
-                  const count = ratings?.filter((r: any) => Math.round(Number(r.overallRating)) === rating)?.length || 0;
+                  const count = ratings.filter((r: any) => Math.round(Number(r.overallRating)) === rating).length || 0;
                   const percentage = stats.totalRatings > 0 ? (count / stats.totalRatings) * 100 : 0;
                   
                   return (
@@ -159,11 +159,11 @@ export const TraderProfilePage = (): JSX.Element => {
                 {stats.totalRatings} Student Ratings
               </h2>
 
-              {ratings?.length === 0 ? (
+              {ratings.length === 0 ? (
                 <p className="text-gray-600">No ratings yet. Be the first to rate this trader!</p>
               ) : (
                 <div className="space-y-6">
-                  {ratings?.map((rating: any) => (
+                  {ratings.map((rating: any) => (
                     <div key={rating.id} className="border-b pb-6">
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-4">
