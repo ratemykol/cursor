@@ -379,7 +379,7 @@ export const HomePage = (): JSX.Element => {
         <div className="h-64"></div>
         
         {/* Footer */}
-        <footer className="w-full h-[800px] bg-[#ab9ff2] mt-80" />
+        <footer className="w-full h-[400px] bg-[#ab9ff2] mt-80" />
       </div>
     </div>
   );
