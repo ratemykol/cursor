@@ -111,12 +111,14 @@ export class DatabaseStorage implements IStorage {
 
     // Sort traders by rating: highest average rating first, then by most 5-star reviews for ties
     tradersWithStats.sort((a, b) => {
+      console.log(`Comparing ${a.name} (${a.averageRating}, 5-star: ${a.fiveStarCount}) vs ${b.name} (${b.averageRating}, 5-star: ${b.fiveStarCount})`);
       if (b.averageRating !== a.averageRating) {
         return b.averageRating - a.averageRating;
       }
       return b.fiveStarCount - a.fiveStarCount;
     });
 
+    console.log('Final sorted order:', tradersWithStats.map(t => `${t.name}: ${t.averageRating} (${t.fiveStarCount} 5-star)`));
     return tradersWithStats;
   }
 
@@ -153,7 +155,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllTraders(): Promise<any[]> {
-    const traderList = await db.select().from(traders).orderBy(desc(traders.createdAt));
+    const traderList = await db.select().from(traders);
     
     // Add rating statistics to each trader
     const tradersWithStats = await Promise.all(
@@ -163,10 +165,19 @@ export class DatabaseStorage implements IStorage {
           ...trader,
           averageRating: stats.averageRating,
           totalRatings: stats.totalRatings,
+          fiveStarCount: stats.fiveStarCount,
           featured: false
         };
       })
     );
+
+    // Sort traders by rating: highest average rating first, then by most 5-star reviews for ties
+    tradersWithStats.sort((a, b) => {
+      if (b.averageRating !== a.averageRating) {
+        return b.averageRating - a.averageRating;
+      }
+      return b.fiveStarCount - a.fiveStarCount;
+    });
 
     return tradersWithStats;
   }
