@@ -21,11 +21,13 @@ export const AdminPage = (): JSX.Element => {
 
   const mutation = useMutation({
     mutationFn: async (traderData: any) => {
-      return await apiRequest("/api/traders", {
+      const response = await fetch("/api/traders", {
         method: "POST",
         body: JSON.stringify(traderData),
         headers: { "Content-Type": "application/json" },
       });
+      if (!response.ok) throw new Error('Failed to create trader');
+      return response.json();
     },
     onSuccess: () => {
       toast({
