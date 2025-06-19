@@ -235,14 +235,14 @@ export const HomePage = (): JSX.Element => {
                 <CardContent className="p-0 flex flex-col items-center px-4">
                   <div className="w-[91px] h-[97px] mt-[30px] bg-white rounded-[45.5px/48.5px]" />
                   <div className="mt-4">
-                    <span className="bg-[#e8f4fd] text-[#4a90e2] px-3 py-1 rounded-full text-xs font-medium">
+                    <span className="bg-white text-black px-3 py-1 rounded-full text-xs font-medium">
                       Rank: {trader.rank}
                     </span>
                   </div>
                   
                   {/* Specialty Tag */}
                   <div className="mt-3 mb-4">
-                    <span className="bg-[#e8f4fd] text-[#4a90e2] px-3 py-1 rounded-full text-xs font-medium">
+                    <span className="bg-white text-black px-3 py-1 rounded-full text-xs font-medium">
                       NFT Expert
                     </span>
                   </div>
