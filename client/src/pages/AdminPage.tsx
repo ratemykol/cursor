@@ -1,16 +1,21 @@
 import React, { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Header } from "@/components/Header";
+import { Edit, Plus, Save, X } from "lucide-react";
 
 export const AdminPage = (): JSX.Element => {
+  const [view, setView] = useState<"list" | "create" | "edit">("list");
+  const [editingTrader, setEditingTrader] = useState<any>(null);
+  
   const [name, setName] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
   const [bio, setBio] = useState("");
@@ -20,7 +25,12 @@ export const AdminPage = (): JSX.Element => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
+  // Fetch all traders
+  const { data: traders = [], isLoading } = useQuery({
+    queryKey: ["/api/traders"],
+  });
+
+  const createMutation = useMutation({
     mutationFn: async (traderData: any) => {
       const response = await fetch("/api/traders", {
         method: "POST",
@@ -36,12 +46,8 @@ export const AdminPage = (): JSX.Element => {
         description: "Trader created successfully!",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/traders"] });
-      // Reset form
-      setName("");
-      setWalletAddress("");
-      setBio("");
-      setSpecialty("");
-      setVerified(false);
+      resetForm();
+      setView("list");
     },
     onError: (error) => {
       toast({
@@ -51,6 +57,59 @@ export const AdminPage = (): JSX.Element => {
       });
     },
   });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, ...traderData }: any) => {
+      const response = await fetch(`/api/traders/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(traderData),
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) throw new Error('Failed to update trader');
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Trader updated successfully!",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/traders"] });
+      resetForm();
+      setView("list");
+      setEditingTrader(null);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to update trader. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const resetForm = () => {
+    setName("");
+    setWalletAddress("");
+    setBio("");
+    setSpecialty("");
+    setVerified(false);
+  };
+
+  const startEdit = (trader: any) => {
+    setEditingTrader(trader);
+    setName(trader.name);
+    setWalletAddress(trader.walletAddress);
+    setBio(trader.bio || "");
+    setSpecialty(trader.specialty || "");
+    setVerified(trader.verified);
+    setView("edit");
+  };
+
+  const startCreate = () => {
+    resetForm();
+    setEditingTrader(null);
+    setView("create");
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,7 +131,11 @@ export const AdminPage = (): JSX.Element => {
       verified,
     };
 
-    mutation.mutate(traderData);
+    if (view === "edit" && editingTrader) {
+      updateMutation.mutate({ id: editingTrader.id, ...traderData });
+    } else {
+      createMutation.mutate(traderData);
+    }
   };
 
   const createSampleTraders = () => {
@@ -101,9 +164,70 @@ export const AdminPage = (): JSX.Element => {
     ];
 
     sampleTraders.forEach((trader) => {
-      mutation.mutate(trader);
+      createMutation.mutate(trader);
     });
   };
+
+  if (view === "list") {
+    return (
+      <div className="bg-white min-h-screen">
+        <Header currentPage="admin" />
+        <div className="container mx-auto px-8 py-8">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold">Admin Panel - Manage Traders</h1>
+            <Button onClick={startCreate} className="flex items-center gap-2">
+              <Plus size={16} />
+              Create New Trader
+            </Button>
+          </div>
+
+          {isLoading ? (
+            <div className="text-center py-8">Loading traders...</div>
+          ) : (
+            <div className="grid gap-4">
+              {traders.map((trader: any) => (
+                <Card key={trader.id} className="p-4">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="text-lg font-semibold">{trader.name}</h3>
+                        {trader.verified && (
+                          <Badge className="bg-blue-100 text-blue-800">Verified</Badge>
+                        )}
+                      </div>
+                      <p className="text-gray-600 mb-1">{trader.specialty || 'No specialty'}</p>
+                      <p className="text-sm text-gray-500 mb-2">Wallet: {trader.walletAddress}</p>
+                      {trader.bio && (
+                        <p className="text-sm text-gray-700 line-clamp-2">{trader.bio}</p>
+                      )}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => startEdit(trader)}
+                      className="flex items-center gap-2"
+                    >
+                      <Edit size={14} />
+                      Edit
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+              
+              {traders.length === 0 && (
+                <Card className="p-8 text-center">
+                  <p className="text-gray-600 mb-4">No traders found. Create your first trader profile!</p>
+                  <Button onClick={createSampleTraders} variant="outline">
+                    Add Sample Data
+                  </Button>
+                </Card>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white min-h-screen">
@@ -111,7 +235,20 @@ export const AdminPage = (): JSX.Element => {
       <div className="container mx-auto px-8 py-8 max-w-2xl">
         <Card>
           <CardHeader>
-            <CardTitle>Admin Panel - Create Trader Profile</CardTitle>
+            <div className="flex justify-between items-center">
+              <CardTitle>
+                {view === "edit" ? "Edit Trader Profile" : "Create Trader Profile"}
+              </CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setView("list")}
+                className="flex items-center gap-2"
+              >
+                <X size={16} />
+                Cancel
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -170,19 +307,26 @@ export const AdminPage = (): JSX.Element => {
               <div className="flex gap-4">
                 <Button
                   type="submit"
-                  disabled={mutation.isPending}
-                  className="flex-1"
+                  disabled={createMutation.isPending || updateMutation.isPending}
+                  className="flex-1 flex items-center gap-2"
                 >
-                  {mutation.isPending ? "Creating..." : "Create Trader"}
+                  <Save size={16} />
+                  {createMutation.isPending || updateMutation.isPending
+                    ? "Saving..."
+                    : view === "edit"
+                    ? "Update Trader"
+                    : "Create Trader"}
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={createSampleTraders}
-                  disabled={mutation.isPending}
-                >
-                  Add Sample Data
-                </Button>
+                {view === "create" && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={createSampleTraders}
+                    disabled={createMutation.isPending}
+                  >
+                    Add Sample Data
+                  </Button>
+                )}
               </div>
             </form>
           </CardContent>
