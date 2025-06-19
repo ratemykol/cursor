@@ -39,8 +39,9 @@ export const SocialShareBadges = ({
   const { toast } = useToast();
 
   const currentUrl = window.location.href;
+  const achievementSummary = getAchievementSummary({ traderRating, totalRatings, rank, specialty });
   const shareText = traderRating > 0 
-    ? `Check out ${traderName} - ${traderRating}⭐ rated crypto trader on RateMyKOL! 🚀📈`
+    ? `Check out ${traderName} - ${traderRating}⭐ rated crypto trader on RateMyKOL! ${achievementSummary ? '\n' + achievementSummary : ''} 🚀📈`
     : `Discover ${traderName} on RateMyKOL - The premier crypto trader rating platform! 🚀📈`;
 
   const shareUrls = {
@@ -182,6 +183,18 @@ export const SocialShareBadges = ({
           </div>
         )}
       </div>
+
+      {/* Crypto Achievement Badges Preview */}
+      {achievementSummary && (
+        <div className="mb-3">
+          <CryptoAchievementBadges 
+            traderRating={traderRating}
+            totalRatings={totalRatings}
+            rank={rank}
+            specialty={specialty}
+          />
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <Button
