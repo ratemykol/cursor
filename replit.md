@@ -116,6 +116,8 @@ Changelog:
 - June 19, 2025. Added comprehensive admin editing functionality with trader list view
 - June 19, 2025. Added search bar to search page with URL parameter handling
 - June 19, 2025. Implemented profile image support across all pages with URL-based storage
+- June 19, 2025. Implemented dropdown search functionality with instant results on homepage
+- June 19, 2025. Redesigned trader profile page with clean card layout matching user reference
 ```
 
 ## User Preferences
