@@ -94,7 +94,7 @@ export const HomePage = (): JSX.Element => {
         <section className="mt-32 relative">
           {/* Decorative elements */}
           <img
-            className="w-[175px] h-44 absolute left-[39px] top-[392px]"
+            className="w-[175px] h-44 absolute left-[39px] top-[392px] mt-[-590px] mb-[-590px]"
             alt="Star"
             src="/figmaAssets/star-1.svg"
           />
