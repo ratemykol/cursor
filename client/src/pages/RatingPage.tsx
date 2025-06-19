@@ -104,40 +104,49 @@ export const RatingPage = (): JSX.Element => {
     const [isDragging, setIsDragging] = useState(false);
     const sliderRef = React.useRef<HTMLDivElement>(null);
 
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging || !sliderRef.current) return;
+    const updateValue = (clientX: number) => {
+      if (!sliderRef.current) return;
       
       const rect = sliderRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
+      const x = clientX - rect.left;
       const percentage = Math.max(0, Math.min(1, x / rect.width));
       const newValue = Math.round(percentage * 4) + 1; // 1-5 range
       onChange([newValue]);
     };
 
-    const handleMouseUp = () => {
+    const handleMouseMove = React.useCallback((e: MouseEvent) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      updateValue(e.clientX);
+    }, [isDragging, onChange]);
+
+    const handleMouseUp = React.useCallback(() => {
       setIsDragging(false);
-    };
+    }, []);
 
     React.useEffect(() => {
       if (isDragging) {
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseUp);
+        document.body.style.userSelect = 'none';
       }
       
       return () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
+        document.body.style.userSelect = '';
       };
-    }, [isDragging]);
+    }, [isDragging, handleMouseMove, handleMouseUp]);
 
-    const handleClick = (e: React.MouseEvent) => {
-      if (!sliderRef.current) return;
-      
-      const rect = sliderRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const percentage = Math.max(0, Math.min(1, x / rect.width));
-      const newValue = Math.round(percentage * 4) + 1; // 1-5 range
-      onChange([newValue]);
+    const handleTrackClick = (e: React.MouseEvent) => {
+      e.preventDefault();
+      updateValue(e.clientX);
+    };
+
+    const handleThumbMouseDown = (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(true);
     };
 
     const thumbPosition = ((value[0] - 1) / 4) * 100; // Convert 1-5 to 0-100%
@@ -145,17 +154,19 @@ export const RatingPage = (): JSX.Element => {
     return (
       <div
         ref={sliderRef}
-        className="relative h-6 cursor-pointer"
-        onClick={handleClick}
+        className="relative h-6 cursor-pointer select-none"
+        onClick={handleTrackClick}
       >
         {/* Track */}
-        <div className="absolute top-1/2 transform -translate-y-1/2 w-full h-0.5 bg-gray-300"></div>
+        <div className="absolute top-1/2 transform -translate-y-1/2 w-full h-0.5 bg-gray-300 pointer-events-none"></div>
         
         {/* Thumb */}
         <div
-          className="absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 w-5 h-5 bg-blue-600 rounded-full border-2 border-blue-600 cursor-grab active:cursor-grabbing transition-all hover:scale-110"
+          className={`absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 w-5 h-5 bg-blue-600 rounded-full border-2 border-blue-600 transition-all hover:scale-110 ${
+            isDragging ? 'cursor-grabbing scale-110' : 'cursor-grab'
+          }`}
           style={{ left: `${thumbPosition}%` }}
-          onMouseDown={() => setIsDragging(true)}
+          onMouseDown={handleThumbMouseDown}
         ></div>
       </div>
     );
