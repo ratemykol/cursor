@@ -46,6 +46,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.put("/api/traders/:id", async (req, res) => {
+    try {
+      const traderId = parseInt(req.params.id);
+      if (isNaN(traderId)) {
+        return res.status(400).json({ message: 'Invalid trader ID' });
+      }
+
+      const validatedData = insertTraderSchema.parse(req.body);
+      const trader = await storage.updateTrader(traderId, validatedData);
+      
+      if (!trader) {
+        return res.status(404).json({ message: 'Trader not found' });
+      }
+      
+      res.json(trader);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
   // Rating routes
   app.get("/api/traders/:id/ratings", async (req, res) => {
     try {
