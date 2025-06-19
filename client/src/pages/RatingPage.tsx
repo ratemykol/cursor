@@ -109,14 +109,27 @@ export const RatingPage = (): JSX.Element => {
     <div className="mb-6">
       <label className="text-sm font-medium text-gray-900 mb-3 block">{label}</label>
       <div className="px-3">
-        <Slider
-          value={value}
-          onValueChange={onChange}
-          max={5}
-          min={1}
-          step={1}
-          className="w-full"
-        />
+        <div className="relative py-4">
+          {/* Track line without fill */}
+          <div className="absolute top-1/2 transform -translate-y-1/2 w-full h-0.5 bg-gray-300"></div>
+          
+          {/* Rating dots */}
+          <div className="relative flex justify-between">
+            {[1, 2, 3, 4, 5].map((rating) => (
+              <button
+                key={rating}
+                type="button"
+                onClick={() => onChange([rating])}
+                className={`w-5 h-5 rounded-full border-2 transition-colors ${
+                  value[0] === rating
+                    ? 'bg-blue-600 border-blue-600'
+                    : 'bg-white border-gray-300 hover:border-blue-400'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+        
         <div className="flex justify-between mt-2 text-sm text-gray-600">
           <span>1</span>
           <span>2</span>
