@@ -100,6 +100,67 @@ export const RatingPage = (): JSX.Element => {
     );
   };
 
+  const CustomSlider = ({ value, onChange }: { value: number[], onChange: (value: number[]) => void }) => {
+    const [isDragging, setIsDragging] = useState(false);
+    const sliderRef = React.useRef<HTMLDivElement>(null);
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging || !sliderRef.current) return;
+      
+      const rect = sliderRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const percentage = Math.max(0, Math.min(1, x / rect.width));
+      const newValue = Math.round(percentage * 4) + 1; // 1-5 range
+      onChange([newValue]);
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    React.useEffect(() => {
+      if (isDragging) {
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+      }
+      
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }, [isDragging]);
+
+    const handleClick = (e: React.MouseEvent) => {
+      if (!sliderRef.current) return;
+      
+      const rect = sliderRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const percentage = Math.max(0, Math.min(1, x / rect.width));
+      const newValue = Math.round(percentage * 4) + 1; // 1-5 range
+      onChange([newValue]);
+    };
+
+    const thumbPosition = ((value[0] - 1) / 4) * 100; // Convert 1-5 to 0-100%
+
+    return (
+      <div
+        ref={sliderRef}
+        className="relative h-6 cursor-pointer"
+        onClick={handleClick}
+      >
+        {/* Track */}
+        <div className="absolute top-1/2 transform -translate-y-1/2 w-full h-0.5 bg-gray-300"></div>
+        
+        {/* Thumb */}
+        <div
+          className="absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 w-5 h-5 bg-blue-600 rounded-full border-2 border-blue-600 cursor-grab active:cursor-grabbing transition-all hover:scale-110"
+          style={{ left: `${thumbPosition}%` }}
+          onMouseDown={() => setIsDragging(true)}
+        ></div>
+      </div>
+    );
+  };
+
   const renderSlider = (
     label: string,
     value: number[],
@@ -109,26 +170,7 @@ export const RatingPage = (): JSX.Element => {
     <div className="mb-6">
       <label className="text-sm font-medium text-gray-900 mb-3 block">{label}</label>
       <div className="px-3">
-        <div className="relative py-4">
-          {/* Track line without fill */}
-          <div className="absolute top-1/2 transform -translate-y-1/2 w-full h-0.5 bg-gray-300"></div>
-          
-          {/* Rating dots */}
-          <div className="relative flex justify-between">
-            {[1, 2, 3, 4, 5].map((rating) => (
-              <button
-                key={rating}
-                type="button"
-                onClick={() => onChange([rating])}
-                className={`w-5 h-5 rounded-full border-2 transition-colors ${
-                  value[0] === rating
-                    ? 'bg-blue-600 border-blue-600'
-                    : 'bg-white border-gray-300 hover:border-blue-400'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
+        <CustomSlider value={value} onChange={onChange} />
         
         <div className="flex justify-between mt-2 text-sm text-gray-600">
           <span>1</span>
