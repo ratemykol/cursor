@@ -209,10 +209,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Username already exists" });
       }
       
-      // Check if email already exists
-      const existingEmail = await storage.getUser(userData.email);
-      if (existingEmail) {
-        return res.status(400).json({ error: "Email already exists" });
+      // Check if email already exists (only if email is provided)
+      if (userData.email && userData.email.trim() !== "") {
+        const existingEmail = await storage.getUserByEmail(userData.email);
+        if (existingEmail) {
+          return res.status(400).json({ error: "Email already exists" });
+        }
       }
       
       const user = await storage.registerUser(userData);
