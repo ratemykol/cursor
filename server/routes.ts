@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertTraderSchema, insertRatingSchema } from "@shared/schema";
+import { insertTraderSchema, insertRatingSchema, userRegistrationSchema, userLoginSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Trader routes
@@ -196,6 +196,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
+  });
+
+  // Authentication routes
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const userData = userRegistrationSchema.parse(req.body);
+      
+      // Check if username already exists
+      const existingUser = await storage.getUserByUsername(userData.username);
+      if (existingUser) {
+        return res.status(400).json({ error: "Username already exists" });
+      }
+      
+      // Check if email already exists
+      const existingEmail = await storage.getUser(userData.email);
+      if (existingEmail) {
+        return res.status(400).json({ error: "Email already exists" });
+      }
+      
+      const user = await storage.registerUser(userData);
+      
+      // Remove password hash from response
+      const { passwordHash, ...userResponse } = user;
+      res.status(201).json(userResponse);
+    } catch (error: any) {
+      if (error.issues) {
+        return res.status(400).json({ error: "Validation error", details: error.issues });
+      }
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const credentials = userLoginSchema.parse(req.body);
+      const user = await storage.authenticateUser(credentials);
+      
+      if (!user) {
+        return res.status(401).json({ error: "Invalid username or password" });
+      }
+      
+      // Store user in session
+      (req.session as any).user = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        profileImageUrl: user.profileImageUrl,
+        authType: user.authType,
+      };
+      
+      // Remove password hash from response
+      const { passwordHash, ...userResponse } = user;
+      res.json(userResponse);
+    } catch (error: any) {
+      if (error.issues) {
+        return res.status(400).json({ error: "Validation error", details: error.issues });
+      }
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/auth/logout", (req, res) => {
+    req.session.destroy((err: any) => {
+      if (err) {
+        return res.status(500).json({ error: "Failed to logout" });
+      }
+      res.json({ message: "Logged out successfully" });
+    });
+  });
+
+  app.get("/api/auth/me", (req, res) => {
+    const user = (req.session as any)?.user;
+    if (!user) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+    res.json(user);
   });
 
   const httpServer = createServer(app);
