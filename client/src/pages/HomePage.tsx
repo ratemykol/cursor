@@ -56,7 +56,7 @@ export const HomePage = (): JSX.Element => {
             src="/figmaAssets/polygon-1.svg"
           />
 
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="max-w-3xl mx-auto text-center relative z-[5]">
             <h2 className="font-medium text-[#3c315b] text-[69px] leading-tight">
               Rate Your Crypto KOLs
             </h2>
