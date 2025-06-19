@@ -126,11 +126,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/traders/:id/ratings", async (req, res) => {
     try {
+      // Check if user is authenticated
+      const user = (req.session as any)?.user;
+      if (!user) {
+        return res.status(401).json({ error: "Authentication required to leave a review" });
+      }
+
       const traderId = parseInt(req.params.id);
       const validatedData = insertRatingSchema.parse({
         ...req.body,
         traderId,
-        userId: "anonymous-user", // For now, use anonymous user
+        userId: user.id,
       });
       const rating = await storage.createRating(validatedData);
       res.status(201).json(rating);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams, useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { Header } from "@/components/Header";
 import { ArrowLeft, Image as ImageIcon } from "lucide-react";
 
@@ -15,6 +16,7 @@ export const RatingPage = (): JSX.Element => {
   const { id } = useParams();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   const [yourName, setYourName] = useState("");
   const [overallRating, setOverallRating] = useState([3]);
@@ -23,6 +25,18 @@ export const RatingPage = (): JSX.Element => {
   const [reliabilityRating, setReliabilityRating] = useState([3]);
   const [review, setReview] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to leave a review",
+        variant: "destructive",
+      });
+      setLocation("/signin");
+    }
+  }, [authLoading, isAuthenticated, setLocation, toast]);
 
   const { data: trader } = useQuery({
     queryKey: [`/api/traders/${id}`],
