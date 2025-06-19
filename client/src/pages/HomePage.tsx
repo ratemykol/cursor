@@ -122,15 +122,15 @@ export const HomePage = (): JSX.Element => {
         <section className="relative px-20 mt-24 mb-24">
           {/* Decorative elements - using percentage positioning for zoom stability */}
           <img
-            className="w-16 h-16 absolute left-[25%] top-4 z-0"
+            className="w-[73px] h-[74px] absolute left-[25%] top-4 z-0"
             alt="Star"
             src="/figmaAssets/star-2.svg"
           />
-          <div className="absolute w-7 h-9 top-8 left-[36%] bg-[#3c315b] rounded-xl rotate-[96deg] z-0" />
-          <div className="absolute w-16 h-20 top-16 left-[36%] bg-[#ffd13f] rounded-3xl rotate-[15deg] z-[1]" />
-          <div className="absolute w-20 h-16 top-12 left-[42%] bg-[#4a87f2] rounded-3xl rotate-[-15deg] z-0" />
+          <div className="absolute w-[27px] h-[35px] top-8 left-[36%] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] z-0" />
+          <div className="absolute w-[73px] h-[97px] top-16 left-[36%] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] z-[1]" />
+          <div className="absolute w-[92px] h-[71px] top-12 left-[42%] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] z-0" />
           <img
-            className="absolute w-16 h-12 top-20 right-[15%] z-0"
+            className="absolute w-[76px] h-[61px] top-20 right-[15%] z-0"
             alt="Polygon"
             src="/figmaAssets/polygon-1.svg"
           />
