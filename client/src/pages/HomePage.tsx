@@ -238,7 +238,7 @@ export const HomePage = (): JSX.Element => {
                     Rank: {trader.rank}
                   </div>
                   <div className="mt-auto mb-6">
-                    <Button className="w-[168px] h-12 bg-[#ab9ff2] text-black hover:bg-[#9b8de2] font-medium text-lg">
+                    <Button className="w-[168px] h-12 bg-[#ab9ff2] text-black font-medium text-lg transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu">
                       View Profile
                     </Button>
                   </div>
