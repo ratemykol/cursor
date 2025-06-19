@@ -159,6 +159,24 @@ export const HomePage = (): JSX.Element => {
                             {trader.walletAddress}
                           </div>
                         </div>
+                        {/* Rating display on the right */}
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <div className="flex">
+                            {Array.from({ length: 5 }, (_, i) => (
+                              <Star
+                                key={i}
+                                className={`w-3 h-3 ${
+                                  i < Math.round(trader.averageRating || 0)
+                                    ? "fill-yellow-400 text-yellow-400" 
+                                    : "fill-gray-200 text-gray-200"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <span className="text-sm font-medium text-gray-700 ml-1">
+                            {trader.averageRating ? trader.averageRating.toFixed(1) : '0.0'}
+                          </span>
+                        </div>
                       </div>
                     ))}
                   </div>
