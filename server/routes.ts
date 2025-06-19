@@ -1,7 +1,35 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertTraderSchema, insertRatingSchema, userRegistrationSchema, userLoginSchema } from "@shared/schema";
+
+// Admin middleware to check if user is admin
+const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = (req as any).user;
+    if (!user || !user.id) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+    
+    const userData = await storage.getUser(user.id);
+    if (!userData || userData.role !== 'admin') {
+      return res.status(403).json({ error: "Admin access required" });
+    }
+    
+    next();
+  } catch (error) {
+    res.status(500).json({ error: "Failed to verify admin status" });
+  }
+};
+
+// Authentication middleware
+const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
+  const user = (req as any).user;
+  if (!user || !user.id) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  next();
+};
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Trader routes

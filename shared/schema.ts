@@ -34,6 +34,7 @@ export const users = pgTable("users", {
 
   profileImageUrl: varchar("profile_image_url"),
   bio: text("bio"),
+  role: varchar("role", { length: 20 }).default("user"), // "admin" or "user"
   authType: varchar("auth_type", { length: 20 }).default("replit"), // "replit" or "local"
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
