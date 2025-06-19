@@ -36,6 +36,7 @@ export interface IStorage {
     averageCommunication: number;
     averageReliability: number;
     averageProfitability: number;
+    fiveStarCount: number;
   }>;
 }
 
@@ -107,6 +108,14 @@ export class DatabaseStorage implements IStorage {
         };
       })
     );
+
+    // Sort traders by rating: highest average rating first, then by most 5-star reviews for ties
+    tradersWithStats.sort((a, b) => {
+      if (b.averageRating !== a.averageRating) {
+        return b.averageRating - a.averageRating;
+      }
+      return b.fiveStarCount - a.fiveStarCount;
+    });
 
     return tradersWithStats;
   }
