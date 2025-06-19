@@ -17,8 +17,6 @@ export const SignUpPage = (): JSX.Element => {
     username: "",
     email: "",
     password: "",
-    firstName: "",
-    lastName: "",
   });
 
   const registerMutation = useMutation({
@@ -115,31 +113,7 @@ export const SignUpPage = (): JSX.Element => {
                   />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input
-                      id="firstName"
-                      name="firstName"
-                      type="text"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      className="border-2 border-[#9f98b3]"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input
-                      id="lastName"
-                      name="lastName"
-                      type="text"
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                      className="border-2 border-[#9f98b3]"
-                    />
-                  </div>
-                </div>
+
                 
                 <Button
                   type="submit"

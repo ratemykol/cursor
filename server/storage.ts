@@ -99,8 +99,6 @@ export class DatabaseStorage implements IStorage {
         username: userData.username,
         email: userData.email && userData.email.trim() !== "" ? userData.email : null,
         passwordHash,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
         authType: "local",
       })
       .returning();
