@@ -67,28 +67,28 @@ export const SearchPage = (): JSX.Element => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen relative zoom-stable">
+    <div className="bg-gray-50 min-h-screen relative">
       <Header currentPage="search" />
-      {/* Decorative background elements - using percentage positioning for zoom stability */}
+      {/* Decorative background elements */}
       <img
-        className="w-16 h-16 absolute left-[25%] top-48 z-[1]"
+        className="w-[73px] h-[74px] absolute left-[360px] top-[200px] z-[1]"
         alt="Star"
         src="/figmaAssets/star-2.svg"
       />
-      <div className="absolute w-7 h-9 top-60 left-[36%] bg-[#3c315b] rounded-xl rotate-[96deg] z-[1]" />
-      <div className="absolute w-16 h-20 top-72 left-[33%] bg-[#ffd13f] rounded-3xl rotate-[15deg] z-[1]" />
-      <div className="absolute w-20 h-16 top-44 right-[23%] bg-[#4a87f2] rounded-3xl rotate-[-15deg] z-[1]" />
+      <div className="absolute w-[27px] h-[35px] top-[250px] left-[520px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] z-[1]" />
+      <div className="absolute w-[73px] h-[97px] top-[300px] left-[480px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] z-[1]" />
+      <div className="absolute w-[92px] h-[71px] top-[180px] left-[1100px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] z-[1]" />
       <img
-        className="absolute w-16 h-12 top-80 right-[16%] z-[1]"
+        className="absolute w-[76px] h-[61px] top-[350px] left-[1200px] z-[1]"
         alt="Polygon"
         src="/figmaAssets/polygon-1.svg"
       />
-      <div className="absolute w-12 h-16 top-96 left-[14%] bg-[#ab9ff2] rounded-2xl rotate-[45deg] z-[1]" />
-      <div className="absolute w-9 h-12 top-44 left-[10%] bg-[#ff7243] rounded-xl rotate-[-30deg] z-[1]" />
-      <div className="absolute w-72 h-96 top-[500px] right-[20%] bg-[#2ec08b] rounded-full rotate-[-76deg] z-[1]" />
-      <div className="absolute w-32 h-48 top-72 left-[55%] rounded-full rotate-[15deg] z-[1] bg-[#000000]" />
-      <div className="absolute w-72 h-96 top-48 left-[3%] bg-[#ab9ff2] rounded-full rotate-[-76deg] z-[1]" />
-      <div className="absolute w-24 h-40 top-96 left-[42%] bg-[#ffdadc] rounded-3xl rotate-[96deg] z-[1]" />
+      <div className="absolute w-[45px] h-[60px] top-[400px] left-[200px] bg-[#ab9ff2] rounded-[22.5px/30px] rotate-[45deg] z-[1]" />
+      <div className="absolute w-[35px] h-[45px] top-[180px] left-[150px] bg-[#ff7243] rounded-[17.5px/22.5px] rotate-[-30deg] z-[1]" />
+      <div className="absolute w-[282px] h-[396px] top-[500px] left-[1150px] bg-[#2ec08b] rounded-[141px/198px] rotate-[-76deg] z-[1] ml-[-1280px] mr-[-1280px]" />
+      <div className="absolute w-[125.7px] h-[185.51px] top-[300px] left-[800px] rounded-[62.85px/92.755px] rotate-[15deg] z-[1] ml-[-864px] mr-[-864px] bg-[#000000] mt-[-31px] mb-[-31px]" />
+      <div className="absolute w-[282px] h-[396px] top-[200px] left-[50px] bg-[#ab9ff2] rounded-[141px/198px] rotate-[-76deg] z-[1] ml-[1200px] mr-[1200px] mt-[441px] mb-[441px]" />
+      <div className="absolute w-[95px] h-[165px] top-[400px] left-[600px] bg-[#ffdadc] rounded-[47.63px/82.54px] rotate-[96deg] z-[1] mt-[97px] mb-[97px] ml-[155px] mr-[155px] pl-[0px] pr-[0px] pt-[0px] pb-[0px]" />
       <div className="container mx-auto px-8 py-8 relative z-[5]">
         {/* Search Bar */}
         <div className="max-w-2xl mx-auto mb-8">
