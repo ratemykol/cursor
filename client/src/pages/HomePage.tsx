@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
-import { Star, Image, Search, TrendingUp } from "lucide-react";
+import { Star, Image, Search, TrendingUp, Crown } from "lucide-react";
 
 export const HomePage = (): JSX.Element => {
   const [, setLocation] = useLocation();
@@ -289,16 +289,24 @@ export const HomePage = (): JSX.Element => {
                     onMouseLeave={() => setScrollPaused(false)}
                   >
                     <CardContent className="p-0 flex flex-col items-center px-4">
-                      {/* Profile Image */}
-                      <div className="w-[91px] h-[97px] mt-[30px] bg-white rounded-[45.5px/48.5px] overflow-hidden flex items-center justify-center">
-                        {trader.profileImage ? (
-                          <img 
-                            src={trader.profileImage} 
-                            alt={trader.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <Image size={32} className="text-gray-400" />
+                      {/* Profile Image with Crown for Rank 1 */}
+                      <div className="relative w-[91px] h-[97px] mt-[30px]">
+                        <div className="w-full h-full bg-white rounded-[45.5px/48.5px] overflow-hidden flex items-center justify-center">
+                          {trader.profileImage ? (
+                            <img 
+                              src={trader.profileImage} 
+                              alt={trader.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <Image size={32} className="text-gray-400" />
+                          )}
+                        </div>
+                        {/* Crown for Rank 1 only */}
+                        {trader.rank === 1 && (
+                          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                            <Crown className="w-8 h-8 text-yellow-500 fill-yellow-400 drop-shadow-lg" />
+                          </div>
                         )}
                       </div>
                       
