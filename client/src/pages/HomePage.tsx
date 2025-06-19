@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
-import { Star, Image, Search } from "lucide-react";
+import { Star, Image, Search, TrendingUp } from "lucide-react";
 
 export const HomePage = (): JSX.Element => {
   const [, setLocation] = useLocation();
@@ -33,11 +33,56 @@ export const HomePage = (): JSX.Element => {
 
   // Data for trader cards
   const traders = [
-    { id: 1, rank: 1, bgColor: "bg-[#ffdadc]" },
-    { id: 2, rank: 4, bgColor: "bg-[#ffffc4]" },
-    { id: 3, rank: 3, bgColor: "bg-[#3c315b]" },
-    { id: 4, rank: 2, bgColor: "bg-[#2ec08b]" },
-    { id: 5, rank: 5, bgColor: "bg-[#4a87f2]" },
+    { 
+      id: 1, 
+      rank: 1, 
+      name: "Sarah Kim",
+      specialty: "NFT Expert",
+      rating: 5.0,
+      performance: "Verified",
+      bgColor: "bg-white",
+      profileImage: "/figmaAssets/trader-1.jpg"
+    },
+    { 
+      id: 2, 
+      rank: 2, 
+      name: "Mike Chen",
+      specialty: "DeFi Specialist",
+      rating: 4.8,
+      performance: "Verified",
+      bgColor: "bg-white",
+      profileImage: "/figmaAssets/trader-2.jpg"
+    },
+    { 
+      id: 3, 
+      rank: 3, 
+      name: "Alex Rivera",
+      specialty: "Crypto Analyst",
+      rating: 4.9,
+      performance: "Verified",
+      bgColor: "bg-white",
+      profileImage: "/figmaAssets/trader-3.jpg"
+    },
+    { 
+      id: 4, 
+      rank: 4, 
+      name: "Emma Davis",
+      specialty: "Trading Expert",
+      rating: 4.7,
+      performance: "Verified",
+      bgColor: "bg-white",
+      profileImage: "/figmaAssets/trader-4.jpg"
+    },
+    { 
+      id: 5, 
+      rank: 5, 
+      name: "John Smith",
+      specialty: "Meme Coin Pro",
+      rating: 4.6,
+      performance: "Verified",
+      bgColor: "bg-white",
+      profileImage: "/figmaAssets/trader-5.jpg"
+    },
   ];
 
   // Handle clicks outside dropdown to close it
@@ -230,15 +275,62 @@ export const HomePage = (): JSX.Element => {
             {traders.map((trader) => (
               <Card
                 key={trader.id}
-                className={`w-[234px] h-[348px] ${trader.bgColor} rounded-[15px] border-none shadow-none`}
+                className="w-[280px] h-[400px] bg-white rounded-[20px] border border-gray-200 shadow-lg"
               >
-                <CardContent className="p-0 flex flex-col items-center">
-                  <div className="w-[91px] h-[97px] mt-[30px] bg-white rounded-[45.5px/48.5px]" />
-                  <div className="font-medium text-black text-sm text-center mt-4">
-                    Rank: {trader.rank}
+                <CardContent className="p-6 flex flex-col h-full">
+                  {/* Profile Picture */}
+                  <div className="flex justify-center mb-4">
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center border-2 border-blue-200">
+                      <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center">
+                        <span className="text-lg font-bold text-blue-600">
+                          {trader.name.split(' ').map(n => n[0]).join('')}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="mt-auto mb-6">
-                    <Button className="w-[168px] h-12 bg-[#ab9ff2] text-black hover:bg-[#9b8de2] font-medium text-lg">
+
+                  {/* Name */}
+                  <h3 className="text-xl font-bold text-blue-600 text-center mb-1">
+                    {trader.name}
+                  </h3>
+
+                  {/* Specialty */}
+                  <p className="text-sm text-blue-500 text-center mb-6">
+                    {trader.specialty}
+                  </p>
+
+                  {/* Rating Section */}
+                  <div className="bg-gray-50 rounded-lg p-3 mb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        <span className="text-sm font-medium text-gray-700">Rating</span>
+                      </div>
+                      <span className="text-lg font-bold text-gray-900">
+                        {trader.rating}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Performance Section */}
+                  <div className="bg-purple-50 rounded-lg p-3 mb-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4 text-green-500" />
+                        <span className="text-sm font-medium text-gray-700">Performance</span>
+                      </div>
+                      <span className="text-sm font-semibold text-green-600">
+                        {trader.performance}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* View Profile Button */}
+                  <div className="mt-auto">
+                    <Button 
+                      className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium text-base rounded-lg transition-all duration-300"
+                      onClick={() => setLocation(`/trader/${trader.id}`)}
+                    >
                       View Profile
                     </Button>
                   </div>
