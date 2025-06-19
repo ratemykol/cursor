@@ -67,7 +67,7 @@ export const HomePage = (): JSX.Element => {
           </div>
 
           {/* SearchIcon Bar */}
-          <div className="mt-16 relative max-w-3xl mx-auto">
+          <div className="mt-16 relative max-w-3xl mx-auto z-[10]">
             <div className="relative">
               <Input
                 className="h-11 rounded-[5px] border-2 border-[#9f98b3] pl-4 pr-28"
@@ -101,7 +101,7 @@ export const HomePage = (): JSX.Element => {
           <div className="absolute w-[283px] h-[396px] top-[693px] left-[-174px] bg-[#ab9ff2] rounded-[141.4px/198.1px] rotate-[-76deg] mt-[-1000px] mb-[-1000px]" />
           <div className="absolute w-[126px] h-[186px] top-[756px] left-[78px] bg-black rounded-[62.9px/92.76px] rotate-[15deg] mt-[-932px] mb-[-932px]" />
           <div className="absolute w-[95px] h-[165px] top-[600px] left-[382px] bg-[#ffdadc] rounded-[47.63px/82.54px] rotate-[96deg] mt-[-959px] mb-[-959px] ml-[-28px] mr-[-28px]" />
-          <div className="absolute w-[126px] h-[186px] top-[454px] left-[1285px] bg-[#ff7243] rounded-[62.9px/92.76px] rotate-[15deg] mt-[-938px] mb-[-938px] ml-[-230px] mr-[-230px] z-[-1]" />
+          <div className="absolute w-[126px] h-[186px] top-[454px] left-[1285px] bg-[#ff7243] rounded-[62.9px/92.76px] rotate-[15deg] mt-[-938px] mb-[-938px] ml-[-230px] mr-[-230px] z-[1]" />
           <div className="absolute w-[283px] h-[396px] top-[678px] left-[1256px] bg-[#2ec08b] rounded-[141.4px/198.1px] rotate-[-76deg] mt-[-827px] mb-[-827px]" />
           <div className="absolute w-[126px] h-[186px] top-[587px] left-[1031px] bg-[#e2dffd] rounded-[62.9px/92.76px] rotate-[-18deg] mt-[-838px] mb-[-838px] ml-[-258px] mr-[-258px]" />
           <div className="absolute w-[52px] h-[73px] top-[706px] left-[1009px] bg-[#ffffc4] rounded-[25.91px/36.35px] rotate-[32deg] ml-[-249px] mr-[-249px] mt-[-834px] mb-[-834px]" />
