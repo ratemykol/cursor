@@ -113,7 +113,8 @@ export const RatingPage = (): JSX.Element => {
     label: string,
     value: number[],
     onChange: (value: number[]) => void,
-    showLabels: boolean = true
+    showLabels: boolean = true,
+    customLabels?: { left: string; right: string }
   ) => (
     <div className="mb-6">
       <label className="text-sm font-medium text-gray-900 mb-3 block">{label}</label>
@@ -135,8 +136,8 @@ export const RatingPage = (): JSX.Element => {
         </div>
         {showLabels && (
           <div className="flex justify-between mt-1 text-xs text-gray-500">
-            <span>Poor</span>
-            <span>Excellent</span>
+            <span>{customLabels?.left || 'Poor'}</span>
+            <span>{customLabels?.right || 'Excellent'}</span>
           </div>
         )}
         <div className="text-center mt-2">
@@ -208,7 +209,7 @@ export const RatingPage = (): JSX.Element => {
                   <h3 className="text-lg font-medium text-gray-900 mb-4">Detailed Ratings</h3>
                   
                   {renderSlider("Profitability", profitabilityRating, setProfitabilityRating)}
-                  {renderSlider("Communication", communicationRating, setCommunicationRating)}
+                  {renderSlider("Trade Activity", communicationRating, setCommunicationRating, true, { left: "Slow Cook", right: "Very Active" })}
                   {renderSlider("Reliability", reliabilityRating, setReliabilityRating)}
                 </div>
 

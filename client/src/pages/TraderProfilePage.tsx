@@ -280,7 +280,7 @@ export const TraderProfilePage = (): JSX.Element => {
                             </div>
                             
                             <div className="flex items-center gap-2">
-                              <span className="text-sm text-gray-600">Communication:</span>
+                              <span className="text-sm text-gray-600">Trade Activity:</span>
                               <div className="w-16 bg-gray-200 rounded-full h-2">
                                 <div 
                                   className="h-2 rounded-full" 
