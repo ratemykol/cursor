@@ -230,7 +230,7 @@ export const HomePage = (): JSX.Element => {
             {traders.map((trader) => (
               <Card
                 key={trader.id}
-                className={`w-[234px] h-[348px] ${trader.bgColor} rounded-[15px] border-none shadow-none`}
+                className={`w-[234px] h-[420px] ${trader.bgColor} rounded-[15px] border-none shadow-none`}
               >
                 <CardContent className="p-0 flex flex-col items-center px-4">
                   <div className="w-[91px] h-[97px] mt-[30px] bg-white rounded-[45.5px/48.5px]" />
