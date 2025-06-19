@@ -13,6 +13,7 @@ import { AdminPage } from "@/pages/AdminPage";
 import { SignUpPage } from "@/pages/SignUpPage";
 import { SignInPage } from "@/pages/SignInPage";
 import { UserProfilePage } from "@/pages/UserProfilePage";
+import { DemoPage } from "@/pages/DemoPage";
 
 function Router() {
   return (
@@ -25,6 +26,7 @@ function Router() {
       <Route path="/signup" component={SignUpPage} />
       <Route path="/signin" component={SignInPage} />
       <Route path="/profile" component={UserProfilePage} />
+      <Route path="/demo" component={DemoPage} />
       <Route component={NotFound} />
     </Switch>
   );
