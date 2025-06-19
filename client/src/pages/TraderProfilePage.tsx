@@ -98,8 +98,8 @@ export const TraderProfilePage = (): JSX.Element => {
   };
 
   return (
-    <div className="bg-white flex flex-row justify-center w-full">
-      <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
+    <div className="bg-white w-full min-h-screen">
+      <div className="bg-white overflow-hidden w-full relative">
         <Header />
         
         {/* Main Content */}
