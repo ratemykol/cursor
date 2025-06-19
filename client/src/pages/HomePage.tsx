@@ -120,17 +120,46 @@ export const HomePage = (): JSX.Element => {
 
         {/* Hero Section */}
         <section className="relative px-4 sm:px-8 md:px-12 lg:px-20 mt-16 sm:mt-20 md:mt-24 lg:mt-[99px] mb-16 sm:mb-20 md:mb-24 lg:mb-[99px] overflow-hidden">
-          {/* Decorative elements with responsive scaling */}
+          {/* Decorative elements with zoom-responsive positioning */}
           <img
-            className="decorative-element w-[73px] h-[74px] absolute left-[360px] top-[146px] mt-[-231px] mb-[-231px] ml-[-61px] mr-[-61px]"
+            className="absolute left-[25%] top-[20%] z-[1]"
+            style={{
+              width: '4.5625rem',
+              height: '4.625rem'
+            }}
             alt="Star"
             src="/figmaAssets/star-2.svg"
           />
-          <div className="decorative-element absolute w-[27px] h-[35px] top-[173px] left-[522px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] ml-[-26px] mr-[-26px] mt-[-256px] mb-[-256px]" />
-          <div className="decorative-element absolute w-[73px] h-[97px] top-[265px] left-[517.08px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] mt-[-296px] mb-[-296px] ml-[-26px] mr-[-26px] z-[1]" />
-          <div className="decorative-element absolute w-[92px] h-[71px] top-[217px] left-[603px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] ml-[-26px] mr-[-26px] mt-[-296px] mb-[-296px]" />
+          <div 
+            className="absolute top-[24%] left-[36%] bg-[#3c315b] rotate-[96deg] z-[1]"
+            style={{
+              width: '1.6875rem',
+              height: '2.1875rem',
+              borderRadius: '0.8288rem/1.0825rem'
+            }}
+          />
+          <div 
+            className="absolute top-[36%] left-[36%] bg-[#ffd13f] rotate-[15deg] z-[1]"
+            style={{
+              width: '4.5625rem',
+              height: '6.0625rem',
+              borderRadius: '2.2725rem/3.0275rem'
+            }}
+          />
+          <div 
+            className="absolute top-[30%] left-[42%] bg-[#4a87f2] rotate-[-15deg] z-[1]"
+            style={{
+              width: '5.75rem',
+              height: '4.4375rem',
+              borderRadius: '2.8656rem/2.225rem'
+            }}
+          />
           <img
-            className="decorative-element absolute w-[76px] h-[61px] top-[329px] left-[1216px] mt-[-300px] mb-[-300px]"
+            className="absolute top-[45%] right-[15%] z-[1]"
+            style={{
+              width: '4.75rem',
+              height: '3.8125rem'
+            }}
             alt="Polygon"
             src="/figmaAssets/polygon-1.svg"
           />
@@ -233,20 +262,80 @@ export const HomePage = (): JSX.Element => {
 
         {/* Top Traders Section */}
         <section className="mt-96 relative">
-          {/* Decorative elements - original positioning with responsive scaling */}
+          {/* Decorative elements - zoom-responsive positioning */}
           <img
-            className="decorative-element w-[175px] h-44 absolute left-[39px] top-[392px] mt-[-1013px] mb-[-1013px]"
+            className="absolute left-[2.5%] top-[6%] z-[1]"
+            style={{
+              width: '10.9375rem',
+              height: '11rem'
+            }}
             alt="Star"
             src="/figmaAssets/star-1.svg"
           />
-          <div className="decorative-element absolute w-[283px] h-[396px] top-[693px] left-[-174px] bg-[#ab9ff2] rounded-[141.4px/198.1px] rotate-[-76deg] mt-[-1000px] mb-[-1000px]" />
-          <div className="decorative-element absolute w-[126px] h-[186px] top-[756px] left-[78px] bg-black rounded-[62.9px/92.76px] rotate-[15deg] mt-[-932px] mb-[-932px]" />
-          <div className="decorative-element absolute w-[95px] h-[165px] top-[600px] left-[382px] bg-[#ffdadc] rounded-[47.63px/82.54px] rotate-[96deg] mt-[-959px] mb-[-959px] ml-[-28px] mr-[-28px]" />
-          <div className="decorative-element absolute w-[126px] h-[186px] top-[454px] left-[1285px] bg-[#ff7243] rounded-[62.9px/92.76px] rotate-[15deg] mt-[-938px] mb-[-938px] ml-[-230px] mr-[-230px] z-[1]" />
-          <div className="decorative-element absolute w-[283px] h-[396px] top-[678px] left-[1256px] bg-[#2ec08b] rounded-[141.4px/198.1px] rotate-[-76deg] mt-[-827px] mb-[-827px]" />
-          <div className="decorative-element absolute w-[126px] h-[186px] top-[587px] left-[1031px] bg-[#e2dffd] rounded-[62.9px/92.76px] rotate-[-18deg] mt-[-838px] mb-[-838px] ml-[-258px] mr-[-258px]" />
-          <div className="decorative-element absolute w-[52px] h-[73px] top-[706px] left-[1009px] bg-[#ffffc4] rounded-[25.91px/36.35px] rotate-[32deg] ml-[-249px] mr-[-249px] mt-[-834px] mb-[-834px]" />
-          <div className="decorative-element absolute w-[401.66px] h-[259.47px] top-[-20px] left-[1100px] bg-[#d9d9d9] rounded-[200.83px/129.735px] rotate-[-15deg] z-[-1]" />
+          <div 
+            className="absolute top-[10%] left-[-12%] bg-[#ab9ff2] rotate-[-76deg] z-[0]"
+            style={{
+              width: '17.6875rem',
+              height: '24.75rem',
+              borderRadius: '8.8375rem/12.38125rem'
+            }}
+          />
+          <div 
+            className="absolute top-[12%] left-[5%] bg-black rotate-[15deg] z-[1]"
+            style={{
+              width: '7.875rem',
+              height: '11.625rem',
+              borderRadius: '3.93125rem/5.7975rem'
+            }}
+          />
+          <div 
+            className="absolute top-[9%] left-[26%] bg-[#ffdadc] rotate-[96deg] z-[1]"
+            style={{
+              width: '5.9375rem',
+              height: '10.3125rem',
+              borderRadius: '2.976875rem/5.15875rem'
+            }}
+          />
+          <div 
+            className="absolute top-[7%] right-[11%] bg-[#ff7243] rotate-[15deg] z-[1]"
+            style={{
+              width: '7.875rem',
+              height: '11.625rem',
+              borderRadius: '3.93125rem/5.7975rem'
+            }}
+          />
+          <div 
+            className="absolute top-[10%] right-[12%] bg-[#2ec08b] rotate-[-76deg] z-[0]"
+            style={{
+              width: '17.6875rem',
+              height: '24.75rem',
+              borderRadius: '8.8375rem/12.38125rem'
+            }}
+          />
+          <div 
+            className="absolute top-[9%] right-[19%] bg-[#e2dffd] rotate-[-18deg] z-[1]"
+            style={{
+              width: '7.875rem',
+              height: '11.625rem',
+              borderRadius: '3.93125rem/5.7975rem'
+            }}
+          />
+          <div 
+            className="absolute top-[11%] right-[20%] bg-[#ffffc4] rotate-[32deg] z-[1]"
+            style={{
+              width: '3.25rem',
+              height: '4.5625rem',
+              borderRadius: '1.619375rem/2.271875rem'
+            }}
+          />
+          <div 
+            className="absolute top-[-1%] right-[20%] bg-[#d9d9d9] rotate-[-15deg] z-[-1]"
+            style={{
+              width: '25.104rem',
+              height: '16.217rem',
+              borderRadius: '12.552rem/8.1085rem'
+            }}
+          />
 
           <div className="text-center mb-16">
             <h2 className="font-medium text-[#3c315b] text-[69px]">
