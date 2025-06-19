@@ -69,12 +69,12 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           {/* Background overlay */}
           <div 
-            className="absolute inset-0 bg-black bg-opacity-50 transition-opacity duration-300"
+            className="absolute inset-0 bg-black bg-opacity-75 transition-opacity duration-300"
             onClick={() => setShowCAOverlay(false)}
           />
           
           {/* Modal content */}
-          <div className="relative bg-white rounded-3xl w-full max-w-md mx-4 p-8 transform transition-transform duration-500 ease-out animate-slide-up-center">
+          <div className="relative bg-[#AB9FF2] rounded-3xl w-full max-w-md mx-4 p-8 transform transition-transform duration-500 ease-out animate-slide-up-center">
             <div className="text-center">
               <p 
                 className="text-2xl font-semibold text-gray-800 cursor-pointer hover:text-[#ab9ff2] transition-colors duration-200"
