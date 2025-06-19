@@ -232,27 +232,27 @@ export const HomePage = (): JSX.Element => {
         </section>
 
         {/* Top Traders Section */}
-        <section className="mt-96 relative">
-          {/* Decorative elements */}
+        <section className="mt-48 sm:mt-64 md:mt-80 lg:mt-96 relative overflow-hidden">
+          {/* Responsive decorative elements */}
           <img
-            className="w-[175px] h-44 absolute left-[39px] top-[392px] mt-[-1013px] mb-[-1013px]"
+            className="w-24 h-16 md:w-[175px] md:h-44 absolute left-[3%] top-[15%] z-[1]"
             alt="Star"
             src="/figmaAssets/star-1.svg"
           />
-          <div className="absolute w-[283px] h-[396px] top-[693px] left-[-174px] bg-[#ab9ff2] rounded-[141.4px/198.1px] rotate-[-76deg] mt-[-1000px] mb-[-1000px]" />
-          <div className="absolute w-[126px] h-[186px] top-[756px] left-[78px] bg-black rounded-[62.9px/92.76px] rotate-[15deg] mt-[-932px] mb-[-932px]" />
-          <div className="absolute w-[95px] h-[165px] top-[600px] left-[382px] bg-[#ffdadc] rounded-[47.63px/82.54px] rotate-[96deg] mt-[-959px] mb-[-959px] ml-[-28px] mr-[-28px]" />
-          <div className="absolute w-[126px] h-[186px] top-[454px] left-[1285px] bg-[#ff7243] rounded-[62.9px/92.76px] rotate-[15deg] mt-[-938px] mb-[-938px] ml-[-230px] mr-[-230px] z-[1]" />
-          <div className="absolute w-[283px] h-[396px] top-[678px] left-[1256px] bg-[#2ec08b] rounded-[141.4px/198.1px] rotate-[-76deg] mt-[-827px] mb-[-827px]" />
-          <div className="absolute w-[126px] h-[186px] top-[587px] left-[1031px] bg-[#e2dffd] rounded-[62.9px/92.76px] rotate-[-18deg] mt-[-838px] mb-[-838px] ml-[-258px] mr-[-258px]" />
-          <div className="absolute w-[52px] h-[73px] top-[706px] left-[1009px] bg-[#ffffc4] rounded-[25.91px/36.35px] rotate-[32deg] ml-[-249px] mr-[-249px] mt-[-834px] mb-[-834px]" />
-          <div className="absolute w-[401.66px] h-[259.47px] top-[-20px] left-[1100px] bg-[#d9d9d9] rounded-[200.83px/129.735px] rotate-[-15deg] z-[-1]" />
+          <div className="absolute w-32 h-44 md:w-[283px] md:h-[396px] top-[70%] left-[-12%] bg-[#ab9ff2] rounded-[141px/198px] rotate-[-76deg] z-[1]" />
+          <div className="absolute w-16 h-24 md:w-[126px] md:h-[186px] top-[75%] left-[5%] bg-black rounded-[63px/93px] rotate-[15deg] z-[1]" />
+          <div className="absolute w-12 h-20 md:w-[95px] md:h-[165px] top-[60%] left-[27%] bg-[#ffdadc] rounded-[48px/83px] rotate-[96deg] z-[1]" />
+          <div className="absolute w-16 h-24 md:w-[126px] md:h-[186px] top-[45%] right-[10%] bg-[#ff7243] rounded-[63px/93px] rotate-[15deg] z-[1]" />
+          <div className="absolute w-32 h-44 md:w-[283px] md:h-[396px] top-[68%] right-[-5%] bg-[#2ec08b] rounded-[141px/198px] rotate-[-76deg] z-[1]" />
+          <div className="absolute w-16 h-24 md:w-[126px] md:h-[186px] top-[59%] right-[28%] bg-[#e2dffd] rounded-[63px/93px] rotate-[-18deg] z-[1]" />
+          <div className="absolute w-8 h-12 md:w-[52px] md:h-[73px] top-[71%] right-[28%] bg-[#ffffc4] rounded-[26px/36px] rotate-[32deg] z-[1]" />
+          <div className="absolute w-48 h-32 md:w-[402px] md:h-[259px] top-[-2%] right-[15%] bg-[#d9d9d9] rounded-[201px/130px] rotate-[-15deg] z-[-1]" />
 
-          <div className="text-center mb-16">
-            <h2 className="font-medium text-[#3c315b] text-[69px]">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16 relative z-[5]">
+            <h2 className="font-medium text-[#3c315b] text-3xl sm:text-4xl md:text-5xl lg:text-[69px]">
               Top Traders
             </h2>
-            <p className="font-medium text-[#9f98b3] text-[22px] mt-4">
+            <p className="font-medium text-[#9f98b3] text-base sm:text-lg md:text-xl lg:text-[22px] mt-4">
               Discover top performing meme coin traders with verified track
               records
             </p>
