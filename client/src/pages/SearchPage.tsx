@@ -69,7 +69,6 @@ export const SearchPage = (): JSX.Element => {
   return (
     <div className="bg-gray-50 min-h-screen relative">
       <Header currentPage="search" />
-
       {/* Decorative background elements */}
       <img
         className="w-[73px] h-[74px] absolute left-[360px] top-[200px] z-[1]"
@@ -86,8 +85,7 @@ export const SearchPage = (): JSX.Element => {
       />
       <div className="absolute w-[45px] h-[60px] top-[400px] left-[200px] bg-[#ab9ff2] rounded-[22.5px/30px] rotate-[45deg] z-[1]" />
       <div className="absolute w-[35px] h-[45px] top-[180px] left-[150px] bg-[#ff7243] rounded-[17.5px/22.5px] rotate-[-30deg] z-[1]" />
-      <div className="absolute w-[282px] h-[396px] top-[500px] left-[1150px] bg-[#2ec08b] rounded-[141px/198px] rotate-[-76deg] z-[1]" />
-
+      <div className="absolute w-[282px] h-[396px] top-[500px] left-[1150px] bg-[#2ec08b] rounded-[141px/198px] rotate-[-76deg] z-[1] ml-[-1280px] mr-[-1280px]" />
       <div className="container mx-auto px-8 py-8 relative z-[5]">
         {/* Search Bar */}
         <div className="max-w-2xl mx-auto mb-8">
