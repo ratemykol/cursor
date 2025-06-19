@@ -30,6 +30,9 @@ export interface IStorage {
   // Rating operations
   createRating(rating: InsertRating): Promise<Rating>;
   getTraderRatings(traderId: number): Promise<Rating[]>;
+  getAllRatings(): Promise<Rating[]>;
+  updateRating(id: number, rating: Partial<InsertRating>): Promise<Rating | undefined>;
+  deleteRating(id: number): Promise<boolean>;
   getRatingStats(traderId: number): Promise<{
     averageRating: number;
     totalRatings: number;
@@ -273,6 +276,30 @@ export class DatabaseStorage implements IStorage {
       averageProfitability: Math.round(averageProfitability * 10) / 10,
       fiveStarCount,
     };
+  }
+
+  async getAllRatings(): Promise<Rating[]> {
+    return await db
+      .select()
+      .from(ratings)
+      .orderBy(desc(ratings.createdAt));
+  }
+
+  async updateRating(id: number, ratingData: Partial<InsertRating>): Promise<Rating | undefined> {
+    const [updatedRating] = await db
+      .update(ratings)
+      .set(ratingData)
+      .where(eq(ratings.id, id))
+      .returning();
+    return updatedRating;
+  }
+
+  async deleteRating(id: number): Promise<boolean> {
+    const result = await db
+      .delete(ratings)
+      .where(eq(ratings.id, id))
+      .returning();
+    return result.length > 0;
   }
 }
 

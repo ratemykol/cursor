@@ -149,6 +149,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin routes for review management
+  app.get("/api/admin/ratings", async (req, res) => {
+    try {
+      const ratings = await storage.getAllRatings();
+      res.json(ratings);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.put("/api/admin/ratings/:id", async (req, res) => {
+    try {
+      const ratingId = parseInt(req.params.id);
+      if (isNaN(ratingId)) {
+        return res.status(400).json({ message: 'Invalid rating ID' });
+      }
+
+      const validatedData = insertRatingSchema.partial().parse(req.body);
+      const rating = await storage.updateRating(ratingId, validatedData);
+      
+      if (!rating) {
+        return res.status(404).json({ message: 'Rating not found' });
+      }
+      
+      res.json(rating);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.delete("/api/admin/ratings/:id", async (req, res) => {
+    try {
+      const ratingId = parseInt(req.params.id);
+      if (isNaN(ratingId)) {
+        return res.status(400).json({ message: 'Invalid rating ID' });
+      }
+
+      const success = await storage.deleteRating(ratingId);
+      
+      if (!success) {
+        return res.status(404).json({ message: 'Rating not found' });
+      }
+      
+      res.json({ message: 'Rating deleted successfully' });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

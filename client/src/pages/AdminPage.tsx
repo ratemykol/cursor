@@ -13,8 +13,9 @@ import { Header } from "@/components/Header";
 import { Edit, Plus, Save, X, Upload, Image, Trash2 } from "lucide-react";
 
 export const AdminPage = (): JSX.Element => {
-  const [view, setView] = useState<"list" | "create" | "edit">("list");
+  const [view, setView] = useState<"list" | "create" | "edit" | "reviews">("list");
   const [editingTrader, setEditingTrader] = useState<any>(null);
+  const [editingReview, setEditingReview] = useState<any>(null);
   
   const [name, setName] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
@@ -29,6 +30,11 @@ export const AdminPage = (): JSX.Element => {
   // Fetch all traders
   const { data: traders = [], isLoading } = useQuery({
     queryKey: ["/api/traders"],
+  });
+
+  // Fetch all reviews for admin management
+  const { data: reviews = [], isLoading: reviewsLoading } = useQuery({
+    queryKey: ["/api/admin/ratings"],
   });
 
   const createMutation = useMutation({
@@ -107,6 +113,58 @@ export const AdminPage = (): JSX.Element => {
       toast({
         title: "Error",
         description: "Failed to delete trader. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Review management mutations
+  const updateReviewMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+      const response = await fetch(`/api/admin/ratings/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) throw new Error('Failed to update review');
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Review updated successfully!",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/ratings"] });
+      setEditingReview(null);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to update review. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteReviewMutation = useMutation({
+    mutationFn: async (reviewId: number) => {
+      const response = await fetch(`/api/admin/ratings/${reviewId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error('Failed to delete review');
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Review deleted successfully!",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/ratings"] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to delete review. Please try again.",
         variant: "destructive",
       });
     },
