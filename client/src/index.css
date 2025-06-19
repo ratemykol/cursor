@@ -40,6 +40,28 @@
       font-size: 16px;
     }
   }
+
+  /* Responsive scaling for decorative elements */
+  @media (max-width: 1440px) {
+    .decorative-element {
+      transform: scale(0.8);
+      transform-origin: center;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .decorative-element {
+      transform: scale(0.6);
+      transform-origin: center;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .decorative-element {
+      transform: scale(0.4);
+      transform-origin: center;
+    }
+  }
 }
 
 @layer components {
