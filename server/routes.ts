@@ -34,6 +34,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Name-only search endpoint for search page
+  app.get("/api/traders/search-by-name", async (req, res) => {
+    try {
+      const { q } = req.query;
+      if (!q || typeof q !== "string" || !q.trim()) {
+        return res.json([]);
+      }
+      const traders = await storage.searchTradersByName(q.trim());
+      res.json(traders);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   app.get("/api/traders/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
