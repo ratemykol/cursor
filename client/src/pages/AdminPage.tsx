@@ -53,11 +53,7 @@ export const AdminPage = (): JSX.Element => {
           <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-20">
             <Card className="w-full max-w-md">
               <CardContent className="p-8 text-center">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">Access Denied</h2>
-                <p className="text-gray-600 mb-6">You must be logged in to access the admin panel.</p>
-                <Button onClick={() => window.location.href = "/signin"} className="bg-[#ab9ff2] text-white">
-                  Sign In
-                </Button>
+                <h2 className="text-2xl font-semibold text-gray-900">Access Denied</h2>
               </CardContent>
             </Card>
           </div>
