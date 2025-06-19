@@ -82,7 +82,7 @@ export const HomePage = (): JSX.Element => {
           <div className="absolute w-[40px] h-[40px] top-[400px] left-[580px] bg-[#ffffc4] rounded-full opacity-90" />
           
           {/* Right orange oval */}
-          <div className="absolute w-[200px] h-[160px] top-[240px] right-[50px] bg-[#ff7243] rounded-[100px/80px] opacity-85" />
+          <div className="absolute w-[200px] h-[160px] top-[240px] right-[50px] bg-[#ff7243] rounded-[100px/80px] opacity-85 transform rotate-[25deg]" />
 
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="font-medium text-[#3c315b] text-[69px] leading-tight">
