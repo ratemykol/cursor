@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
-import { Star, Image, Search } from "lucide-react";
+import { Star, Image, Search, TrendingUp } from "lucide-react";
 
 export const HomePage = (): JSX.Element => {
   const [, setLocation] = useLocation();
