@@ -289,7 +289,7 @@ export const HomePage = (): JSX.Element => {
                 [...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
                   <Card
                     key={`${trader.id}-${index}`}
-                    className={`flex-shrink-0 w-[234px] h-[420px] ${trader.bgColor} rounded-[15px] border-none shadow-none relative cursor-pointer trader-card ml-6`}
+                    className={`flex-shrink-0 w-[234px] h-[420px] ${trader.rank === 1 ? 'bg-[#D3AF37] golden-shine' : trader.bgColor} rounded-[15px] border-none shadow-none relative cursor-pointer trader-card ml-6`}
                     onMouseEnter={() => setScrollPaused(true)}
                     onMouseLeave={() => setScrollPaused(false)}
                   >
