@@ -128,7 +128,10 @@ export const SocialShareBadges = ({
           )}
           <Button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="rounded-full w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+            className="rounded-full w-14 h-14 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+            style={{ 
+              backgroundColor: '#3C315B',
+            }}
           >
             <Share2 className="h-6 w-6" />
           </Button>
