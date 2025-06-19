@@ -40,7 +40,7 @@ export const HomePage = (): JSX.Element => {
         </header>
 
         {/* Hero Section */}
-        <section className="relative mt-16 px-20">
+        <section className="relative px-20 mt-[99px] mb-[99px]">
           {/* Decorative elements */}
           <img
             className="w-[73px] h-[74px] absolute left-[360px] top-[146px]"
