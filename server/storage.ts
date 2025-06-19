@@ -21,6 +21,7 @@ export interface IStorage {
   getTrader(id: number): Promise<Trader | undefined>;
   getTraderByWallet(walletAddress: string): Promise<Trader | undefined>;
   searchTraders(query: string): Promise<any[]>;
+  searchTradersByName(query: string): Promise<any[]>;
   createTrader(trader: InsertTrader): Promise<Trader>;
   updateTrader(id: number, trader: InsertTrader): Promise<Trader | undefined>;
   deleteTrader(id: number): Promise<boolean>;
@@ -119,6 +120,39 @@ export class DatabaseStorage implements IStorage {
     });
 
     console.log('Final sorted order:', tradersWithStats.map(t => `${t.name}: ${t.averageRating} (${t.fiveStarCount} 5-star)`));
+    return tradersWithStats;
+  }
+
+  async searchTradersByName(query: string): Promise<any[]> {
+    const searchTerm = query.trim();
+    const traderList = await db
+      .select()
+      .from(traders)
+      .where(ilike(traders.name, `%${searchTerm}%`))
+      .limit(10);
+
+    // Add rating statistics to each trader
+    const tradersWithStats = await Promise.all(
+      traderList.map(async (trader) => {
+        const stats = await this.getRatingStats(trader.id);
+        return {
+          ...trader,
+          averageRating: stats.averageRating,
+          totalRatings: stats.totalRatings,
+          fiveStarCount: stats.fiveStarCount,
+          featured: false
+        };
+      })
+    );
+
+    // Sort traders by rating: highest average rating first, then by most 5-star reviews for ties
+    tradersWithStats.sort((a, b) => {
+      if (b.averageRating !== a.averageRating) {
+        return b.averageRating - a.averageRating;
+      }
+      return b.fiveStarCount - a.fiveStarCount;
+    });
+
     return tradersWithStats;
   }
 

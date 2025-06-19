@@ -24,12 +24,12 @@ export const SearchPage = (): JSX.Element => {
   }, [searchInput]);
 
   const { data: searchResults = [], isLoading } = useQuery({
-    queryKey: ['/api/traders/search', debouncedSearch],
+    queryKey: ['/api/traders/search-by-name', debouncedSearch],
     queryFn: async () => {
       const query = debouncedSearch.trim();
       if (!query) return [];
       
-      const url = new URL('/api/traders', window.location.origin);
+      const url = new URL('/api/traders/search-by-name', window.location.origin);
       url.searchParams.set('q', query);
       
       const response = await fetch(url.toString());
