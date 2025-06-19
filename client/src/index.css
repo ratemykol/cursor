@@ -7,36 +7,6 @@
   }
 }
 
-/* Zoom stability improvements */
-html, body {
-  zoom: 1;
-  transform-origin: 0 0;
-}
-
-/* Ensure all containers scale properly with zoom */
-.zoom-stable {
-  position: relative;
-  transform-origin: center center;
-  will-change: transform;
-}
-
-/* Container queries for better responsiveness */
-@container (min-width: 320px) {
-  .responsive-container {
-    container-type: inline-size;
-  }
-}
-
-/* Prevent layout shift during zoom */
-* {
-  box-sizing: border-box;
-}
-
-/* Maintain aspect ratios during zoom */
-.aspect-stable {
-  aspect-ratio: attr(width) / attr(height);
-}
-
 /* Infinite scroll animation for trader cards */
 @keyframes scroll {
   0% {
