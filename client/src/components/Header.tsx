@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface HeaderProps {
   currentPage?: string;
@@ -11,6 +15,35 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
   const [, setLocation] = useLocation();
   const [showCAOverlay, setShowCAOverlay] = useState(false);
   const { toast } = useToast();
+  const { user, isAuthenticated } = useAuth();
+  const queryClient = useQueryClient();
+
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      toast({
+        title: "Logged out successfully",
+        description: "You have been signed out",
+      });
+      setLocation("/");
+    },
+    onError: () => {
+      toast({
+        title: "Logout failed",
+        description: "Failed to sign out",
+        variant: "destructive",
+      });
+    },
+  });
 
   return (
     <>

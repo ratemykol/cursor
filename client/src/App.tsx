@@ -10,6 +10,8 @@ import { SearchPage } from "@/pages/SearchPage";
 import { TraderProfilePage } from "@/pages/TraderProfilePage";
 import { RatingPage } from "@/pages/RatingPage";
 import { AdminPage } from "@/pages/AdminPage";
+import { SignUpPage } from "@/pages/SignUpPage";
+import { SignInPage } from "@/pages/SignInPage";
 
 function Router() {
   return (
@@ -19,6 +21,8 @@ function Router() {
       <Route path="/trader/:id" component={TraderProfilePage} />
       <Route path="/trader/:id/rate" component={RatingPage} />
       <Route path="/admin" component={AdminPage} />
+      <Route path="/signup" component={SignUpPage} />
+      <Route path="/signin" component={SignInPage} />
       <Route component={NotFound} />
     </Switch>
   );
