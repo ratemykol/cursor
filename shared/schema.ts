@@ -40,10 +40,10 @@ export const users = pgTable("users", {
 export const traders = pgTable("traders", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
-  walletAddress: varchar("wallet_address", { length: 42 }).notNull().unique(),
+  walletAddress: varchar("wallet_address", { length: 100 }).notNull().unique(),
   bio: text("bio"),
   profileImage: varchar("profile_image"),
-  specialty: varchar("specialty"),
+  specialty: varchar("specialty", { length: 255 }),
   verified: boolean("verified").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
