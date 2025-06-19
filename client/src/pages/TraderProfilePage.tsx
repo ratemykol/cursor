@@ -140,7 +140,7 @@ export const TraderProfilePage = (): JSX.Element => {
 
                   {/* Rate This Trader Button */}
                   <Link href={`/trader/${id}/rate`}>
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2">
+                    <Button className="bg-[#ab9ff2] text-[#3c315b] rounded-md transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu px-6 py-2">
                       Rate This Trader
                     </Button>
                   </Link>
@@ -182,7 +182,7 @@ export const TraderProfilePage = (): JSX.Element => {
                     No reviews yet. Be the first to rate this trader!
                   </p>
                   <Link href={`/trader/${id}/rate`}>
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                    <Button className="bg-[#ab9ff2] text-[#3c315b] rounded-md transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu">
                       Write First Review
                     </Button>
                   </Link>
