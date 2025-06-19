@@ -6,7 +6,7 @@ import { insertTraderSchema, insertRatingSchema, userRegistrationSchema, userLog
 // Admin middleware to check if user is admin
 const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = (req as any).user;
+    const user = (req.session as any)?.user;
     if (!user || !user.id) {
       return res.status(401).json({ error: "Not authenticated" });
     }
@@ -24,7 +24,7 @@ const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
 
 // Authentication middleware
 const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
-  const user = (req as any).user;
+  const user = (req.session as any)?.user;
   if (!user || !user.id) {
     return res.status(401).json({ error: "Not authenticated" });
   }
@@ -186,7 +186,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Check admin status endpoint
   app.get("/api/auth/admin-status", isAuthenticated, async (req, res) => {
     try {
-      const user = (req as any).user;
+      const user = (req.session as any)?.user;
       const userData = await storage.getUser(user.id);
       res.json({ isAdmin: userData?.role === 'admin' });
     } catch (error) {
