@@ -18,8 +18,6 @@ export const UserProfilePage = (): JSX.Element => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
     email: "",
     bio: "",
     profileImageUrl: "",
@@ -41,8 +39,6 @@ export const UserProfilePage = (): JSX.Element => {
   useEffect(() => {
     if (user) {
       setFormData({
-        firstName: user.firstName || "",
-        lastName: user.lastName || "",
         email: user.email || "",
         bio: user.bio || "",
         profileImageUrl: user.profileImageUrl || "",
@@ -139,31 +135,7 @@ export const UserProfilePage = (): JSX.Element => {
                   <p className="text-xs text-gray-500">Username cannot be changed</p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input
-                      id="firstName"
-                      name="firstName"
-                      type="text"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      className="border-2 border-[#9f98b3]"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input
-                      id="lastName"
-                      name="lastName"
-                      type="text"
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                      className="border-2 border-[#9f98b3]"
-                    />
-                  </div>
-                </div>
+
                 
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
