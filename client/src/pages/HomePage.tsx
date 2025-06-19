@@ -127,7 +127,7 @@ export const HomePage = (): JSX.Element => {
             src="/figmaAssets/star-2.svg"
           />
           <div className="absolute w-[27px] h-[35px] top-[87px] left-[36.25%] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] z-0" />
-          <div className="absolute w-[73px] h-[97px] top-[179px] left-[35.9%] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] z-[1]" />
+          <div className="absolute w-[73px] h-[97px] top-[179px] left-[35.9%] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] z-[1] mt-[-212px] mb-[-212px] ml-[-66px] mr-[-66px]" />
           <div className="absolute w-[92px] h-[71px] top-[131px] left-[41.9%] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] z-0 mt-[-204px] mb-[-204px]" />
           <img
             className="absolute w-[76px] h-[61px] top-[243px] right-[15.6%] z-0"
