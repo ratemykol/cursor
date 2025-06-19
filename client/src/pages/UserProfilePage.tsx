@@ -112,15 +112,17 @@ export const UserProfilePage = (): JSX.Element => {
         <div className="flex justify-center items-start min-h-[calc(100vh-200px)] px-20 py-12">
           <Card className="w-full max-w-2xl">
             <CardHeader>
-              <CardTitle className="text-2xl text-center text-[#3c315b] flex items-center justify-center gap-4">
-                <Avatar className="w-16 h-16">
+              <div className="flex flex-col items-center gap-4">
+                <Avatar className="w-20 h-20">
                   <AvatarImage src={user?.profileImageUrl} />
                   <AvatarFallback className="text-2xl">
                     {user?.username?.charAt(0).toUpperCase() || user?.firstName?.charAt(0).toUpperCase() || "U"}
                   </AvatarFallback>
                 </Avatar>
-                My Profile
-              </CardTitle>
+                <CardTitle className="text-2xl text-center text-[#3c315b]">
+                  My Profile
+                </CardTitle>
+              </div>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
