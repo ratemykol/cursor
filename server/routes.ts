@@ -92,7 +92,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/traders", async (req, res) => {
+  app.post("/api/traders", isAdmin, async (req, res) => {
     try {
       const validatedData = insertTraderSchema.parse(req.body);
       const trader = await storage.createTrader(validatedData);
@@ -102,7 +102,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/traders/:id", async (req, res) => {
+  app.put("/api/traders/:id", isAdmin, async (req, res) => {
     try {
       const traderId = parseInt(req.params.id);
       if (isNaN(traderId)) {
@@ -122,7 +122,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/traders/:id", async (req, res) => {
+  app.delete("/api/traders/:id", isAdmin, async (req, res) => {
     try {
       const traderId = parseInt(req.params.id);
       if (isNaN(traderId)) {
@@ -183,8 +183,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Check admin status endpoint
+  app.get("/api/auth/admin-status", isAuthenticated, async (req, res) => {
+    try {
+      const user = (req as any).user;
+      const userData = await storage.getUser(user.id);
+      res.json({ isAdmin: userData?.role === 'admin' });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to check admin status" });
+    }
+  });
+
   // Admin routes for review management
-  app.get("/api/admin/ratings", async (req, res) => {
+  app.get("/api/admin/ratings", isAdmin, async (req, res) => {
     try {
       const ratings = await storage.getAllRatings();
       res.json(ratings);
@@ -193,7 +204,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/admin/ratings/:id", async (req, res) => {
+  app.put("/api/admin/ratings/:id", isAdmin, async (req, res) => {
     try {
       const ratingId = parseInt(req.params.id);
       if (isNaN(ratingId)) {
@@ -213,7 +224,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/admin/ratings/:id", async (req, res) => {
+  app.delete("/api/admin/ratings/:id", isAdmin, async (req, res) => {
     try {
       const ratingId = parseInt(req.params.id);
       if (isNaN(ratingId)) {
