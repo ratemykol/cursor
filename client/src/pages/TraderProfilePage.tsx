@@ -469,40 +469,60 @@ export const TraderProfilePage = (): JSX.Element => {
                                 <p className="text-gray-700 mb-3">{rating.comment}</p>
                               )}
                               
-                              {/* Rating bars - horizontal layout */}
-                              <div className="flex flex-wrap gap-6">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-sm text-gray-600">Profitability:</span>
-                                  <div className="w-16 bg-gray-200 rounded-full h-2">
-                                    <div 
-                                      className="h-2 rounded-full" 
-                                      style={{ width: `${(rating.profitabilityRating / 5) * 100}%`, backgroundColor: '#AB9FF2' }}
-                                    ></div>
+                              {/* Rating bars and tags layout */}
+                              <div className="flex justify-between items-start gap-6">
+                                {/* Rating bars - left side */}
+                                <div className="flex flex-wrap gap-6 flex-1">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm text-gray-600">Profitability:</span>
+                                    <div className="w-16 bg-gray-200 rounded-full h-2">
+                                      <div 
+                                        className="h-2 rounded-full" 
+                                        style={{ width: `${(rating.profitabilityRating / 5) * 100}%`, backgroundColor: '#AB9FF2' }}
+                                      ></div>
+                                    </div>
+                                    <span className="text-sm text-gray-600">{rating.profitabilityRating}/5</span>
                                   </div>
-                                  <span className="text-sm text-gray-600">{rating.profitabilityRating}/5</span>
-                                </div>
-                                
-                                <div className="flex items-center gap-2">
-                                  <span className="text-sm text-gray-600">Trade Activity:</span>
-                                  <div className="w-16 bg-gray-200 rounded-full h-2">
-                                    <div 
-                                      className="h-2 rounded-full" 
-                                      style={{ width: `${(rating.communicationRating / 5) * 100}%`, backgroundColor: '#AB9FF2' }}
-                                    ></div>
+                                  
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm text-gray-600">Trade Activity:</span>
+                                    <div className="w-16 bg-gray-200 rounded-full h-2">
+                                      <div 
+                                        className="h-2 rounded-full" 
+                                        style={{ width: `${(rating.communicationRating / 5) * 100}%`, backgroundColor: '#AB9FF2' }}
+                                      ></div>
+                                    </div>
+                                    <span className="text-sm text-gray-600">{rating.communicationRating}/5</span>
                                   </div>
-                                  <span className="text-sm text-gray-600">{rating.communicationRating}/5</span>
-                                </div>
-                                
-                                <div className="flex items-center gap-2">
-                                  <span className="text-sm text-gray-600">Reliability:</span>
-                                  <div className="w-16 bg-gray-200 rounded-full h-2">
-                                    <div 
-                                      className="h-2 rounded-full" 
-                                      style={{ width: `${(rating.reliabilityRating / 5) * 100}%`, backgroundColor: '#AB9FF2' }}
-                                    ></div>
+                                  
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm text-gray-600">Reliability:</span>
+                                    <div className="w-16 bg-gray-200 rounded-full h-2">
+                                      <div 
+                                        className="h-2 rounded-full" 
+                                        style={{ width: `${(rating.reliabilityRating / 5) * 100}%`, backgroundColor: '#AB9FF2' }}
+                                      ></div>
+                                    </div>
+                                    <span className="text-sm text-gray-600">{rating.reliabilityRating}/5</span>
                                   </div>
-                                  <span className="text-sm text-gray-600">{rating.reliabilityRating}/5</span>
                                 </div>
+
+                                {/* Tags - right side */}
+                                {rating.tags && rating.tags.length > 0 && (
+                                  <div className="flex-shrink-0">
+                                    <div className="flex flex-wrap gap-1 justify-end">
+                                      {rating.tags.slice(0, 5).map((tag: string, index: number) => (
+                                        <span 
+                                          key={index}
+                                          className="inline-block px-2 py-1 text-xs font-medium text-black rounded-full"
+                                          style={{ backgroundColor: '#AB9FF2' }}
+                                        >
+                                          {tag}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             </>
                           )}
