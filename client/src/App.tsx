@@ -12,6 +12,7 @@ import { RatingPage } from "@/pages/RatingPage";
 import { AdminPage } from "@/pages/AdminPage";
 import { SignUpPage } from "@/pages/SignUpPage";
 import { SignInPage } from "@/pages/SignInPage";
+import { UserProfilePage } from "@/pages/UserProfilePage";
 
 function Router() {
   return (
