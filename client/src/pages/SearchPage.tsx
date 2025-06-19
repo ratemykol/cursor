@@ -194,7 +194,7 @@ export const SearchPage = (): JSX.Element => {
                         {/* View Profile Button */}
                         <div className="ml-6">
                           <Link href={`/trader/${trader.id}`}>
-                            <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2">
+                            <Button className="bg-[#ab9ff2] text-[#3c315b] rounded-full transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu px-6 py-2">
                               View Profile
                             </Button>
                           </Link>
