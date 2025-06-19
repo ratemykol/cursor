@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -31,14 +31,41 @@ export const HomePage = (): JSX.Element => {
     enabled: searchQuery.trim().length > 0,
   });
 
-  // Data for trader cards
-  const traders = [
-    { id: 1, rank: 1, bgColor: "bg-[#ffdadc]" },
-    { id: 2, rank: 2, bgColor: "bg-[#ffffc4]" },
-    { id: 3, rank: 3, bgColor: "bg-[#3c315b]" },
-    { id: 4, rank: 4, bgColor: "bg-[#2ec08b]" },
-    { id: 5, rank: 5, bgColor: "bg-[#4a87f2]" },
+  // Fetch all traders for cards
+  const { data: allTraders, isLoading: isLoadingTraders } = useQuery({
+    queryKey: ["/api/traders"],
+  });
+
+  // Background colors for trader cards
+  const cardColors = [
+    "bg-[#ffdadc]",
+    "bg-[#ffffc4]", 
+    "bg-[#3c315b]",
+    "bg-[#2ec08b]",
+    "bg-[#4a87f2]",
   ];
+
+  // Process and rank traders
+  const rankedTraders = useMemo(() => {
+    if (!allTraders || !Array.isArray(allTraders)) return [];
+    
+    // Sort by average rating (desc), then by number of 5-star ratings (desc)
+    const sorted = [...allTraders].sort((a: any, b: any) => {
+      // First compare by average rating
+      const ratingDiff = (b.averageRating || 0) - (a.averageRating || 0);
+      if (ratingDiff !== 0) return ratingDiff;
+      
+      // If tied, compare by number of 5-star ratings
+      return (b.fiveStarCount || 0) - (a.fiveStarCount || 0);
+    });
+    
+    // Add rank and background color to each trader
+    return sorted.slice(0, 5).map((trader: any, index: number) => ({
+      ...trader,
+      rank: index + 1,
+      bgColor: cardColors[index] || "bg-gray-200"
+    }));
+  }, [allTraders]);
 
   // Handle clicks outside dropdown to close it
   useEffect(() => {
@@ -227,54 +254,97 @@ export const HomePage = (): JSX.Element => {
 
           {/* Trader Cards */}
           <div className="flex justify-center gap-6 px-4">
-            {traders.map((trader) => (
-              <Card
-                key={trader.id}
-                className={`w-[234px] h-[420px] ${trader.bgColor} rounded-[15px] border-none shadow-none`}
-              >
-                <CardContent className="p-0 flex flex-col items-center px-4">
-                  <div className="w-[91px] h-[97px] mt-[30px] bg-white rounded-[45.5px/48.5px]" />
-                  <div className="mt-4">
-                    <span className="bg-white text-black px-3 py-1 rounded-full text-xs font-medium">
-                      Rank: {trader.rank}
-                    </span>
-                  </div>
-                  
-                  {/* Specialty Tag */}
-                  <div className="mt-3 mb-4">
-                    <span className="bg-white text-black px-3 py-1 rounded-full text-xs font-medium">
-                      NFT Expert
-                    </span>
-                  </div>
-                  
-                  {/* Rating Section */}
-                  <div className="flex items-center justify-between w-full mb-3">
-                    <div className="flex items-center gap-2">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span className="text-sm font-medium text-black">Rating</span>
+            {isLoadingTraders ? (
+              // Loading skeleton
+              Array.from({ length: 5 }).map((_, index) => (
+                <Card
+                  key={index}
+                  className={`w-[234px] h-[420px] ${cardColors[index]} rounded-[15px] border-none shadow-none animate-pulse`}
+                >
+                  <CardContent className="p-0 flex flex-col items-center px-4">
+                    <div className="w-[91px] h-[97px] mt-[30px] bg-white/50 rounded-[45.5px/48.5px]" />
+                    <div className="mt-4 bg-white/50 rounded-full w-16 h-6" />
+                    <div className="mt-3 mb-4 bg-white/50 rounded-full w-20 h-6" />
+                    <div className="mt-3 mb-4 bg-white/50 rounded-full w-24 h-6" />
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              rankedTraders.map((trader) => (
+                <Card
+                  key={trader.id}
+                  className={`w-[234px] h-[420px] ${trader.bgColor} rounded-[15px] border-none shadow-none`}
+                >
+                  <CardContent className="p-0 flex flex-col items-center px-4">
+                    {/* Profile Image */}
+                    <div className="w-[91px] h-[97px] mt-[30px] bg-white rounded-[45.5px/48.5px] overflow-hidden flex items-center justify-center">
+                      {trader.profileImage ? (
+                        <img 
+                          src={trader.profileImage} 
+                          alt={trader.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <Image size={32} className="text-gray-400" />
+                      )}
                     </div>
-                    <span className="text-lg font-bold text-black">5.0</span>
-                  </div>
-                  
-                  {/* Performance Section */}
-                  <div className="flex items-center justify-between w-full mb-6">
-                    <div className="flex items-center gap-2">
-                      <span className="text-green-500 text-sm">📈</span>
-                      <span className="text-sm font-medium text-black">Performance</span>
+                    
+                    {/* Rank Tag */}
+                    <div className="mt-4">
+                      <span className="bg-white text-black px-3 py-1 rounded-full text-xs font-medium">
+                        Rank: {trader.rank}
+                      </span>
                     </div>
-                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
-                      Verified
-                    </span>
-                  </div>
-                  
-                  <div className="flex justify-center w-full mb-6">
-                    <Button className="w-[168px] h-12 bg-white text-black font-medium text-lg transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#AB9FF2] hover:shadow-lg transform-gpu mt-[51px] mb-[51px]">
-                      View Profile
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    
+                    {/* Name Tag */}
+                    <div className="mt-3 mb-4">
+                      <span className="bg-white text-black px-3 py-1 rounded-full text-xs font-medium">
+                        {trader.name}
+                      </span>
+                    </div>
+                    
+                    {/* Specialty Tag */}
+                    <div className="mb-4">
+                      <span className="bg-white text-black px-3 py-1 rounded-full text-xs font-medium">
+                        {trader.specialty || 'Crypto Expert'}
+                      </span>
+                    </div>
+                    
+                    {/* Rating Section */}
+                    <div className="flex items-center justify-between w-full mb-3">
+                      <div className="flex items-center gap-2">
+                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        <span className="text-sm font-medium text-black">Rating</span>
+                      </div>
+                      <span className="text-lg font-bold text-black">
+                        {trader.averageRating ? trader.averageRating.toFixed(1) : '0.0'}
+                      </span>
+                    </div>
+                    
+                    {/* Performance Section */}
+                    <div className="flex items-center justify-between w-full mb-6">
+                      <div className="flex items-center gap-2">
+                        <span className="text-green-500 text-sm">📈</span>
+                        <span className="text-sm font-medium text-black">Performance</span>
+                      </div>
+                      <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
+                        Verified
+                      </span>
+                    </div>
+                    
+                    {/* View Profile Button */}
+                    <div className="flex justify-center w-full">
+                      <Button 
+                        onClick={() => setLocation(`/trader/${trader.id}`)}
+                        className="w-[168px] h-12 bg-white text-black font-medium text-lg transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#AB9FF2] hover:shadow-lg transform-gpu"
+                      >
+                        View Profile
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         </section>
 
