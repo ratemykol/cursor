@@ -5,6 +5,9 @@ import { Input } from "@/components/ui/input";
 import { useLocation } from "wouter";
 
 export const HomePage = (): JSX.Element => {
+  const [, setLocation] = useLocation();
+  const [searchQuery, setSearchQuery] = useState("");
+
   // Data for trader cards
   const traders = [
     { id: 1, rank: 1, bgColor: "bg-[#ffdadc]" },
@@ -13,6 +16,18 @@ export const HomePage = (): JSX.Element => {
     { id: 4, rank: 2, bgColor: "bg-[#2ec08b]" },
     { id: 5, rank: 5, bgColor: "bg-[#4a87f2]" },
   ];
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      setLocation(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   return (
     <div className="bg-white flex flex-row justify-center w-full">
@@ -72,13 +87,19 @@ export const HomePage = (): JSX.Element => {
             <div className="relative">
               <Input
                 className="h-11 rounded-[5px] border-2 border-[#9f98b3] pl-4 pr-28"
-                placeholder="SearchIcon..."
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={handleKeyPress}
               />
               <div className="absolute right-0 top-0 h-full">
-                <Button className="h-full bg-transparent hover:bg-transparent p-0">
+                <Button 
+                  className="h-full bg-transparent hover:bg-transparent p-0"
+                  onClick={handleSearch}
+                >
                   <img
                     className="w-[104px] h-10"
-                    alt="SearchIcon button"
+                    alt="Search button"
                     src="/figmaAssets/search-button.svg"
                   />
                 </Button>

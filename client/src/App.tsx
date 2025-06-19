@@ -6,13 +6,17 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 
 import { HomePage } from "@/pages/HomePage";
+import { SearchPage } from "@/pages/SearchPage";
+import { TraderProfilePage } from "@/pages/TraderProfilePage";
+import { RatingPage } from "@/pages/RatingPage";
 
 function Router() {
   return (
     <Switch>
-      {/* Add pages below */}
       <Route path="/" component={HomePage} />
-      {/* Fallback to 404 */}
+      <Route path="/search" component={SearchPage} />
+      <Route path="/trader/:id" component={TraderProfilePage} />
+      <Route path="/trader/:id/rate" component={RatingPage} />
       <Route component={NotFound} />
     </Switch>
   );
