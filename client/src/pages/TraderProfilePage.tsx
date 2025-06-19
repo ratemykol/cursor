@@ -14,7 +14,6 @@ import { ArrowLeft, Star, Image as ImageIcon, Edit, Trash2 } from "lucide-react"
 export const TraderProfilePage = (): JSX.Element => {
   const { id } = useParams();
   const [editingReview, setEditingReview] = useState<any>(null);
-  const [isAdminMode, setIsAdminMode] = useState(false);
   const [visibleReviews, setVisibleReviews] = useState(20);
   const { toast } = useToast();
   const { isAuthenticated, user } = useAuth();
@@ -30,57 +29,7 @@ export const TraderProfilePage = (): JSX.Element => {
     enabled: !!id,
   });
 
-  // Admin mutation functions for editing/deleting reviews
-  const updateReviewMutation = useMutation({
-    mutationFn: async ({ reviewId, data }: { reviewId: number; data: any }) => {
-      const response = await fetch(`/api/admin/ratings/${reviewId}`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
-      });
-      if (!response.ok) throw new Error('Failed to update review');
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Review updated successfully!",
-      });
-      queryClient.invalidateQueries({ queryKey: [`/api/traders/${id}/ratings`] });
-      setEditingReview(null);
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to update review. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
 
-  const deleteReviewMutation = useMutation({
-    mutationFn: async (reviewId: number) => {
-      const response = await fetch(`/api/admin/ratings/${reviewId}`, {
-        method: "DELETE",
-      });
-      if (!response.ok) throw new Error('Failed to delete review');
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Review deleted successfully!",
-      });
-      queryClient.invalidateQueries({ queryKey: [`/api/traders/${id}/ratings`] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to delete review. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
 
   if (traderLoading) {
     return (
@@ -234,20 +183,13 @@ export const TraderProfilePage = (): JSX.Element => {
                     </p>
                   )}
 
-                  {/* Rate This Trader Button and Admin Toggle */}
+                  {/* Rate This Trader Button */}
                   <div className="flex gap-3">
                     <Link href={`/trader/${id}/rate`}>
                       <Button className="bg-[#ab9ff2] text-black rounded-md transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu px-6 py-2">
                         Rate This Trader
                       </Button>
                     </Link>
-                    <Button 
-                      variant={isAdminMode ? "default" : "outline"}
-                      onClick={() => setIsAdminMode(!isAdminMode)}
-                      className="px-4 py-2"
-                    >
-                      {isAdminMode ? "Exit Admin" : "Admin Mode"}
-                    </Button>
                   </div>
                 </div>
 
@@ -367,33 +309,7 @@ export const TraderProfilePage = (): JSX.Element => {
                                 })}
                               </span>
                             </div>
-                            {/* Admin Edit/Delete Buttons */}
-                            {isAdminMode && (
-                              <div className="flex gap-2">
-                                <Button 
-                                  size="sm" 
-                                  variant="outline"
-                                  onClick={() => setEditingReview(rating)}
-                                  className="flex items-center gap-1"
-                                >
-                                  <Edit size={14} />
-                                  Edit
-                                </Button>
-                                <Button 
-                                  size="sm" 
-                                  variant="destructive"
-                                  onClick={() => {
-                                    if (confirm('Are you sure you want to delete this review?')) {
-                                      deleteReviewMutation.mutate(rating.id);
-                                    }
-                                  }}
-                                  className="flex items-center gap-1"
-                                >
-                                  <Trash2 size={14} />
-                                  Delete
-                                </Button>
-                              </div>
-                            )}
+
                           </div>
                           
                           {/* Review Content - Edit Mode or Display Mode */}
