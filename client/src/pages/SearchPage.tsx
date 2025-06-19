@@ -67,7 +67,7 @@ export const SearchPage = (): JSX.Element => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen relative">
+    <div className="bg-gray-50 min-h-screen relative zoom-stable">
       <Header currentPage="search" />
       {/* Decorative background elements - using percentage positioning for zoom stability */}
       <img
