@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useLocation } from "wouter";
+import { Header } from "@/components/Header";
 
 export const HomePage = (): JSX.Element => {
   const [, setLocation] = useLocation();
@@ -32,37 +33,7 @@ export const HomePage = (): JSX.Element => {
   return (
     <div className="bg-white flex flex-row justify-center w-full">
       <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
-        {/* Header */}
-        <header className="flex justify-between items-center px-20 pt-8 mt-[37px] mb-[37px]">
-          <h1 className="font-medium text-[#3c315b] text-[22px]">RateMyKOL</h1>
-
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              className="rounded-full font-semibold text-[#3c315b]"
-              onClick={() => setLocation("/")}
-            >
-              Home
-            </Button>
-            <Button
-              variant="ghost"
-              className="rounded-full font-medium text-[#3c315b]"
-              onClick={() => setLocation("/search")}
-            >
-              Search
-            </Button>
-            <Button
-              variant="ghost"
-              className="rounded-full font-medium text-[#3c315b]"
-              onClick={() => setLocation("/admin")}
-            >
-              Admin
-            </Button>
-            <Button className="bg-[#ab9ff2] text-[#3c315b] rounded-full hover:bg-[#9b8de2]">
-              Sign In
-            </Button>
-          </div>
-        </header>
+        <Header currentPage="home" />
 
         {/* Hero Section */}
         <section className="relative px-20 mt-[99px] mb-[99px]">

@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Star, ThumbsUp, ThumbsDown } from "lucide-react";
+import { Header } from "@/components/Header";
 
 export const TraderProfilePage = (): JSX.Element => {
   const { id } = useParams();
