@@ -232,11 +232,39 @@ export const HomePage = (): JSX.Element => {
                 key={trader.id}
                 className={`w-[234px] h-[348px] ${trader.bgColor} rounded-[15px] border-none shadow-none`}
               >
-                <CardContent className="p-0 flex flex-col items-center">
+                <CardContent className="p-0 flex flex-col items-center px-4">
                   <div className="w-[91px] h-[97px] mt-[30px] bg-white rounded-[45.5px/48.5px]" />
                   <div className="font-medium text-black text-sm text-center mt-4">
                     Rank: {trader.rank}
                   </div>
+                  
+                  {/* Specialty Tag */}
+                  <div className="mt-3 mb-4">
+                    <span className="bg-[#e8f4fd] text-[#4a90e2] px-3 py-1 rounded-full text-xs font-medium">
+                      NFT Expert
+                    </span>
+                  </div>
+                  
+                  {/* Rating Section */}
+                  <div className="flex items-center justify-between w-full mb-3">
+                    <div className="flex items-center gap-2">
+                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <span className="text-sm font-medium text-gray-700">Rating</span>
+                    </div>
+                    <span className="text-lg font-bold text-black">5.0</span>
+                  </div>
+                  
+                  {/* Performance Section */}
+                  <div className="flex items-center justify-between w-full mb-6">
+                    <div className="flex items-center gap-2">
+                      <span className="text-green-500 text-sm">📈</span>
+                      <span className="text-sm font-medium text-gray-700">Performance</span>
+                    </div>
+                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
+                      Verified
+                    </span>
+                  </div>
+                  
                   <div className="mt-auto mb-6">
                     <Button className="w-[168px] h-12 bg-white text-black font-medium text-lg transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#AB9FF2] hover:shadow-lg transform-gpu">
                       View Profile
