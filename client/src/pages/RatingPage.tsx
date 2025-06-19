@@ -169,8 +169,8 @@ export const RatingPage = (): JSX.Element => {
 
   if (!trader) {
     return (
-      <div className="bg-white flex flex-row justify-center w-full">
-        <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
+      <div className="bg-white w-full min-h-screen">
+        <div className="bg-white overflow-hidden w-full relative">
           <Header />
           <div className="p-8 text-center">Loading...</div>
         </div>
@@ -179,8 +179,8 @@ export const RatingPage = (): JSX.Element => {
   }
 
   return (
-    <div className="bg-white flex flex-row justify-center w-full">
-      <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
+    <div className="bg-white w-full min-h-screen">
+      <div className="bg-white overflow-hidden w-full relative">
         <Header />
         
         <div className="px-8 py-6 max-w-2xl mx-auto">
