@@ -537,8 +537,7 @@ export const TraderProfilePage = (): JSX.Element => {
                     <div className="text-center pt-6 border-t border-gray-100">
                       <Button
                         onClick={() => setVisibleReviews(prev => prev + 10)}
-                        variant="outline"
-                        className="bg-white hover:bg-[#f8f9fa] border-gray-300 text-gray-700"
+                        className="bg-[#ab9ff2] text-black rounded-md transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu px-6 py-2"
                       >
                         Load More ({ratings.length - visibleReviews} remaining)
                       </Button>
