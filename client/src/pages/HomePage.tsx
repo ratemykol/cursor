@@ -262,78 +262,87 @@ export const HomePage = (): JSX.Element => {
 
         {/* Top Traders Section */}
         <section className="mt-96 relative">
-          {/* Decorative elements - zoom-responsive positioning */}
+          {/* Decorative elements - moved 400px upward */}
           <img
-            className="absolute left-[2.5%] top-[6%] z-[1]"
+            className="absolute left-[2.5%] z-[1]"
             style={{
               width: '10.9375rem',
-              height: '11rem'
+              height: '11rem',
+              top: 'calc(6% - 25rem)'
             }}
             alt="Star"
             src="/figmaAssets/star-1.svg"
           />
           <div 
-            className="absolute top-[10%] left-[-12%] bg-[#ab9ff2] rotate-[-76deg] z-[0]"
+            className="absolute left-[-12%] bg-[#ab9ff2] rotate-[-76deg] z-[0]"
             style={{
               width: '17.6875rem',
               height: '24.75rem',
-              borderRadius: '8.8375rem/12.38125rem'
+              borderRadius: '8.8375rem/12.38125rem',
+              top: 'calc(10% - 25rem)'
             }}
           />
           <div 
-            className="absolute top-[12%] left-[5%] bg-black rotate-[15deg] z-[1]"
+            className="absolute left-[5%] bg-black rotate-[15deg] z-[1]"
             style={{
               width: '7.875rem',
               height: '11.625rem',
-              borderRadius: '3.93125rem/5.7975rem'
+              borderRadius: '3.93125rem/5.7975rem',
+              top: 'calc(12% - 25rem)'
             }}
           />
           <div 
-            className="absolute top-[9%] left-[26%] bg-[#ffdadc] rotate-[96deg] z-[1]"
+            className="absolute left-[26%] bg-[#ffdadc] rotate-[96deg] z-[1]"
             style={{
               width: '5.9375rem',
               height: '10.3125rem',
-              borderRadius: '2.976875rem/5.15875rem'
+              borderRadius: '2.976875rem/5.15875rem',
+              top: 'calc(9% - 25rem)'
             }}
           />
           <div 
-            className="absolute top-[7%] right-[11%] bg-[#ff7243] rotate-[15deg] z-[1]"
+            className="absolute right-[11%] bg-[#ff7243] rotate-[15deg] z-[1]"
             style={{
               width: '7.875rem',
               height: '11.625rem',
-              borderRadius: '3.93125rem/5.7975rem'
+              borderRadius: '3.93125rem/5.7975rem',
+              top: 'calc(7% - 25rem)'
             }}
           />
           <div 
-            className="absolute top-[10%] right-[12%] bg-[#2ec08b] rotate-[-76deg] z-[0]"
+            className="absolute right-[12%] bg-[#2ec08b] rotate-[-76deg] z-[0]"
             style={{
               width: '17.6875rem',
               height: '24.75rem',
-              borderRadius: '8.8375rem/12.38125rem'
+              borderRadius: '8.8375rem/12.38125rem',
+              top: 'calc(10% - 25rem)'
             }}
           />
           <div 
-            className="absolute top-[9%] right-[19%] bg-[#e2dffd] rotate-[-18deg] z-[1]"
+            className="absolute right-[19%] bg-[#e2dffd] rotate-[-18deg] z-[1]"
             style={{
               width: '7.875rem',
               height: '11.625rem',
-              borderRadius: '3.93125rem/5.7975rem'
+              borderRadius: '3.93125rem/5.7975rem',
+              top: 'calc(9% - 25rem)'
             }}
           />
           <div 
-            className="absolute top-[11%] right-[20%] bg-[#ffffc4] rotate-[32deg] z-[1]"
+            className="absolute right-[20%] bg-[#ffffc4] rotate-[32deg] z-[1]"
             style={{
               width: '3.25rem',
               height: '4.5625rem',
-              borderRadius: '1.619375rem/2.271875rem'
+              borderRadius: '1.619375rem/2.271875rem',
+              top: 'calc(11% - 25rem)'
             }}
           />
           <div 
-            className="absolute top-[-1%] right-[20%] bg-[#d9d9d9] rotate-[-15deg] z-[-1]"
+            className="absolute right-[20%] bg-[#d9d9d9] rotate-[-15deg] z-[-1]"
             style={{
               width: '25.104rem',
               height: '16.217rem',
-              borderRadius: '12.552rem/8.1085rem'
+              borderRadius: '12.552rem/8.1085rem',
+              top: 'calc(-1% - 25rem)'
             }}
           />
 
