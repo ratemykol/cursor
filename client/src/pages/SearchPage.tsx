@@ -75,20 +75,18 @@ export const SearchPage = (): JSX.Element => {
         <div className="max-w-2xl mx-auto mb-8">
           <div className="relative">
             <Input
-              className="h-12 rounded-lg border-2 border-gray-300 pl-4 pr-20 text-lg bg-white"
-              placeholder="Search by trader name or wallet address..."
+              className="h-11 rounded-[5px] border-2 border-[#9f98b3] pl-4 pr-28 w-full"
+              placeholder="Search..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyPress={handleKeyPress}
             />
-            <div className="absolute right-2 top-2">
-              <Button 
-                onClick={handleSearch}
-                className="h-8 bg-blue-600 text-white rounded-md hover:bg-blue-700 px-4"
-              >
-                <Search size={16} />
-              </Button>
-            </div>
+            <Button 
+              className="absolute right-0 top-0 h-full w-[108px] bg-[#ab9ff2] text-[#3c315b] rounded-r-[5px] rounded-l-none font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center justify-center border-2 border-[#9f98b3] border-l-0"
+              onClick={handleSearch}
+            >
+              <Search size={20} />
+            </Button>
           </div>
         </div>
 
