@@ -40,49 +40,21 @@ export const HomePage = (): JSX.Element => {
         </header>
 
         {/* Hero Section */}
-        <section className="relative mt-16 px-20 overflow-hidden">
-          {/* Background decorative shapes matching Figma design */}
-          
-          {/* Top right area - large gray shape */}
-          <div className="absolute w-[400px] h-[300px] -top-[100px] -right-[150px] bg-gray-300 rounded-[200px/150px] rotate-[20deg] opacity-30" />
-          
-          {/* Upper left star */}
+        <section className="relative mt-16 px-20">
+          {/* Decorative elements */}
           <img
-            className="w-[60px] h-[60px] absolute left-[280px] top-[40px] opacity-40"
+            className="w-[73px] h-[74px] absolute left-[360px] top-[146px]"
             alt="Star"
             src="/figmaAssets/star-2.svg"
           />
-          
-          {/* Small dark circle */}
-          <div className="absolute w-[15px] h-[15px] top-[60px] left-[380px] bg-[#3c315b] rounded-full" />
-          
-          {/* Yellow circle behind title */}
-          <div className="absolute w-[120px] h-[120px] top-[80px] left-[380px] bg-[#ffd13f] rounded-full opacity-90" />
-          
-          {/* Blue oval */}
-          <div className="absolute w-[140px] h-[100px] top-[60px] left-[480px] bg-[#4a87f2] rounded-[70px/50px] opacity-90" />
-          
-          {/* Right diamond shape */}
-          <div className="absolute w-[80px] h-[80px] top-[120px] right-[200px] bg-gray-400 transform rotate-45 opacity-40" />
-          
-          {/* Large left star */}
+          <div className="absolute w-[27px] h-[35px] top-[173px] left-[522px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg]" />
+          <div className="absolute w-[73px] h-[97px] top-[243px] left-[495px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg]" />
+          <div className="absolute w-[92px] h-[71px] top-[217px] left-[603px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg]" />
           <img
-            className="w-[120px] h-[120px] absolute left-[50px] top-[180px] opacity-30"
-            alt="Large Star"
-            src="/figmaAssets/star-1.svg"
+            className="absolute w-[76px] h-[61px] top-[329px] left-[1216px]"
+            alt="Polygon"
+            src="/figmaAssets/polygon-1.svg"
           />
-          
-          {/* Pink oval */}
-          <div className="absolute w-[180px] h-[100px] top-[280px] left-[280px] bg-[#ffdadc] rounded-[90px/50px] opacity-80" />
-          
-          {/* Light purple oval */}
-          <div className="absolute w-[200px] h-[140px] top-[320px] left-[580px] bg-[#e2dffd] rounded-[100px/70px] opacity-80" />
-          
-          {/* Small yellow circle */}
-          <div className="absolute w-[40px] h-[40px] top-[400px] left-[580px] bg-[#ffffc4] rounded-full opacity-90" />
-          
-          {/* Right orange oval */}
-          <div className="absolute w-[200px] h-[160px] top-[240px] right-[50px] bg-[#ff7243] rounded-[100px/80px] opacity-85 transform rotate-[25deg]" />
 
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="font-medium text-[#3c315b] text-[69px] leading-tight">
@@ -119,17 +91,20 @@ export const HomePage = (): JSX.Element => {
         </section>
 
         {/* Top Traders Section */}
-        <section className="mt-32 relative overflow-hidden">
-          {/* Background shapes matching Figma design for bottom section */}
-          
-          {/* Large purple shape on left */}
-          <div className="absolute w-[300px] h-[400px] -left-[100px] top-[100px] bg-[#ab9ff2] rounded-[150px/200px] opacity-90" />
-          
-          {/* Black oval overlapping purple */}
-          <div className="absolute w-[120px] h-[160px] left-[80px] top-[180px] bg-black rounded-[60px/80px] opacity-90" />
-          
-          {/* Large green shape on right */}
-          <div className="absolute w-[400px] h-[500px] -right-[150px] top-[150px] bg-[#2ec08b] rounded-[200px/250px] opacity-90" />
+        <section className="mt-32 relative">
+          {/* Decorative elements */}
+          <img
+            className="w-[175px] h-44 absolute left-[39px] top-[392px]"
+            alt="Star"
+            src="/figmaAssets/star-1.svg"
+          />
+          <div className="absolute w-[283px] h-[396px] top-[693px] left-[-174px] bg-[#ab9ff2] rounded-[141.4px/198.1px] rotate-[-76deg]" />
+          <div className="absolute w-[126px] h-[186px] top-[756px] left-[78px] bg-black rounded-[62.9px/92.76px] rotate-[15deg]" />
+          <div className="absolute w-[95px] h-[165px] top-[600px] left-[382px] bg-[#ffdadc] rounded-[47.63px/82.54px] rotate-[96deg]" />
+          <div className="absolute w-[126px] h-[186px] top-[454px] left-[1285px] bg-[#ff7243] rounded-[62.9px/92.76px] rotate-[15deg]" />
+          <div className="absolute w-[283px] h-[396px] top-[678px] left-[1256px] bg-[#2ec08b] rounded-[141.4px/198.1px] rotate-[-76deg]" />
+          <div className="absolute w-[126px] h-[186px] top-[587px] left-[1031px] bg-[#e2dffd] rounded-[62.9px/92.76px] rotate-[-18deg]" />
+          <div className="absolute w-[52px] h-[73px] top-[706px] left-[1009px] bg-[#ffffc4] rounded-[25.91px/36.35px] rotate-[32deg]" />
 
           <div className="text-center mb-16">
             <h2 className="font-medium text-[#3c315b] text-[69px]">
