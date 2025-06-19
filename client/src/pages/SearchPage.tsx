@@ -67,10 +67,28 @@ export const SearchPage = (): JSX.Element => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 min-h-screen relative">
       <Header currentPage="search" />
 
-      <div className="container mx-auto px-8 py-8">
+      {/* Decorative background elements */}
+      <img
+        className="w-[73px] h-[74px] absolute left-[360px] top-[200px] z-[1]"
+        alt="Star"
+        src="/figmaAssets/star-2.svg"
+      />
+      <div className="absolute w-[27px] h-[35px] top-[250px] left-[520px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] z-[1]" />
+      <div className="absolute w-[73px] h-[97px] top-[300px] left-[480px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] z-[1]" />
+      <div className="absolute w-[92px] h-[71px] top-[180px] left-[1100px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] z-[1]" />
+      <img
+        className="absolute w-[76px] h-[61px] top-[350px] left-[1200px] z-[1]"
+        alt="Polygon"
+        src="/figmaAssets/polygon-1.svg"
+      />
+      <div className="absolute w-[45px] h-[60px] top-[400px] left-[200px] bg-[#ab9ff2] rounded-[22.5px/30px] rotate-[45deg] z-[1]" />
+      <div className="absolute w-[35px] h-[45px] top-[180px] left-[150px] bg-[#ff7243] rounded-[17.5px/22.5px] rotate-[-30deg] z-[1]" />
+      <div className="absolute w-[50px] h-[65px] top-[500px] left-[1150px] bg-[#2ec08b] rounded-[25px/32.5px] rotate-[60deg] z-[1]" />
+
+      <div className="container mx-auto px-8 py-8 relative z-[5]">
         {/* Search Bar */}
         <div className="max-w-2xl mx-auto mb-8">
           <div className="relative">
