@@ -115,17 +115,17 @@ export const HomePage = (): JSX.Element => {
           {/* Search Bar with Dropdown */}
           <div className="mt-16 relative max-w-3xl mx-auto z-[10]" ref={dropdownRef}>
             <div className="relative">
-              <Input
-                ref={inputRef}
-                className="h-11 rounded-[5px] border-2 border-[#9f98b3] pl-4 pr-28"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                onKeyPress={handleKeyPress}
-              />
-              <div className="absolute right-[2px] top-[2px] h-[calc(100%-4px)] flex items-center">
+              <div className="relative">
+                <Input
+                  ref={inputRef}
+                  className="h-11 rounded-[5px] border-2 border-[#9f98b3] pl-4 pr-28 w-full"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  onKeyPress={handleKeyPress}
+                />
                 <Button 
-                  className="w-[104px] h-full bg-[#ab9ff2] text-[#3c315b] rounded-[3px] font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center justify-center border-0"
+                  className="absolute right-[2px] top-[2px] bottom-[2px] w-[104px] bg-[#ab9ff2] text-[#3c315b] rounded-[3px] font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center justify-center border-0"
                   onClick={() => {
                     if (searchQuery.trim()) {
                       setLocation(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
