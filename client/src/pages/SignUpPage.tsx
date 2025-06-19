@@ -90,15 +90,15 @@ export const SignUpPage = (): JSX.Element => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Email (Optional)</Label>
                   <Input
                     id="email"
                     name="email"
                     type="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    required
                     className="border-2 border-[#9f98b3]"
+                    placeholder="Enter your email address (optional)"
                   />
                 </div>
                 
