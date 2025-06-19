@@ -73,13 +73,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async searchTraders(query: string): Promise<Trader[]> {
+    if (!query || query.trim().length === 0) {
+      return await db.select().from(traders).limit(10);
+    }
+    
+    const searchTerm = query.trim();
     return await db
       .select()
       .from(traders)
       .where(
         or(
-          ilike(traders.name, `%${query}%`),
-          ilike(traders.walletAddress, `%${query}%`)
+          ilike(traders.name, `%${searchTerm}%`),
+          ilike(traders.walletAddress, `%${searchTerm}%`)
         )
       )
       .limit(10);
