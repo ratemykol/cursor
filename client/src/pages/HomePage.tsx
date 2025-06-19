@@ -17,7 +17,7 @@ export const HomePage = (): JSX.Element => {
     <div className="bg-white flex flex-row justify-center w-full">
       <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
         {/* Header */}
-        <header className="flex justify-between items-center px-20 pt-8">
+        <header className="flex justify-between items-center px-20 pt-8 mt-[37px] mb-[37px]">
           <h1 className="font-medium text-[#3c315b] text-[22px]">RateMyKOL</h1>
 
           <div className="flex items-center gap-4">
