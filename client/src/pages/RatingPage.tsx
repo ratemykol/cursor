@@ -101,73 +101,17 @@ export const RatingPage = (): JSX.Element => {
   };
 
   const CustomSlider = ({ value, onChange }: { value: number[], onChange: (value: number[]) => void }) => {
-    const [isDragging, setIsDragging] = useState(false);
-    const sliderRef = React.useRef<HTMLDivElement>(null);
-
-    const getValueFromPosition = (clientX: number) => {
-      if (!sliderRef.current) return value[0];
-      
-      const rect = sliderRef.current.getBoundingClientRect();
-      const x = Math.max(0, Math.min(rect.width, clientX - rect.left));
-      const percentage = x / rect.width;
-      return Math.max(1, Math.min(5, Math.round(percentage * 4) + 1));
-    };
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-      e.preventDefault();
-      setIsDragging(true);
-      const newValue = getValueFromPosition(e.clientX);
-      onChange([newValue]);
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging) return;
-      e.preventDefault();
-      const newValue = getValueFromPosition(e.clientX);
-      onChange([newValue]);
-    };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-    };
-
-    React.useEffect(() => {
-      if (isDragging) {
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
-        document.body.style.userSelect = 'none';
-        document.body.style.cursor = 'grabbing';
-      } else {
-        document.body.style.userSelect = '';
-        document.body.style.cursor = '';
-      }
-      
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-        document.body.style.userSelect = '';
-        document.body.style.cursor = '';
-      };
-    }, [isDragging]);
-
-    const thumbPosition = ((value[0] - 1) / 4) * 100;
-
     return (
-      <div
-        ref={sliderRef}
-        className="relative h-8 cursor-pointer select-none"
-        onMouseDown={handleMouseDown}
-      >
-        {/* Track */}
-        <div className="absolute top-1/2 transform -translate-y-1/2 w-full h-1 bg-gray-300 rounded-full"></div>
-        
-        {/* Thumb */}
-        <div
-          className={`absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 w-6 h-6 bg-blue-600 rounded-full shadow-lg transition-transform ${
-            isDragging ? 'scale-110' : 'hover:scale-105'
-          }`}
-          style={{ left: `${thumbPosition}%` }}
-        ></div>
+      <div className="relative">
+        <input
+          type="range"
+          min="1"
+          max="5"
+          step="1"
+          value={value[0]}
+          onChange={(e) => onChange([parseInt(e.target.value)])}
+          className="w-full custom-slider"
+        />
       </div>
     );
   };
