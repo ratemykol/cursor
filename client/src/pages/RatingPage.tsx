@@ -78,6 +78,15 @@ export const RatingPage = (): JSX.Element => {
       return;
     }
 
+    if (review.length < 50) {
+      toast({
+        title: "Review too short",
+        description: `Please write at least 50 characters in your review. You currently have ${review.length} characters.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     const ratingData = {
       reviewerName: yourName.trim(),
       overallRating: overallRating[0],
@@ -246,7 +255,7 @@ export const RatingPage = (): JSX.Element => {
                 {/* Submit Button */}
                 <Button
                   type="submit"
-                  disabled={mutation.isPending || review.length < 50}
+                  disabled={mutation.isPending}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg font-medium"
                 >
                   {mutation.isPending ? "Submitting..." : "Submit Review"}
