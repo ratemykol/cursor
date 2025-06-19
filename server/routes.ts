@@ -244,8 +244,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         id: user.id,
         username: user.username,
         email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
         profileImageUrl: user.profileImageUrl,
         authType: user.authType,
       };
@@ -285,11 +283,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const { firstName, lastName, email, bio, profileImageUrl } = req.body;
+      const { email, bio, profileImageUrl } = req.body;
       
       const updatedUser = await storage.updateUserProfile(user.id, {
-        firstName,
-        lastName,
         email,
         bio,
         profileImageUrl,
@@ -298,8 +294,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update session with new user data
       (req.session as any).user = {
         ...user,
-        firstName: updatedUser.firstName,
-        lastName: updatedUser.lastName,
         email: updatedUser.email,
         bio: updatedUser.bio,
         profileImageUrl: updatedUser.profileImageUrl,
