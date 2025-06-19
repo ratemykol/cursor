@@ -20,10 +20,10 @@ export interface IStorage {
   // Trader operations
   getTrader(id: number): Promise<Trader | undefined>;
   getTraderByWallet(walletAddress: string): Promise<Trader | undefined>;
-  searchTraders(query: string): Promise<Trader[]>;
+  searchTraders(query: string): Promise<any[]>;
   createTrader(trader: InsertTrader): Promise<Trader>;
   updateTrader(id: number, trader: InsertTrader): Promise<Trader | undefined>;
-  getAllTraders(): Promise<Trader[]>;
+  getAllTraders(): Promise<any[]>;
   
   // Rating operations
   createRating(rating: InsertRating): Promise<Rating>;
@@ -31,8 +31,10 @@ export interface IStorage {
   getRatingStats(traderId: number): Promise<{
     averageRating: number;
     totalRatings: number;
-    averageDifficulty: number;
-    wouldTakeAgainPercentage: number;
+    averageStrategy: number;
+    averageCommunication: number;
+    averageReliability: number;
+    averageProfitability: number;
   }>;
 }
 
@@ -72,22 +74,39 @@ export class DatabaseStorage implements IStorage {
     return trader;
   }
 
-  async searchTraders(query: string): Promise<Trader[]> {
-    if (!query || query.trim().length === 0) {
-      return await db.select().from(traders).limit(10);
-    }
+  async searchTraders(query: string): Promise<any[]> {
+    let traderList;
     
-    const searchTerm = query.trim();
-    return await db
-      .select()
-      .from(traders)
-      .where(
-        or(
-          ilike(traders.name, `%${searchTerm}%`),
-          ilike(traders.walletAddress, `%${searchTerm}%`)
+    if (!query || query.trim().length === 0) {
+      traderList = await db.select().from(traders).limit(10);
+    } else {
+      const searchTerm = query.trim();
+      traderList = await db
+        .select()
+        .from(traders)
+        .where(
+          or(
+            ilike(traders.name, `%${searchTerm}%`),
+            ilike(traders.walletAddress, `%${searchTerm}%`)
+          )
         )
-      )
-      .limit(10);
+        .limit(10);
+    }
+
+    // Add rating statistics to each trader
+    const tradersWithStats = await Promise.all(
+      traderList.map(async (trader) => {
+        const stats = await this.getRatingStats(trader.id);
+        return {
+          ...trader,
+          averageRating: stats.averageRating,
+          totalRatings: stats.totalRatings,
+          featured: false // You can add logic for featured traders later
+        };
+      })
+    );
+
+    return tradersWithStats;
   }
 
   async createTrader(trader: InsertTrader): Promise<Trader> {
@@ -107,8 +126,23 @@ export class DatabaseStorage implements IStorage {
     return updatedTrader;
   }
 
-  async getAllTraders(): Promise<Trader[]> {
-    return await db.select().from(traders).orderBy(desc(traders.createdAt));
+  async getAllTraders(): Promise<any[]> {
+    const traderList = await db.select().from(traders).orderBy(desc(traders.createdAt));
+    
+    // Add rating statistics to each trader
+    const tradersWithStats = await Promise.all(
+      traderList.map(async (trader) => {
+        const stats = await this.getRatingStats(trader.id);
+        return {
+          ...trader,
+          averageRating: stats.averageRating,
+          totalRatings: stats.totalRatings,
+          featured: false
+        };
+      })
+    );
+
+    return tradersWithStats;
   }
 
   // Rating operations
@@ -131,8 +165,10 @@ export class DatabaseStorage implements IStorage {
   async getRatingStats(traderId: number): Promise<{
     averageRating: number;
     totalRatings: number;
-    averageDifficulty: number;
-    wouldTakeAgainPercentage: number;
+    averageStrategy: number;
+    averageCommunication: number;
+    averageReliability: number;
+    averageProfitability: number;
   }> {
     const traderRatings = await this.getTraderRatings(traderId);
     
@@ -140,22 +176,27 @@ export class DatabaseStorage implements IStorage {
       return {
         averageRating: 0,
         totalRatings: 0,
-        averageDifficulty: 0,
-        wouldTakeAgainPercentage: 0,
+        averageStrategy: 0,
+        averageCommunication: 0,
+        averageReliability: 0,
+        averageProfitability: 0,
       };
     }
 
     const totalRatings = traderRatings.length;
     const averageRating = traderRatings.reduce((sum, r) => sum + Number(r.overallRating), 0) / totalRatings;
-    const averageDifficulty = traderRatings.reduce((sum, r) => sum + Number(r.difficulty), 0) / totalRatings;
-    const wouldTakeAgainCount = traderRatings.filter(r => r.wouldTakeAgain).length;
-    const wouldTakeAgainPercentage = (wouldTakeAgainCount / totalRatings) * 100;
+    const averageStrategy = traderRatings.reduce((sum, r) => sum + Number(r.strategyRating), 0) / totalRatings;
+    const averageCommunication = traderRatings.reduce((sum, r) => sum + Number(r.communicationRating), 0) / totalRatings;
+    const averageReliability = traderRatings.reduce((sum, r) => sum + Number(r.reliabilityRating), 0) / totalRatings;
+    const averageProfitability = traderRatings.reduce((sum, r) => sum + Number(r.profitabilityRating), 0) / totalRatings;
 
     return {
       averageRating: Math.round(averageRating * 10) / 10,
       totalRatings,
-      averageDifficulty: Math.round(averageDifficulty * 10) / 10,
-      wouldTakeAgainPercentage: Math.round(wouldTakeAgainPercentage),
+      averageStrategy: Math.round(averageStrategy * 10) / 10,
+      averageCommunication: Math.round(averageCommunication * 10) / 10,
+      averageReliability: Math.round(averageReliability * 10) / 10,
+      averageProfitability: Math.round(averageProfitability * 10) / 10,
     };
   }
 }
