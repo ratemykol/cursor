@@ -64,8 +64,8 @@ export const AdminPage = (): JSX.Element => {
 
   if (!isAdmin) {
     return (
-      <div className="bg-white flex flex-row justify-center w-full">
-        <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
+      <div className="bg-white w-full min-h-screen">
+        <div className="bg-white overflow-hidden w-full relative">
           <Header currentPage="admin" />
           <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-20">
             <Card className="w-full max-w-md">
@@ -321,9 +321,9 @@ export const AdminPage = (): JSX.Element => {
 
   if (view === "list") {
     return (
-      <div className="bg-white min-h-screen">
+      <div className="bg-white min-h-screen w-full">
         <Header currentPage="admin" />
-        <div className="container mx-auto px-8 py-8">
+        <div className="px-8 py-8 w-full">
           {/* Navigation Tabs */}
           <div className="flex gap-4 mb-6">
             <Button 
