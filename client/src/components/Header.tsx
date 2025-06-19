@@ -11,12 +11,17 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
 
   return (
     <header className="flex justify-between items-center px-20 pt-8 mt-[37px] mb-[37px]">
-      <h1 
-        className="font-medium text-[#3c315b] text-[22px] cursor-pointer" 
-        onClick={() => setLocation("/")}
-      >
-        RateMyKOL
-      </h1>
+      <div className="flex items-center gap-4">
+        <h1 
+          className="font-medium text-[#3c315b] text-[22px] cursor-pointer" 
+          onClick={() => setLocation("/")}
+        >
+          RateMyKOL
+        </h1>
+        <Button className="bg-[#ab9ff2] text-[#3c315b] rounded-full transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu">
+          CA
+        </Button>
+      </div>
 
       <div className="flex items-center gap-4">
         <Button
