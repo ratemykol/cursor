@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Header } from "@/components/Header";
-import { Edit, Plus, Save, X } from "lucide-react";
+import { Edit, Plus, Save, X, Upload, Image } from "lucide-react";
 
 export const AdminPage = (): JSX.Element => {
   const [view, setView] = useState<"list" | "create" | "edit">("list");
@@ -21,6 +21,7 @@ export const AdminPage = (): JSX.Element => {
   const [bio, setBio] = useState("");
   const [specialty, setSpecialty] = useState("");
   const [verified, setVerified] = useState(false);
+  const [profileImage, setProfileImage] = useState("");
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -93,6 +94,7 @@ export const AdminPage = (): JSX.Element => {
     setBio("");
     setSpecialty("");
     setVerified(false);
+    setProfileImage("");
   };
 
   const startEdit = (trader: any) => {
@@ -102,6 +104,7 @@ export const AdminPage = (): JSX.Element => {
     setBio(trader.bio || "");
     setSpecialty(trader.specialty || "");
     setVerified(trader.verified);
+    setProfileImage(trader.profileImage || "");
     setView("edit");
   };
 
@@ -129,6 +132,7 @@ export const AdminPage = (): JSX.Element => {
       bio: bio.trim() || null,
       specialty: specialty.trim() || null,
       verified,
+      profileImage: profileImage.trim() || null,
     };
 
     if (view === "edit" && editingTrader) {
@@ -146,6 +150,7 @@ export const AdminPage = (): JSX.Element => {
         bio: "Professional crypto trader with 5+ years experience in DeFi and NFT markets. Specializing in meme coins and high-risk/high-reward strategies.",
         specialty: "Meme Coins & DeFi",
         verified: true,
+        profileImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=CryptoKing2024",
       },
       {
         name: "BlockchainExpert",
@@ -153,6 +158,7 @@ export const AdminPage = (): JSX.Element => {
         bio: "Experienced trader focusing on fundamental analysis and long-term investments in blockchain technology.",
         specialty: "Fundamental Analysis",
         verified: true,
+        profileImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=BlockchainExpert",
       },
       {
         name: "NFTWhale",
@@ -160,6 +166,7 @@ export const AdminPage = (): JSX.Element => {
         bio: "NFT collector and trader with expertise in digital art markets and gaming tokens.",
         specialty: "NFT Trading",
         verified: false,
+        profileImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=NFTWhale",
       },
     ];
 
@@ -188,18 +195,33 @@ export const AdminPage = (): JSX.Element => {
               {traders.map((trader: any) => (
                 <Card key={trader.id} className="p-4">
                   <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="text-lg font-semibold">{trader.name}</h3>
-                        {trader.verified && (
-                          <Badge className="bg-blue-100 text-blue-800">Verified</Badge>
+                    <div className="flex items-start gap-4 flex-1">
+                      <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                        {trader.profileImage ? (
+                          <img 
+                            src={trader.profileImage} 
+                            alt={trader.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gray-300">
+                            <Image size={20} className="text-gray-500" />
+                          </div>
                         )}
                       </div>
-                      <p className="text-gray-600 mb-1">{trader.specialty || 'No specialty'}</p>
-                      <p className="text-sm text-gray-500 mb-2">Wallet: {trader.walletAddress}</p>
-                      {trader.bio && (
-                        <p className="text-sm text-gray-700 line-clamp-2">{trader.bio}</p>
-                      )}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="text-lg font-semibold">{trader.name}</h3>
+                          {trader.verified && (
+                            <Badge className="bg-blue-100 text-blue-800">Verified</Badge>
+                          )}
+                        </div>
+                        <p className="text-gray-600 mb-1">{trader.specialty || 'No specialty'}</p>
+                        <p className="text-sm text-gray-500 mb-2">Wallet: {trader.walletAddress}</p>
+                        {trader.bio && (
+                          <p className="text-sm text-gray-700 line-clamp-2">{trader.bio}</p>
+                        )}
+                      </div>
                     </div>
                     <Button
                       variant="outline"
@@ -282,6 +304,30 @@ export const AdminPage = (): JSX.Element => {
                   onChange={(e) => setSpecialty(e.target.value)}
                   placeholder="e.g., DeFi, NFTs, Meme Coins"
                 />
+              </div>
+
+              <div>
+                <Label htmlFor="profileImage">Profile Image URL</Label>
+                <Input
+                  id="profileImage"
+                  value={profileImage}
+                  onChange={(e) => setProfileImage(e.target.value)}
+                  placeholder="https://example.com/image.jpg"
+                />
+                {profileImage && (
+                  <div className="mt-2">
+                    <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
+                      <img 
+                        src={profileImage} 
+                        alt="Profile preview"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div>

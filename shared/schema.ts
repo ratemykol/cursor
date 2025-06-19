@@ -42,7 +42,7 @@ export const traders = pgTable("traders", {
   name: varchar("name", { length: 255 }).notNull(),
   walletAddress: varchar("wallet_address", { length: 100 }).notNull().unique(),
   bio: text("bio"),
-  profileImage: varchar("profile_image"),
+  profileImage: varchar("profile_image", { length: 500 }),
   specialty: varchar("specialty", { length: 255 }),
   verified: boolean("verified").default(false),
   createdAt: timestamp("created_at").defaultNow(),
