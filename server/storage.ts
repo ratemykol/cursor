@@ -8,14 +8,20 @@ import {
   type InsertTrader,
   type Rating,
   type InsertRating,
+  type UserRegistration,
+  type UserLogin,
 } from "@shared/schema";
+import bcrypt from "bcryptjs";
 import { db } from "./db";
 import { eq, or, ilike, desc, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
   getUser(id: string): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  registerUser(userData: UserRegistration): Promise<User>;
+  authenticateUser(credentials: UserLogin): Promise<User | null>;
   
   // Trader operations
   getTrader(id: number): Promise<Trader | undefined>;
@@ -51,6 +57,11 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
   async upsertUser(userData: UpsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
@@ -63,6 +74,43 @@ export class DatabaseStorage implements IStorage {
         },
       })
       .returning();
+    return user;
+  }
+
+  async registerUser(userData: UserRegistration): Promise<User> {
+    // Hash the password
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(userData.password, saltRounds);
+    
+    // Generate a unique ID for local users
+    const userId = `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    const [user] = await db
+      .insert(users)
+      .values({
+        id: userId,
+        username: userData.username,
+        email: userData.email,
+        passwordHash,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        authType: "local",
+      })
+      .returning();
+    return user;
+  }
+
+  async authenticateUser(credentials: UserLogin): Promise<User | null> {
+    const user = await this.getUserByUsername(credentials.username);
+    if (!user || !user.passwordHash) {
+      return null;
+    }
+    
+    const isValidPassword = await bcrypt.compare(credentials.password, user.passwordHash);
+    if (!isValidPassword) {
+      return null;
+    }
+    
     return user;
   }
 
