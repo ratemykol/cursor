@@ -44,6 +44,11 @@ export const HomePage = (): JSX.Element => {
     "bg-[#3c315b]",
     "bg-[#2ec08b]",
     "bg-[#4a87f2]",
+    "bg-[#FFD13F]",
+    "bg-[#FFC0B6]",
+    "bg-[#FC5655]",
+    "bg-[#E8E6E2]",
+    "bg-[#FFDADC]",
   ];
 
   // Process and rank traders
@@ -61,7 +66,7 @@ export const HomePage = (): JSX.Element => {
     });
     
     // Add rank and background color to each trader
-    return sorted.slice(0, 5).map((trader: any, index: number) => ({
+    return sorted.slice(0, 10).map((trader: any, index: number) => ({
       ...trader,
       rank: index + 1,
       bgColor: cardColors[index] || "bg-gray-200"
@@ -266,7 +271,7 @@ export const HomePage = (): JSX.Element => {
             >
               {isLoadingTraders ? (
                 // Loading skeleton
-                Array.from({ length: 5 }).map((_, index) => (
+                Array.from({ length: 10 }).map((_, index) => (
                   <Card
                     key={index}
                     className={`flex-shrink-0 w-[234px] h-[420px] ${cardColors[index]} rounded-[15px] border-none shadow-none animate-pulse ml-6`}
