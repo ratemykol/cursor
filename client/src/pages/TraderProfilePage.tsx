@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { Header } from "@/components/Header";
 import { ArrowLeft, Star, Image as ImageIcon, Edit, Trash2 } from "lucide-react";
 
@@ -16,6 +17,7 @@ export const TraderProfilePage = (): JSX.Element => {
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [visibleReviews, setVisibleReviews] = useState(20);
   const { toast } = useToast();
+  const { isAuthenticated, user } = useAuth();
   const queryClient = useQueryClient();
 
   const { data: trader, isLoading: traderLoading } = useQuery({
