@@ -124,6 +124,12 @@ Changelog:
 - June 19, 2025. Fixed trader ranking algorithm with proper database sorting by average rating and five-star count tie-breaking
 - June 19, 2025. Added blue diamond pattern background and shine animation for rank 1 trader card
 - June 19, 2025. Implemented name-only search functionality for search page while preserving combined search on homepage
+- June 19, 2025. Reduced home page purple footer height from 800px to 400px (halfway)
+- June 19, 2025. Added CA button with slide-up overlay animation and clipboard copy functionality
+- June 19, 2025. Implemented comprehensive user account system with username/password authentication
+- June 19, 2025. Added sign-up, sign-in, and user profile pages with bcrypt password hashing
+- June 19, 2025. Updated header to show user authentication status with dropdown menu
+- June 19, 2025. Extended database schema with user authentication fields and session management
 ```
 
 ## User Preferences

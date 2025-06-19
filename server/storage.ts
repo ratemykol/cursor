@@ -22,6 +22,7 @@ export interface IStorage {
   upsertUser(user: UpsertUser): Promise<User>;
   registerUser(userData: UserRegistration): Promise<User>;
   authenticateUser(credentials: UserLogin): Promise<User | null>;
+  updateUserProfile(userId: string, profileData: Partial<User>): Promise<User>;
   
   // Trader operations
   getTrader(id: number): Promise<Trader | undefined>;
@@ -111,6 +112,18 @@ export class DatabaseStorage implements IStorage {
       return null;
     }
     
+    return user;
+  }
+
+  async updateUserProfile(userId: string, profileData: Partial<User>): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({
+        ...profileData,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
     return user;
   }
 

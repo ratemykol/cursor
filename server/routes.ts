@@ -276,6 +276,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(user);
   });
 
+  app.put("/api/auth/profile", async (req, res) => {
+    const user = (req.session as any)?.user;
+    if (!user) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    try {
+      const { firstName, lastName, email, bio, profileImageUrl } = req.body;
+      
+      const updatedUser = await storage.updateUserProfile(user.id, {
+        firstName,
+        lastName,
+        email,
+        bio,
+        profileImageUrl,
+      });
+
+      // Update session with new user data
+      (req.session as any).user = {
+        ...user,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        email: updatedUser.email,
+        bio: updatedUser.bio,
+        profileImageUrl: updatedUser.profileImageUrl,
+      };
+
+      res.json(updatedUser);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
