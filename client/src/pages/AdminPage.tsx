@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Header } from "@/components/Header";
-import { Edit, Plus, Save, X, Upload, Image } from "lucide-react";
+import { Edit, Plus, Save, X, Upload, Image, Trash2 } from "lucide-react";
 
 export const AdminPage = (): JSX.Element => {
   const [view, setView] = useState<"list" | "create" | "edit">("list");
@@ -88,6 +88,30 @@ export const AdminPage = (): JSX.Element => {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: async (traderId: number) => {
+      const response = await fetch(`/api/traders/${traderId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error('Failed to delete trader');
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Trader deleted successfully!",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/traders"] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to delete trader. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const resetForm = () => {
     setName("");
     setWalletAddress("");
@@ -112,6 +136,12 @@ export const AdminPage = (): JSX.Element => {
     resetForm();
     setEditingTrader(null);
     setView("create");
+  };
+
+  const handleDelete = (trader: any) => {
+    if (window.confirm(`Are you sure you want to delete ${trader.name}? This action cannot be undone.`)) {
+      deleteMutation.mutate(trader.id);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -223,15 +253,27 @@ export const AdminPage = (): JSX.Element => {
                         )}
                       </div>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => startEdit(trader)}
-                      className="flex items-center gap-2"
-                    >
-                      <Edit size={14} />
-                      Edit
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => startEdit(trader)}
+                        className="flex items-center gap-2"
+                      >
+                        <Edit size={14} />
+                        Edit
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(trader)}
+                        className="flex items-center gap-2"
+                        disabled={deleteMutation.isPending}
+                      >
+                        <Trash2 size={14} />
+                        Delete
+                      </Button>
+                    </div>
                   </div>
                 </Card>
               ))}

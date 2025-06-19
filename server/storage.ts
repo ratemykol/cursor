@@ -23,6 +23,7 @@ export interface IStorage {
   searchTraders(query: string): Promise<any[]>;
   createTrader(trader: InsertTrader): Promise<Trader>;
   updateTrader(id: number, trader: InsertTrader): Promise<Trader | undefined>;
+  deleteTrader(id: number): Promise<boolean>;
   getAllTraders(): Promise<any[]>;
   
   // Rating operations
@@ -124,6 +125,21 @@ export class DatabaseStorage implements IStorage {
       .where(eq(traders.id, id))
       .returning();
     return updatedTrader;
+  }
+
+  async deleteTrader(id: number): Promise<boolean> {
+    try {
+      // First delete all ratings associated with this trader
+      await db.delete(ratings).where(eq(ratings.traderId, id));
+      
+      // Then delete the trader
+      const result = await db.delete(traders).where(eq(traders.id, id));
+      
+      return result.rowCount !== null && result.rowCount > 0;
+    } catch (error) {
+      console.error('Error deleting trader:', error);
+      return false;
+    }
   }
 
   async getAllTraders(): Promise<any[]> {
