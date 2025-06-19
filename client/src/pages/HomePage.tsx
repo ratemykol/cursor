@@ -105,6 +105,7 @@ export const HomePage = (): JSX.Element => {
           <div className="absolute w-[283px] h-[396px] top-[678px] left-[1256px] bg-[#2ec08b] rounded-[141.4px/198.1px] rotate-[-76deg] mt-[-827px] mb-[-827px]" />
           <div className="absolute w-[126px] h-[186px] top-[587px] left-[1031px] bg-[#e2dffd] rounded-[62.9px/92.76px] rotate-[-18deg] mt-[-838px] mb-[-838px] ml-[-258px] mr-[-258px]" />
           <div className="absolute w-[52px] h-[73px] top-[706px] left-[1009px] bg-[#ffffc4] rounded-[25.91px/36.35px] rotate-[32deg] ml-[-249px] mr-[-249px] mt-[-834px] mb-[-834px]" />
+          <div className="absolute w-[401.66px] h-[259.47px] top-[400px] left-[600px] bg-[#d9d9d9] rounded-[200.83px/129.735px] rotate-[15deg]" />
 
           <div className="text-center mb-16">
             <h2 className="font-medium text-[#3c315b] text-[69px]">
