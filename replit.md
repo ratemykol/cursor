@@ -121,6 +121,7 @@ Changelog:
 - June 19, 2025. Fixed rating submission database errors by updating schema and creating anonymous user
 - June 19, 2025. Reformatted review display with user avatars, rating bars, and improved timestamp formatting
 - June 19, 2025. Redesigned search page with empty state card and results view matching user specifications
+- June 19, 2025. Fixed trader ranking algorithm with proper database sorting by average rating and five-star count tie-breaking
 ```
 
 ## User Preferences
