@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,12 +10,14 @@ import { Star, Image } from "lucide-react";
 export const HomePage = (): JSX.Element => {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [hasSearched, setHasSearched] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Fetch search results when search query exists
   const { data: searchResults = [], isLoading } = useQuery({
     queryKey: searchQuery.trim() ? ['/api/traders', { q: searchQuery.trim() }] : ['/api/traders'],
-    enabled: hasSearched,
+    enabled: searchQuery.trim().length > 0,
   });
 
   // Data for trader cards
@@ -27,23 +29,44 @@ export const HomePage = (): JSX.Element => {
     { id: 5, rank: 5, bgColor: "bg-[#4a87f2]" },
   ];
 
-  const handleSearch = () => {
-    if (searchQuery.trim()) {
-      setHasSearched(true);
+  // Handle clicks outside dropdown to close it
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Show/hide dropdown based on search query and focus
+  useEffect(() => {
+    if (searchQuery.trim().length > 0) {
+      setShowDropdown(true);
     } else {
-      setHasSearched(false);
+      setShowDropdown(false);
     }
+  }, [searchQuery]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleTraderSelect = (traderId: number) => {
+    setShowDropdown(false);
+    setSearchQuery("");
+    setLocation(`/trader/${traderId}`);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSearch();
+    if (e.key === "Escape") {
+      setShowDropdown(false);
+      inputRef.current?.blur();
     }
-  };
-
-  const clearSearch = () => {
-    setSearchQuery("");
-    setHasSearched(false);
   };
 
   return (
@@ -51,89 +74,8 @@ export const HomePage = (): JSX.Element => {
       <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
         <Header currentPage="home" />
 
-        {hasSearched ? (
-          <section className="px-20 py-8">
-            <div className="max-w-4xl mx-auto">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">
-                  {searchQuery ? `Search results for "${searchQuery}"` : 'All Crypto Traders'}
-                </h2>
-                <Button variant="outline" onClick={clearSearch}>
-                  Back to Home
-                </Button>
-              </div>
-
-              {isLoading ? (
-                <div className="text-center py-8">Loading...</div>
-              ) : !Array.isArray(searchResults) || searchResults.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-600">No traders found matching your search.</p>
-                  <Button className="mt-4" onClick={clearSearch}>
-                    Try Again
-                  </Button>
-                </div>
-              ) : (
-                <div className="grid gap-4">
-                  {searchResults.map((trader: any) => (
-                    <Card key={trader.id} className="p-6 hover:shadow-md transition-shadow">
-                      <CardContent className="p-0">
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-start gap-4 flex-1">
-                            <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
-                              {trader.profileImage ? (
-                                <img 
-                                  src={trader.profileImage} 
-                                  alt={trader.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-gray-300">
-                                  <Image size={20} className="text-gray-500" />
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex-1">
-                              <Link href={`/trader/${trader.id}`}>
-                                <h3 className="text-xl font-bold text-blue-600 hover:underline">
-                                  {trader.name}
-                                </h3>
-                              </Link>
-                              <p className="text-gray-600">{trader.specialty || 'Crypto Trading'}</p>
-                              <p className="text-sm text-gray-500 mt-1">
-                                Wallet: {trader.walletAddress}
-                              </p>
-                              {trader.bio && (
-                                <p className="text-gray-700 mt-2">{trader.bio}</p>
-                              )}
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center gap-4 ml-6">
-                            <div className="text-center">
-                              <div className="flex items-center gap-1 text-yellow-500">
-                                <Star size={16} fill="currentColor" />
-                                <span className="font-medium">4.2</span>
-                              </div>
-                              <p className="text-gray-500 text-xs">156 ratings</p>
-                            </div>
-                            <Link href={`/trader/${trader.id}/rate`}>
-                              <Button className="bg-blue-600 hover:bg-blue-700">
-                                Rate Trader
-                              </Button>
-                            </Link>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </div>
-          </section>
-        ) : (
-          <>
-          {/* Hero Section */}
-          <section className="relative px-20 mt-[99px] mb-[99px]">
+        {/* Hero Section */}
+        <section className="relative px-20 mt-[99px] mb-[99px]">
           {/* Decorative elements */}
           <img
             className="w-[73px] h-[74px] absolute left-[360px] top-[146px] mt-[-231px] mb-[-231px] ml-[-61px] mr-[-61px]"
@@ -159,31 +101,73 @@ export const HomePage = (): JSX.Element => {
             </p>
           </div>
 
-          {/* SearchIcon Bar */}
-          <div className="mt-16 relative max-w-3xl mx-auto z-[10]">
+          {/* Search Bar with Dropdown */}
+          <div className="mt-16 relative max-w-3xl mx-auto z-[10]" ref={dropdownRef}>
             <div className="relative">
               <Input
+                ref={inputRef}
                 className="h-11 rounded-[5px] border-2 border-[#9f98b3] pl-4 pr-28"
                 placeholder="Search..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearchChange}
                 onKeyPress={handleKeyPress}
               />
-              <div className="absolute right-0 top-0 h-full">
-                <Button 
-                  className="h-full bg-transparent hover:bg-transparent p-0"
-                  onClick={handleSearch}
-                >
-                  <img
-                    className="w-[104px] h-10"
-                    alt="Search button"
-                    src="/figmaAssets/search-button.svg"
-                  />
-                </Button>
+              <div className="absolute right-0 top-0 h-full pointer-events-none">
+                <img
+                  className="w-[104px] h-10"
+                  alt="Search button"
+                  src="/figmaAssets/search-button.svg"
+                />
               </div>
             </div>
+
+            {/* Dropdown Results */}
+            {showDropdown && (
+              <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg mt-1 max-h-60 overflow-y-auto z-50">
+                {isLoading ? (
+                  <div className="p-4 text-center text-gray-500">Loading...</div>
+                ) : !Array.isArray(searchResults) || searchResults.length === 0 ? (
+                  <div className="p-4 text-center">
+                    <p className="text-red-500 font-medium">No Results</p>
+                  </div>
+                ) : (
+                  <div>
+                    {searchResults.map((trader: any) => (
+                      <div
+                        key={trader.id}
+                        className="flex items-center gap-3 p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0"
+                        onClick={() => handleTraderSelect(trader.id)}
+                      >
+                        <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                          {trader.profileImage ? (
+                            <img 
+                              src={trader.profileImage} 
+                              alt={trader.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gray-300">
+                              <Image size={16} className="text-gray-500" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-gray-900 truncate">
+                            {trader.name}
+                          </div>
+                          <div className="text-sm text-gray-500 truncate">
+                            {trader.walletAddress}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             <p className="text-center font-medium text-[#9f98b3] text-base mt-4">
-              SearchIcon examples: &#34;crypto_expert_2024&#34; or
+              Search examples: &#34;crypto_expert_2024&#34; or
               &#34;0x742d35Cc6634C0532925a3b8D404fA503e8d&#34;
             </p>
           </div>
@@ -244,8 +228,6 @@ export const HomePage = (): JSX.Element => {
         
         {/* Footer */}
         <footer className="w-full h-[800px] bg-[#ab9ff2] mt-80" />
-        </>
-        )}
       </div>
     </div>
   );
