@@ -192,8 +192,8 @@ export const TraderProfilePage = (): JSX.Element => {
                   {ratings.map((rating: any) => (
                     <div key={rating.id} className="border-b border-gray-100 pb-6 last:border-b-0 last:pb-0">
                       {/* User avatar and header */}
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-lg font-medium">
                           {rating.reviewerName ? rating.reviewerName.charAt(0).toUpperCase() : 'A'}
                         </div>
                         <div className="flex-1">
@@ -221,39 +221,39 @@ export const TraderProfilePage = (): JSX.Element => {
                             <p className="text-gray-700 mb-3">{rating.comment}</p>
                           )}
                           
-                          {/* Rating bars */}
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-3">
-                              <span className="text-sm text-gray-600 w-20">Profitability:</span>
-                              <div className="flex-1 max-w-20 bg-gray-200 rounded-full h-2">
+                          {/* Rating bars - horizontal layout */}
+                          <div className="flex flex-wrap gap-6">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-gray-600">Profitability:</span>
+                              <div className="w-16 bg-gray-200 rounded-full h-2">
                                 <div 
                                   className="bg-blue-500 h-2 rounded-full" 
                                   style={{ width: `${(rating.profitabilityRating / 5) * 100}%` }}
                                 ></div>
                               </div>
-                              <span className="text-sm text-gray-600 w-8">{rating.profitabilityRating}/5</span>
+                              <span className="text-sm text-gray-600">{rating.profitabilityRating}/5</span>
                             </div>
                             
-                            <div className="flex items-center gap-3">
-                              <span className="text-sm text-gray-600 w-20">Communication:</span>
-                              <div className="flex-1 max-w-20 bg-gray-200 rounded-full h-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-gray-600">Communication:</span>
+                              <div className="w-16 bg-gray-200 rounded-full h-2">
                                 <div 
                                   className="bg-blue-500 h-2 rounded-full" 
                                   style={{ width: `${(rating.communicationRating / 5) * 100}%` }}
                                 ></div>
                               </div>
-                              <span className="text-sm text-gray-600 w-8">{rating.communicationRating}/5</span>
+                              <span className="text-sm text-gray-600">{rating.communicationRating}/5</span>
                             </div>
                             
-                            <div className="flex items-center gap-3">
-                              <span className="text-sm text-gray-600 w-20">Reliability:</span>
-                              <div className="flex-1 max-w-20 bg-gray-200 rounded-full h-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-gray-600">Reliability:</span>
+                              <div className="w-16 bg-gray-200 rounded-full h-2">
                                 <div 
                                   className="bg-blue-500 h-2 rounded-full" 
                                   style={{ width: `${(rating.reliabilityRating / 5) * 100}%` }}
                                 ></div>
                               </div>
-                              <span className="text-sm text-gray-600 w-8">{rating.reliabilityRating}/5</span>
+                              <span className="text-sm text-gray-600">{rating.reliabilityRating}/5</span>
                             </div>
                           </div>
                         </div>
