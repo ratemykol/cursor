@@ -360,25 +360,13 @@ export const HomePage = (): JSX.Element => {
                       </div>
                       
                       {/* View Profile Button */}
-                      <div className="flex justify-center w-full mb-3">
+                      <div className="flex justify-center w-full">
                         <Button 
                           onClick={() => setLocation(`/trader/${trader.id}`)}
                           className="w-[168px] h-12 bg-white text-black font-medium text-lg transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#AB9FF2] hover:shadow-lg transform-gpu"
                         >
                           View Profile
                         </Button>
-                      </div>
-                      
-                      {/* Compact Social Share Badges */}
-                      <div className="flex justify-center">
-                        <SocialShareBadges 
-                          variant="compact"
-                          traderName={trader.name}
-                          traderRating={trader.averageRating}
-                          walletAddress={trader.walletAddress}
-                          rank={trader.rank}
-                          specialty={trader.specialty}
-                        />
                       </div>
                     </CardContent>
                   </Card>
