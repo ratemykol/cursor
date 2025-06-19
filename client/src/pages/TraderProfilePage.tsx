@@ -157,8 +157,17 @@ export const TraderProfilePage = (): JSX.Element => {
             <CardContent>
               <div className="space-y-3">
                 {[5, 4, 3, 2, 1].map((starCount) => (
-                  <div key={starCount} className="flex items-center justify-between">
-                    <span className="text-gray-700">{starCount} star</span>
+                  <div key={starCount} className="flex items-center gap-3">
+                    <span className="text-gray-700 w-12">{starCount} star</span>
+                    <div className="flex-1 bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="h-2 rounded-full transition-all duration-300" 
+                        style={{ 
+                          width: `${totalRatings > 0 ? (ratingCounts[starCount - 1] / totalRatings) * 100 : 0}%`, 
+                          backgroundColor: '#AB9FF2' 
+                        }}
+                      ></div>
+                    </div>
                     <span className="text-gray-600 text-right min-w-[30px]">
                       {ratingCounts[starCount - 1]}
                     </span>
@@ -193,7 +202,7 @@ export const TraderProfilePage = (): JSX.Element => {
                     <div key={rating.id} className="border-b border-gray-100 pb-6 last:border-b-0 last:pb-0">
                       {/* User avatar and header */}
                       <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-lg font-medium">
+                        <div className="w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-medium" style={{ backgroundColor: '#AB9FF2' }}>
                           {rating.reviewerName ? rating.reviewerName.charAt(0).toUpperCase() : 'A'}
                         </div>
                         <div className="flex-1">
@@ -227,8 +236,8 @@ export const TraderProfilePage = (): JSX.Element => {
                               <span className="text-sm text-gray-600">Profitability:</span>
                               <div className="w-16 bg-gray-200 rounded-full h-2">
                                 <div 
-                                  className="bg-blue-500 h-2 rounded-full" 
-                                  style={{ width: `${(rating.profitabilityRating / 5) * 100}%` }}
+                                  className="h-2 rounded-full" 
+                                  style={{ width: `${(rating.profitabilityRating / 5) * 100}%`, backgroundColor: '#AB9FF2' }}
                                 ></div>
                               </div>
                               <span className="text-sm text-gray-600">{rating.profitabilityRating}/5</span>
@@ -238,8 +247,8 @@ export const TraderProfilePage = (): JSX.Element => {
                               <span className="text-sm text-gray-600">Communication:</span>
                               <div className="w-16 bg-gray-200 rounded-full h-2">
                                 <div 
-                                  className="bg-blue-500 h-2 rounded-full" 
-                                  style={{ width: `${(rating.communicationRating / 5) * 100}%` }}
+                                  className="h-2 rounded-full" 
+                                  style={{ width: `${(rating.communicationRating / 5) * 100}%`, backgroundColor: '#AB9FF2' }}
                                 ></div>
                               </div>
                               <span className="text-sm text-gray-600">{rating.communicationRating}/5</span>
@@ -249,8 +258,8 @@ export const TraderProfilePage = (): JSX.Element => {
                               <span className="text-sm text-gray-600">Reliability:</span>
                               <div className="w-16 bg-gray-200 rounded-full h-2">
                                 <div 
-                                  className="bg-blue-500 h-2 rounded-full" 
-                                  style={{ width: `${(rating.reliabilityRating / 5) * 100}%` }}
+                                  className="h-2 rounded-full" 
+                                  style={{ width: `${(rating.reliabilityRating / 5) * 100}%`, backgroundColor: '#AB9FF2' }}
                                 ></div>
                               </div>
                               <span className="text-sm text-gray-600">{rating.reliabilityRating}/5</span>
