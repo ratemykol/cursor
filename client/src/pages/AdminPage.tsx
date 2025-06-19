@@ -268,6 +268,22 @@ export const AdminPage = (): JSX.Element => {
       <div className="bg-white min-h-screen">
         <Header currentPage="admin" />
         <div className="container mx-auto px-8 py-8">
+          {/* Navigation Tabs */}
+          <div className="flex gap-4 mb-6">
+            <Button 
+              variant={view === "list" ? "default" : "outline"}
+              onClick={() => setView("list")}
+            >
+              Manage Traders
+            </Button>
+            <Button 
+              variant={view === "reviews" ? "default" : "outline"}
+              onClick={() => setView("reviews")}
+            >
+              Manage Reviews
+            </Button>
+          </div>
+
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">Admin Panel - Manage Traders</h1>
             <Button onClick={startCreate} className="flex items-center gap-2">
@@ -342,6 +358,225 @@ export const AdminPage = (): JSX.Element => {
                   <Button onClick={createSampleTraders} variant="outline">
                     Add Sample Data
                   </Button>
+                </Card>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (view === "reviews") {
+    return (
+      <div className="bg-white min-h-screen">
+        <Header currentPage="admin" />
+        <div className="container mx-auto px-8 py-8">
+          {/* Navigation Tabs */}
+          <div className="flex gap-4 mb-6">
+            <Button 
+              variant={view === "list" ? "default" : "outline"}
+              onClick={() => setView("list")}
+            >
+              Manage Traders
+            </Button>
+            <Button 
+              variant={view === "reviews" ? "default" : "outline"}
+              onClick={() => setView("reviews")}
+            >
+              Manage Reviews
+            </Button>
+          </div>
+
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold">Admin Panel - Manage Reviews</h1>
+          </div>
+
+          {reviewsLoading ? (
+            <div className="text-center py-8">Loading reviews...</div>
+          ) : (
+            <div className="space-y-4">
+              {reviews.map((review: any) => (
+                <Card key={review.id} className="border border-gray-200">
+                  <CardContent className="p-6">
+                    {editingReview?.id === review.id ? (
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                          <h3 className="font-semibold">Editing Review #{review.id}</h3>
+                          <div className="flex gap-2">
+                            <Button 
+                              size="sm"
+                              onClick={() => {
+                                updateReviewMutation.mutate({
+                                  id: review.id,
+                                  data: {
+                                    comment: editingReview.comment,
+                                    overallRating: editingReview.overallRating,
+                                    profitabilityRating: editingReview.profitabilityRating,
+                                    communicationRating: editingReview.communicationRating,
+                                    reliabilityRating: editingReview.reliabilityRating,
+                                  }
+                                });
+                              }}
+                            >
+                              Save
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => setEditingReview(null)}
+                            >
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <Label>Overall Rating</Label>
+                            <Input
+                              type="number"
+                              min="1"
+                              max="5"
+                              value={editingReview.overallRating}
+                              onChange={(e) => setEditingReview({
+                                ...editingReview,
+                                overallRating: parseInt(e.target.value)
+                              })}
+                            />
+                          </div>
+                          <div>
+                            <Label>Profitability Rating</Label>
+                            <Input
+                              type="number"
+                              min="1"
+                              max="5"
+                              value={editingReview.profitabilityRating}
+                              onChange={(e) => setEditingReview({
+                                ...editingReview,
+                                profitabilityRating: parseInt(e.target.value)
+                              })}
+                            />
+                          </div>
+                          <div>
+                            <Label>Trade Activity Rating</Label>
+                            <Input
+                              type="number"
+                              min="1"
+                              max="5"
+                              value={editingReview.communicationRating}
+                              onChange={(e) => setEditingReview({
+                                ...editingReview,
+                                communicationRating: parseInt(e.target.value)
+                              })}
+                            />
+                          </div>
+                          <div>
+                            <Label>Reliability Rating</Label>
+                            <Input
+                              type="number"
+                              min="1"
+                              max="5"
+                              value={editingReview.reliabilityRating}
+                              onChange={(e) => setEditingReview({
+                                ...editingReview,
+                                reliabilityRating: parseInt(e.target.value)
+                              })}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <Label>Comment</Label>
+                          <Textarea
+                            value={editingReview.comment}
+                            onChange={(e) => setEditingReview({
+                              ...editingReview,
+                              comment: e.target.value
+                            })}
+                            className="min-h-[100px]"
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <p className="font-medium">Review #{review.id}</p>
+                            <p className="text-sm text-gray-600">
+                              Trader ID: {review.traderId} | Reviewer: {review.reviewerName || 'Anonymous'}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {new Date(review.createdAt).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => setEditingReview(review)}
+                            >
+                              <Edit size={16} />
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="destructive"
+                              onClick={() => {
+                                if (confirm('Are you sure you want to delete this review?')) {
+                                  deleteReviewMutation.mutate(review.id);
+                                }
+                              }}
+                            >
+                              <Trash2 size={16} />
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-4 gap-4 mb-4">
+                          <div>
+                            <p className="text-sm text-gray-600">Overall</p>
+                            <p className="font-medium">{review.overallRating}/5</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-600">Profitability</p>
+                            <p className="font-medium">{review.profitabilityRating}/5</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-600">Trade Activity</p>
+                            <p className="font-medium">{review.communicationRating}/5</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-600">Reliability</p>
+                            <p className="font-medium">{review.reliabilityRating}/5</p>
+                          </div>
+                        </div>
+                        
+                        {review.comment && (
+                          <div>
+                            <p className="text-sm text-gray-600 mb-1">Comment:</p>
+                            <p className="text-gray-800">{review.comment}</p>
+                          </div>
+                        )}
+                        
+                        {review.tags && review.tags.length > 0 && (
+                          <div className="mt-3">
+                            <p className="text-sm text-gray-600 mb-2">Tags:</p>
+                            <div className="flex flex-wrap gap-2">
+                              {review.tags.map((tag: string, index: number) => (
+                                <Badge key={index} variant="secondary">{tag}</Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+              
+              {reviews.length === 0 && (
+                <Card className="p-8 text-center">
+                  <p className="text-gray-600">No reviews found.</p>
                 </Card>
               )}
             </div>
