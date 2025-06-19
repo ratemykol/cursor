@@ -21,8 +21,8 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
       <div className="flex items-center gap-4">
         <Button
           variant="ghost"
-          className={`rounded-full font-medium text-[#3c315b] ${
-            currentPage === "home" ? "font-semibold" : ""
+          className={`rounded-full font-medium text-[#3c315b] transition-all duration-200 ease-in-out hover:scale-105 hover:bg-[#f3f1ff] hover:shadow-md ${
+            currentPage === "home" ? "font-semibold bg-[#f3f1ff] shadow-sm" : ""
           }`}
           onClick={() => setLocation("/")}
         >
@@ -30,8 +30,8 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
         </Button>
         <Button
           variant="ghost"
-          className={`rounded-full font-medium text-[#3c315b] ${
-            currentPage === "search" ? "font-semibold" : ""
+          className={`rounded-full font-medium text-[#3c315b] transition-all duration-200 ease-in-out hover:scale-105 hover:bg-[#f3f1ff] hover:shadow-md ${
+            currentPage === "search" ? "font-semibold bg-[#f3f1ff] shadow-sm" : ""
           }`}
           onClick={() => setLocation("/search")}
         >
@@ -39,14 +39,14 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
         </Button>
         <Button
           variant="ghost"
-          className={`rounded-full font-medium text-[#3c315b] ${
-            currentPage === "admin" ? "font-semibold" : ""
+          className={`rounded-full font-medium text-[#3c315b] transition-all duration-200 ease-in-out hover:scale-105 hover:bg-[#f3f1ff] hover:shadow-md ${
+            currentPage === "admin" ? "font-semibold bg-[#f3f1ff] shadow-sm" : ""
           }`}
           onClick={() => setLocation("/admin")}
         >
           Admin
         </Button>
-        <Button className="bg-[#ab9ff2] text-[#3c315b] rounded-full hover:bg-[#9b8de2]">
+        <Button className="bg-[#ab9ff2] text-[#3c315b] rounded-full transition-all duration-200 ease-in-out hover:scale-105 hover:bg-[#9b8de2] hover:shadow-lg transform-gpu">
           Sign In
         </Button>
       </div>
