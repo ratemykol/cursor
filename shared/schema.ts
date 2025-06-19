@@ -28,10 +28,14 @@ export const sessions = pgTable(
 // User storage table.
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().notNull(),
+  username: varchar("username", { length: 50 }).unique(),
   email: varchar("email").unique(),
+  passwordHash: varchar("password_hash", { length: 255 }),
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+  bio: text("bio"),
+  authType: varchar("auth_type", { length: 20 }).default("replit"), // "replit" or "local"
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -103,6 +107,20 @@ export const insertRatingSchema = createInsertSchema(ratings).omit({
   notHelpful: true,
 });
 
+// Authentication schemas
+export const userRegistrationSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters").max(50, "Username must be less than 50 characters"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+});
+
+export const userLoginSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
+});
+
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -110,3 +128,5 @@ export type Trader = typeof traders.$inferSelect;
 export type InsertTrader = z.infer<typeof insertTraderSchema>;
 export type Rating = typeof ratings.$inferSelect;
 export type InsertRating = z.infer<typeof insertRatingSchema>;
+export type UserRegistration = z.infer<typeof userRegistrationSchema>;
+export type UserLogin = z.infer<typeof userLoginSchema>;
