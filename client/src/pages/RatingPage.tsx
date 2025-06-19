@@ -100,23 +100,6 @@ export const RatingPage = (): JSX.Element => {
     );
   };
 
-  const CustomSlider = ({ value, onChange }: { value: number[], onChange: (value: number[]) => void }) => {
-    return (
-      <div className="relative">
-        <input
-          type="range"
-          min="1"
-          max="5"
-          step="0.1"
-          value={value[0]}
-          onChange={(e) => onChange([Math.round(parseFloat(e.target.value))])}
-          onInput={(e) => onChange([Math.round(parseFloat((e.target as HTMLInputElement).value))])}
-          className="w-full custom-slider"
-        />
-      </div>
-    );
-  };
-
   const renderSlider = (
     label: string,
     value: number[],
@@ -126,8 +109,14 @@ export const RatingPage = (): JSX.Element => {
     <div className="mb-6">
       <label className="text-sm font-medium text-gray-900 mb-3 block">{label}</label>
       <div className="px-3">
-        <CustomSlider value={value} onChange={onChange} />
-        
+        <Slider
+          value={value}
+          onValueChange={onChange}
+          max={5}
+          min={1}
+          step={1}
+          className="w-full"
+        />
         <div className="flex justify-between mt-2 text-sm text-gray-600">
           <span>1</span>
           <span>2</span>
