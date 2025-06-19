@@ -1,13 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
-import { ArrowLeft, Star, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Star, Image as ImageIcon, Edit, Trash2 } from "lucide-react";
 
 export const TraderProfilePage = (): JSX.Element => {
   const { id } = useParams();
+  const [editingReview, setEditingReview] = useState<any>(null);
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: trader, isLoading: traderLoading } = useQuery({
     queryKey: [`/api/traders/${id}`],
@@ -17,6 +25,58 @@ export const TraderProfilePage = (): JSX.Element => {
   const { data: ratings = [], isLoading: ratingsLoading } = useQuery({
     queryKey: [`/api/traders/${id}/ratings`],
     enabled: !!id,
+  });
+
+  // Admin mutation functions for editing/deleting reviews
+  const updateReviewMutation = useMutation({
+    mutationFn: async ({ reviewId, data }: { reviewId: number; data: any }) => {
+      const response = await fetch(`/api/admin/ratings/${reviewId}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) throw new Error('Failed to update review');
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Review updated successfully!",
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/traders/${id}/ratings`] });
+      setEditingReview(null);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to update review. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteReviewMutation = useMutation({
+    mutationFn: async (reviewId: number) => {
+      const response = await fetch(`/api/admin/ratings/${reviewId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error('Failed to delete review');
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Review deleted successfully!",
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/traders/${id}/ratings`] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to delete review. Please try again.",
+        variant: "destructive",
+      });
+    },
   });
 
   if (traderLoading) {
@@ -156,12 +216,21 @@ export const TraderProfilePage = (): JSX.Element => {
                     </p>
                   )}
 
-                  {/* Rate This Trader Button */}
-                  <Link href={`/trader/${id}/rate`}>
-                    <Button className="bg-[#ab9ff2] text-black rounded-md transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu px-6 py-2">
-                      Rate This Trader
+                  {/* Rate This Trader Button and Admin Toggle */}
+                  <div className="flex gap-3">
+                    <Link href={`/trader/${id}/rate`}>
+                      <Button className="bg-[#ab9ff2] text-black rounded-md transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu px-6 py-2">
+                        Rate This Trader
+                      </Button>
+                    </Link>
+                    <Button 
+                      variant={isAdminMode ? "default" : "outline"}
+                      onClick={() => setIsAdminMode(!isAdminMode)}
+                      className="px-4 py-2"
+                    >
+                      {isAdminMode ? "Exit Admin" : "Admin Mode"}
                     </Button>
-                  </Link>
+                  </div>
                 </div>
 
                 {/* Popular Tags - Right Side */}
@@ -242,65 +311,201 @@ export const TraderProfilePage = (): JSX.Element => {
                           {rating.reviewerName ? rating.reviewerName.charAt(0).toUpperCase() : 'A'}
                         </div>
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-medium text-gray-900">
-                              {rating.reviewerName || 'Anonymous'}
-                            </span>
-                            <div className="flex">
-                              {renderStars(rating.overallRating)}
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium text-gray-900">
+                                {rating.reviewerName || 'Anonymous'}
+                              </span>
+                              <div className="flex">
+                                {renderStars(rating.overallRating)}
+                              </div>
+                              <span className="text-sm text-gray-500">
+                                {new Date(rating.createdAt).toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                  year: 'numeric'
+                                })} • {new Date(rating.createdAt).toLocaleTimeString('en-US', {
+                                  hour: 'numeric',
+                                  minute: '2-digit',
+                                  hour12: true
+                                })}
+                              </span>
                             </div>
-                            <span className="text-sm text-gray-500">
-                              {new Date(rating.createdAt).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric'
-                              })} • {new Date(rating.createdAt).toLocaleTimeString('en-US', {
-                                hour: 'numeric',
-                                minute: '2-digit',
-                                hour12: true
-                              })}
-                            </span>
+                            {/* Admin Edit/Delete Buttons */}
+                            {isAdminMode && (
+                              <div className="flex gap-2">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => setEditingReview(rating)}
+                                  className="flex items-center gap-1"
+                                >
+                                  <Edit size={14} />
+                                  Edit
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="destructive"
+                                  onClick={() => {
+                                    if (confirm('Are you sure you want to delete this review?')) {
+                                      deleteReviewMutation.mutate(rating.id);
+                                    }
+                                  }}
+                                  className="flex items-center gap-1"
+                                >
+                                  <Trash2 size={14} />
+                                  Delete
+                                </Button>
+                              </div>
+                            )}
                           </div>
                           
-                          {rating.comment && (
-                            <p className="text-gray-700 mb-3">{rating.comment}</p>
+                          {/* Review Content - Edit Mode or Display Mode */}
+                          {editingReview?.id === rating.id ? (
+                            <div className="space-y-4 mt-4">
+                              {/* Edit Form */}
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <Label className="text-sm">Overall Rating</Label>
+                                  <Input
+                                    type="number"
+                                    min="1"
+                                    max="5"
+                                    value={editingReview.overallRating}
+                                    onChange={(e) => setEditingReview({
+                                      ...editingReview,
+                                      overallRating: parseInt(e.target.value)
+                                    })}
+                                    className="mt-1"
+                                  />
+                                </div>
+                                <div>
+                                  <Label className="text-sm">Profitability Rating</Label>
+                                  <Input
+                                    type="number"
+                                    min="1"
+                                    max="5"
+                                    value={editingReview.profitabilityRating}
+                                    onChange={(e) => setEditingReview({
+                                      ...editingReview,
+                                      profitabilityRating: parseInt(e.target.value)
+                                    })}
+                                    className="mt-1"
+                                  />
+                                </div>
+                                <div>
+                                  <Label className="text-sm">Trade Activity Rating</Label>
+                                  <Input
+                                    type="number"
+                                    min="1"
+                                    max="5"
+                                    value={editingReview.communicationRating}
+                                    onChange={(e) => setEditingReview({
+                                      ...editingReview,
+                                      communicationRating: parseInt(e.target.value)
+                                    })}
+                                    className="mt-1"
+                                  />
+                                </div>
+                                <div>
+                                  <Label className="text-sm">Reliability Rating</Label>
+                                  <Input
+                                    type="number"
+                                    min="1"
+                                    max="5"
+                                    value={editingReview.reliabilityRating}
+                                    onChange={(e) => setEditingReview({
+                                      ...editingReview,
+                                      reliabilityRating: parseInt(e.target.value)
+                                    })}
+                                    className="mt-1"
+                                  />
+                                </div>
+                              </div>
+                              
+                              <div>
+                                <Label className="text-sm">Comment</Label>
+                                <Textarea
+                                  value={editingReview.comment || ''}
+                                  onChange={(e) => setEditingReview({
+                                    ...editingReview,
+                                    comment: e.target.value
+                                  })}
+                                  className="mt-1 min-h-[80px]"
+                                />
+                              </div>
+                              
+                              <div className="flex gap-2">
+                                <Button 
+                                  size="sm"
+                                  onClick={() => {
+                                    updateReviewMutation.mutate({
+                                      reviewId: rating.id,
+                                      data: {
+                                        comment: editingReview.comment,
+                                        overallRating: editingReview.overallRating,
+                                        profitabilityRating: editingReview.profitabilityRating,
+                                        communicationRating: editingReview.communicationRating,
+                                        reliabilityRating: editingReview.reliabilityRating,
+                                      }
+                                    });
+                                  }}
+                                  className="bg-[#ab9ff2] hover:bg-[#9990e6]"
+                                >
+                                  Save Changes
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => setEditingReview(null)}
+                                >
+                                  Cancel
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              {rating.comment && (
+                                <p className="text-gray-700 mb-3">{rating.comment}</p>
+                              )}
+                              
+                              {/* Rating bars - horizontal layout */}
+                              <div className="flex flex-wrap gap-6">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm text-gray-600">Profitability:</span>
+                                  <div className="w-16 bg-gray-200 rounded-full h-2">
+                                    <div 
+                                      className="h-2 rounded-full" 
+                                      style={{ width: `${(rating.profitabilityRating / 5) * 100}%`, backgroundColor: '#AB9FF2' }}
+                                    ></div>
+                                  </div>
+                                  <span className="text-sm text-gray-600">{rating.profitabilityRating}/5</span>
+                                </div>
+                                
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm text-gray-600">Trade Activity:</span>
+                                  <div className="w-16 bg-gray-200 rounded-full h-2">
+                                    <div 
+                                      className="h-2 rounded-full" 
+                                      style={{ width: `${(rating.communicationRating / 5) * 100}%`, backgroundColor: '#AB9FF2' }}
+                                    ></div>
+                                  </div>
+                                  <span className="text-sm text-gray-600">{rating.communicationRating}/5</span>
+                                </div>
+                                
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm text-gray-600">Reliability:</span>
+                                  <div className="w-16 bg-gray-200 rounded-full h-2">
+                                    <div 
+                                      className="h-2 rounded-full" 
+                                      style={{ width: `${(rating.reliabilityRating / 5) * 100}%`, backgroundColor: '#AB9FF2' }}
+                                    ></div>
+                                  </div>
+                                  <span className="text-sm text-gray-600">{rating.reliabilityRating}/5</span>
+                                </div>
+                              </div>
+                            </>
                           )}
-                          
-                          {/* Rating bars - horizontal layout */}
-                          <div className="flex flex-wrap gap-6">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm text-gray-600">Profitability:</span>
-                              <div className="w-16 bg-gray-200 rounded-full h-2">
-                                <div 
-                                  className="h-2 rounded-full" 
-                                  style={{ width: `${(rating.profitabilityRating / 5) * 100}%`, backgroundColor: '#AB9FF2' }}
-                                ></div>
-                              </div>
-                              <span className="text-sm text-gray-600">{rating.profitabilityRating}/5</span>
-                            </div>
-                            
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm text-gray-600">Trade Activity:</span>
-                              <div className="w-16 bg-gray-200 rounded-full h-2">
-                                <div 
-                                  className="h-2 rounded-full" 
-                                  style={{ width: `${(rating.communicationRating / 5) * 100}%`, backgroundColor: '#AB9FF2' }}
-                                ></div>
-                              </div>
-                              <span className="text-sm text-gray-600">{rating.communicationRating}/5</span>
-                            </div>
-                            
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm text-gray-600">Reliability:</span>
-                              <div className="w-16 bg-gray-200 rounded-full h-2">
-                                <div 
-                                  className="h-2 rounded-full" 
-                                  style={{ width: `${(rating.reliabilityRating / 5) * 100}%`, backgroundColor: '#AB9FF2' }}
-                                ></div>
-                              </div>
-                              <span className="text-sm text-gray-600">{rating.reliabilityRating}/5</span>
-                            </div>
-                          </div>
                         </div>
                       </div>
                     </div>
