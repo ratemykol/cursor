@@ -22,6 +22,7 @@ export interface IStorage {
   getTraderByWallet(walletAddress: string): Promise<Trader | undefined>;
   searchTraders(query: string): Promise<Trader[]>;
   createTrader(trader: InsertTrader): Promise<Trader>;
+  updateTrader(id: number, trader: InsertTrader): Promise<Trader | undefined>;
   getAllTraders(): Promise<Trader[]>;
   
   // Rating operations
@@ -90,6 +91,15 @@ export class DatabaseStorage implements IStorage {
       .values(trader)
       .returning();
     return newTrader;
+  }
+
+  async updateTrader(id: number, traderData: InsertTrader): Promise<Trader | undefined> {
+    const [updatedTrader] = await db
+      .update(traders)
+      .set(traderData)
+      .where(eq(traders.id, id))
+      .returning();
+    return updatedTrader;
   }
 
   async getAllTraders(): Promise<Trader[]> {
