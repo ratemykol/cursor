@@ -134,7 +134,7 @@ export const RatingPage = (): JSX.Element => {
           step={1}
           className="w-full"
         />
-        <div className="flex justify-between mt-2 text-sm text-gray-600">
+        <div className="flex justify-between mt-2 text-sm" style={{ color: '#AB9FF2' }}>
           <span>1</span>
           <span>2</span>
           <span>3</span>
@@ -148,7 +148,7 @@ export const RatingPage = (): JSX.Element => {
           </div>
         )}
         <div className="text-center mt-2">
-          <span className="text-lg font-semibold text-blue-600">{value[0]}</span>
+          <span className="text-lg font-semibold" style={{ color: '#AB9FF2' }}>{value[0]}</span>
           <span className="text-gray-500"> / 5</span>
         </div>
       </div>
@@ -250,9 +250,10 @@ export const RatingPage = (): JSX.Element => {
                         onClick={() => toggleTag(tag)}
                         className={`px-3 py-1 rounded-full text-sm border transition-colors ${
                           selectedTags.includes(tag)
-                            ? 'bg-blue-600 text-white border-blue-600'
+                            ? 'text-white border-transparent'
                             : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                         }`}
+                        style={selectedTags.includes(tag) ? { backgroundColor: '#AB9FF2' } : {}}
                       >
                         {tag}
                       </button>
@@ -264,7 +265,7 @@ export const RatingPage = (): JSX.Element => {
                 <Button
                   type="submit"
                   disabled={mutation.isPending}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg font-medium"
+                  className="w-full bg-[#ab9ff2] text-black rounded-md transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu py-3 text-lg font-medium"
                 >
                   {mutation.isPending ? "Submitting..." : "Submit Review"}
                 </Button>
