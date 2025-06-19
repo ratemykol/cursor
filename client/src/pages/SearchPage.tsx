@@ -77,19 +77,34 @@ export const SearchPage = (): JSX.Element => {
               <Card key={trader.id} className="p-6">
                 <CardContent className="p-0">
                   <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <Link href={`/trader/${trader.id}`}>
-                        <h3 className="text-xl font-bold text-blue-600 hover:underline">
-                          {trader.name}
-                        </h3>
-                      </Link>
-                      <p className="text-gray-600">{trader.specialty || 'Crypto Trading'}</p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        Wallet: {trader.walletAddress}
-                      </p>
-                      {trader.bio && (
-                        <p className="text-gray-700 mt-2">{trader.bio}</p>
-                      )}
+                    <div className="flex items-start gap-4 flex-1">
+                      <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                        {trader.profileImage ? (
+                          <img 
+                            src={trader.profileImage} 
+                            alt={trader.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gray-300">
+                            <div className="w-8 h-8 bg-gray-500 rounded-full"></div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <Link href={`/trader/${trader.id}`}>
+                          <h3 className="text-xl font-bold text-blue-600 hover:underline">
+                            {trader.name}
+                          </h3>
+                        </Link>
+                        <p className="text-gray-600">{trader.specialty || 'Crypto Trading'}</p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Wallet: {trader.walletAddress}
+                        </p>
+                        {trader.bio && (
+                          <p className="text-gray-700 mt-2">{trader.bio}</p>
+                        )}
+                      </div>
                     </div>
                     
                     <div className="flex items-center gap-4 ml-6">
