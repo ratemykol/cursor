@@ -249,7 +249,7 @@ export const HomePage = (): JSX.Element => {
                   <div className="flex items-center justify-between w-full mb-3">
                     <div className="flex items-center gap-2">
                       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span className="text-sm font-medium text-gray-700">Rating</span>
+                      <span className="text-sm font-medium text-black">Rating</span>
                     </div>
                     <span className="text-lg font-bold text-black">5.0</span>
                   </div>
@@ -258,14 +258,14 @@ export const HomePage = (): JSX.Element => {
                   <div className="flex items-center justify-between w-full mb-6">
                     <div className="flex items-center gap-2">
                       <span className="text-green-500 text-sm">📈</span>
-                      <span className="text-sm font-medium text-gray-700">Performance</span>
+                      <span className="text-sm font-medium text-black">Performance</span>
                     </div>
                     <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
                       Verified
                     </span>
                   </div>
                   
-                  <div className="mt-auto mb-6">
+                  <div className="flex justify-center w-full mb-6">
                     <Button className="w-[168px] h-12 bg-white text-black font-medium text-lg transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#AB9FF2] hover:shadow-lg transform-gpu">
                       View Profile
                     </Button>
