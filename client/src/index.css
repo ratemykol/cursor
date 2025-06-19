@@ -41,26 +41,15 @@
     }
   }
 
-  /* Responsive scaling for decorative elements */
-  @media (max-width: 1440px) {
-    .decorative-element {
-      transform: scale(0.8);
-      transform-origin: center;
-    }
+  /* Zoom-responsive decorative elements */
+  .hero-decorative {
+    position: absolute;
+    /* Use em units that scale with root font size and zoom */
   }
 
-  @media (max-width: 1024px) {
-    .decorative-element {
-      transform: scale(0.6);
-      transform-origin: center;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .decorative-element {
-      transform: scale(0.4);
-      transform-origin: center;
-    }
+  .traders-decorative {
+    position: absolute;
+    /* Scale with zoom using em units */
   }
 }
 
