@@ -324,7 +324,7 @@ export const HomePage = (): JSX.Element => {
                     {/* Performance Section */}
                     <div className="flex items-center justify-between w-full mb-6">
                       <div className="flex items-center gap-2">
-                        <span className="text-green-500 text-sm">📈</span>
+                        <TrendingUp className="w-4 h-4 text-green-500" />
                         <span className="text-sm font-medium text-black">Performance</span>
                       </div>
                       <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
