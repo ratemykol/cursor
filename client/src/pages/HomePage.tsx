@@ -43,15 +43,15 @@ export const HomePage = (): JSX.Element => {
         <section className="relative mt-16 px-20">
           {/* Decorative elements */}
           <img
-            className="w-[73px] h-[74px] absolute left-[334px] top-[-150px]"
+            className="w-[73px] h-[74px] absolute left-[360px] top-[146px]"
             alt="Star"
             src="/figmaAssets/star-2.svg"
           />
-          <div className="absolute w-[27px] h-[35px] top-[-123px] left-[496px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg]" />
-          <div className="absolute w-[73px] h-[97px] top-[-31px] left-[491.08px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg]" />
-          <div className="absolute w-[92px] h-[71px] top-[-79px] left-[577px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg]" />
+          <div className="absolute w-[27px] h-[35px] top-[173px] left-[522px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg]" />
+          <div className="absolute w-[73px] h-[97px] top-[265px] left-[517.08px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] mt-[-296px] mb-[-296px] ml-[-26px] mr-[-26px]" />
+          <div className="absolute w-[92px] h-[71px] top-[217px] left-[603px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg]" />
           <img
-            className="absolute w-[76px] h-[61px] top-[33px] left-[1190px]"
+            className="absolute w-[76px] h-[61px] top-[329px] left-[1216px]"
             alt="Polygon"
             src="/figmaAssets/polygon-1.svg"
           />
@@ -94,17 +94,17 @@ export const HomePage = (): JSX.Element => {
         <section className="mt-32 relative">
           {/* Decorative elements */}
           <img
-            className="w-[175px] h-44 absolute left-[13px] top-[96px]"
+            className="w-[175px] h-44 absolute left-[39px] top-[392px]"
             alt="Star"
             src="/figmaAssets/star-1.svg"
           />
-          <div className="absolute w-[283px] h-[396px] top-[397px] left-[-200px] bg-[#ab9ff2] rounded-[141.4px/198.1px] rotate-[-76deg]" />
-          <div className="absolute w-[126px] h-[186px] top-[460px] left-[52px] bg-black rounded-[62.9px/92.76px] rotate-[15deg]" />
-          <div className="absolute w-[95px] h-[165px] top-[304px] left-[356px] bg-[#ffdadc] rounded-[47.63px/82.54px] rotate-[96deg]" />
-          <div className="absolute w-[126px] h-[186px] top-[158px] left-[1259px] bg-[#ff7243] rounded-[62.9px/92.76px] rotate-[15deg]" />
-          <div className="absolute w-[283px] h-[396px] top-[382px] left-[1230px] bg-[#2ec08b] rounded-[141.4px/198.1px] rotate-[-76deg]" />
-          <div className="absolute w-[126px] h-[186px] top-[291px] left-[1005px] bg-[#e2dffd] rounded-[62.9px/92.76px] rotate-[-18deg]" />
-          <div className="absolute w-[52px] h-[73px] top-[410px] left-[983px] bg-[#ffffc4] rounded-[25.91px/36.35px] rotate-[32deg]" />
+          <div className="absolute w-[283px] h-[396px] top-[693px] left-[-174px] bg-[#ab9ff2] rounded-[141.4px/198.1px] rotate-[-76deg]" />
+          <div className="absolute w-[126px] h-[186px] top-[756px] left-[78px] bg-black rounded-[62.9px/92.76px] rotate-[15deg]" />
+          <div className="absolute w-[95px] h-[165px] top-[600px] left-[382px] bg-[#ffdadc] rounded-[47.63px/82.54px] rotate-[96deg]" />
+          <div className="absolute w-[126px] h-[186px] top-[454px] left-[1285px] bg-[#ff7243] rounded-[62.9px/92.76px] rotate-[15deg]" />
+          <div className="absolute w-[283px] h-[396px] top-[678px] left-[1256px] bg-[#2ec08b] rounded-[141.4px/198.1px] rotate-[-76deg]" />
+          <div className="absolute w-[126px] h-[186px] top-[587px] left-[1031px] bg-[#e2dffd] rounded-[62.9px/92.76px] rotate-[-18deg]" />
+          <div className="absolute w-[52px] h-[73px] top-[706px] left-[1009px] bg-[#ffffc4] rounded-[25.91px/36.35px] rotate-[32deg]" />
 
           <div className="text-center mb-16">
             <h2 className="font-medium text-[#3c315b] text-[69px]">
