@@ -74,7 +74,7 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
           />
           
           {/* Modal content */}
-          <div className="relative bg-white rounded-3xl w-full max-w-md mx-4 p-8 transform transition-all duration-300 scale-100">
+          <div className="relative bg-white rounded-3xl w-full max-w-md mx-4 p-8 transform transition-transform duration-500 ease-out animate-slide-up-center">
             <div className="text-center">
               <p 
                 className="text-2xl font-semibold text-gray-800 cursor-pointer hover:text-[#ab9ff2] transition-colors duration-200"

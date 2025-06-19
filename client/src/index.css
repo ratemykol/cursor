@@ -91,6 +91,20 @@
   animation: slide-up 0.5s ease-out;
 }
 
+/* CA Overlay slide-up to center animation */
+@keyframes slide-up-center {
+  from {
+    transform: translateY(100vh);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up-center {
+  animation: slide-up-center 0.5s ease-out;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
