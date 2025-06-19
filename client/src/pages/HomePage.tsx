@@ -8,21 +8,25 @@ import { Header } from "@/components/Header";
 import { Star, Image, Search } from "lucide-react";
 
 export const HomePage = (): JSX.Element => {
+  const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
-  const [, setLocation] = useLocation();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Search for traders based on query
-  const { data: searchResults = [] } = useQuery({
-    queryKey: ["/api/traders", { search: searchQuery }],
-    queryFn: () => {
-      const params = new URLSearchParams();
-      if (searchQuery.trim()) {
-        params.append("search", searchQuery.trim());
-      }
-      return fetch(`/api/traders?${params}`).then((res) => res.json());
+  // Fetch search results when search query exists
+  const { data: searchResults = [], isLoading } = useQuery({
+    queryKey: ['/api/traders', searchQuery.trim()],
+    queryFn: async () => {
+      const query = searchQuery.trim();
+      if (!query) return [];
+      
+      const url = new URL('/api/traders', window.location.origin);
+      url.searchParams.set('q', query);
+      
+      const response = await fetch(url.toString());
+      if (!response.ok) throw new Error('Search failed');
+      return response.json();
     },
     enabled: searchQuery.trim().length > 0,
   });
@@ -103,60 +107,73 @@ export const HomePage = (): JSX.Element => {
     }
   };
 
-  const handleSearchSubmit = () => {
-    if (searchQuery.trim()) {
-      setLocation(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-white relative overflow-x-hidden">
-      <Header currentPage="home" />
-      
-      {/* Background Elements */}
-      <div className="absolute w-[283px] h-[396px] top-[20px] left-[-174px] bg-[#ab9ff2] rounded-[141.4px/198.1px] rotate-[-76deg] z-10" />
-      <div className="absolute w-[126px] h-[186px] top-[83px] left-[78px] bg-black rounded-[62.9px/92.76px] rotate-[15deg] z-10" />
-      <div className="absolute w-[95px] h-[165px] top-[-73px] left-[382px] bg-[#ffdadc] rounded-[47.63px/82.54px] rotate-[96deg] ml-[-28px] mr-[-28px] z-10" />
-      <div className="absolute w-[126px] h-[186px] top-[-219px] left-[1285px] bg-[#ff7243] rounded-[62.9px/92.76px] rotate-[15deg] ml-[-230px] mr-[-230px] z-10" />
-      <div className="absolute w-[283px] h-[396px] top-[5px] left-[1256px] bg-[#2ec08b] rounded-[141.4px/198.1px] rotate-[-76deg] z-10" />
-      <div className="absolute w-[126px] h-[186px] top-[-86px] left-[1031px] bg-[#e2dffd] rounded-[62.9px/92.76px] rotate-[-18deg] ml-[-258px] mr-[-258px] z-10" />
-      <div className="absolute w-[52px] h-[73px] top-[33px] left-[1009px] bg-[#ffffc4] rounded-[25.91px/36.35px] rotate-[32deg] ml-[-249px] mr-[-249px] z-10" />
-      <div className="absolute w-[401.66px] h-[259.47px] top-[-20px] left-[1100px] bg-[#d9d9d9] rounded-[200.83px/129.735px] rotate-[-15deg] z-[1]" />
+    <div className="bg-white flex flex-row justify-center w-full">
+      <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
+        <Header currentPage="home" />
 
-      <div className="relative z-20">
         {/* Hero Section */}
-        <section className="px-4 py-20 text-center">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-6xl font-bold text-black mb-6">
-              Rate My KOL
-            </h1>
-            <p className="text-xl text-gray-600 mb-12">
-              Discover and rate the best Key Opinion Leaders in crypto
-            </p>
+        <section className="relative px-20 mt-[99px] mb-[99px]">
+          {/* Decorative elements */}
+          <img
+            className="w-[73px] h-[74px] absolute left-[360px] top-[146px] mt-[-231px] mb-[-231px] ml-[-61px] mr-[-61px]"
+            alt="Star"
+            src="/figmaAssets/star-2.svg"
+          />
+          <div className="absolute w-[27px] h-[35px] top-[173px] left-[522px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] ml-[-26px] mr-[-26px] mt-[-256px] mb-[-256px]" />
+          <div className="absolute w-[73px] h-[97px] top-[265px] left-[517.08px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] mt-[-296px] mb-[-296px] ml-[-26px] mr-[-26px] z-[1]" />
+          <div className="absolute w-[92px] h-[71px] top-[217px] left-[603px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] ml-[-26px] mr-[-26px] mt-[-296px] mb-[-296px]" />
+          <img
+            className="absolute w-[76px] h-[61px] top-[329px] left-[1216px] mt-[-300px] mb-[-300px]"
+            alt="Polygon"
+            src="/figmaAssets/polygon-1.svg"
+          />
 
-            {/* Search Bar with Dropdown */}
-            <div className="relative max-w-2xl mx-auto" ref={dropdownRef}>
-              <div className="flex">
+          <div className="max-w-3xl mx-auto text-center relative z-[5]">
+            <h2 className="font-medium text-[#3c315b] text-[69px] leading-tight">
+              Rate Your Crypto KOLs
+            </h2>
+            <p className="font-medium text-[#9f98b3] text-[22px] mt-4">
+              Find and review KOLs based on their performance, reliability, and
+              trading strategies
+            </p>
+          </div>
+
+          {/* Search Bar with Dropdown */}
+          <div className="mt-16 relative max-w-3xl mx-auto z-[10]" ref={dropdownRef}>
+            <div className="relative">
+              <div className="relative">
                 <Input
                   ref={inputRef}
-                  type="text"
-                  placeholder="Search traders by name or wallet address..."
+                  className="h-11 rounded-[5px] border-2 border-[#9f98b3] pl-4 pr-28 w-full"
+                  placeholder="Search..."
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  onKeyDown={handleKeyPress}
-                  className="flex-1 h-14 text-lg px-6 rounded-l-lg border-r-0 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  onKeyPress={handleKeyPress}
                 />
                 <Button 
-                  onClick={handleSearchSubmit}
-                  className="h-14 px-6 bg-white text-black border border-l-0 rounded-r-lg rounded-l-none hover:bg-[#AB9FF2] transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg transform-gpu"
+                  className="absolute right-[2px] top-[2px] h-[calc(100%-4px)] w-[108px] bg-[#ab9ff2] text-[#3c315b] rounded-r-[3px] rounded-l-none font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center justify-center border-0"
+                  onClick={() => {
+                    if (searchQuery.trim()) {
+                      setLocation(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                    }
+                  }}
                 >
                   <Search size={20} />
                 </Button>
               </div>
+            </div>
 
-              {/* Dropdown Results */}
-              {showDropdown && searchResults.length > 0 && (
-                <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-80 overflow-y-auto z-50">
+            {/* Dropdown Results */}
+            {showDropdown && (
+              <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg mt-1 max-h-60 overflow-y-auto z-50">
+                {isLoading ? (
+                  <div className="p-4 text-center text-gray-500">Loading...</div>
+                ) : !Array.isArray(searchResults) || searchResults.length === 0 ? (
+                  <div className="p-4 text-center">
+                    <p className="text-red-500 font-medium">No Results</p>
+                  </div>
+                ) : (
                   <div>
                     {searchResults.map((trader: any) => (
                       <div
@@ -197,14 +214,14 @@ export const HomePage = (): JSX.Element => {
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
+                )}
+              </div>
+            )}
 
             <p className="text-center font-medium text-[#9f98b3] text-base mt-4">
-              Search examples: "crypto_expert_2024" or
-              "0x742d35Cc6634C0532925a3b8D404fA503e8d"
+              Search examples: &#34;crypto_expert_2024&#34; or
+              &#34;0x742d35Cc6634C0532925a3b8D404fA503e8d&#34;
             </p>
-            </div>
           </div>
         </section>
 
