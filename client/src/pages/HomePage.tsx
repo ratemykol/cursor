@@ -2,12 +2,21 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
+import { Star, Image } from "lucide-react";
 
 export const HomePage = (): JSX.Element => {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
+
+  // Fetch search results when search query exists
+  const { data: searchResults = [], isLoading } = useQuery({
+    queryKey: searchQuery.trim() ? ['/api/traders', { q: searchQuery.trim() }] : ['/api/traders'],
+    enabled: hasSearched,
+  });
 
   // Data for trader cards
   const traders = [
@@ -20,7 +29,9 @@ export const HomePage = (): JSX.Element => {
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      setLocation(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setHasSearched(true);
+    } else {
+      setHasSearched(false);
     }
   };
 
@@ -30,13 +41,99 @@ export const HomePage = (): JSX.Element => {
     }
   };
 
+  const clearSearch = () => {
+    setSearchQuery("");
+    setHasSearched(false);
+  };
+
   return (
     <div className="bg-white flex flex-row justify-center w-full">
       <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
         <Header currentPage="home" />
 
-        {/* Hero Section */}
-        <section className="relative px-20 mt-[99px] mb-[99px]">
+        {hasSearched ? (
+          <section className="px-20 py-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold">
+                  {searchQuery ? `Search results for "${searchQuery}"` : 'All Crypto Traders'}
+                </h2>
+                <Button variant="outline" onClick={clearSearch}>
+                  Back to Home
+                </Button>
+              </div>
+
+              {isLoading ? (
+                <div className="text-center py-8">Loading...</div>
+              ) : !Array.isArray(searchResults) || searchResults.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">No traders found matching your search.</p>
+                  <Button className="mt-4" onClick={clearSearch}>
+                    Try Again
+                  </Button>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {searchResults.map((trader: any) => (
+                    <Card key={trader.id} className="p-6 hover:shadow-md transition-shadow">
+                      <CardContent className="p-0">
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start gap-4 flex-1">
+                            <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                              {trader.profileImage ? (
+                                <img 
+                                  src={trader.profileImage} 
+                                  alt={trader.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-gray-300">
+                                  <Image size={20} className="text-gray-500" />
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              <Link href={`/trader/${trader.id}`}>
+                                <h3 className="text-xl font-bold text-blue-600 hover:underline">
+                                  {trader.name}
+                                </h3>
+                              </Link>
+                              <p className="text-gray-600">{trader.specialty || 'Crypto Trading'}</p>
+                              <p className="text-sm text-gray-500 mt-1">
+                                Wallet: {trader.walletAddress}
+                              </p>
+                              {trader.bio && (
+                                <p className="text-gray-700 mt-2">{trader.bio}</p>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-4 ml-6">
+                            <div className="text-center">
+                              <div className="flex items-center gap-1 text-yellow-500">
+                                <Star size={16} fill="currentColor" />
+                                <span className="font-medium">4.2</span>
+                              </div>
+                              <p className="text-gray-500 text-xs">156 ratings</p>
+                            </div>
+                            <Link href={`/trader/${trader.id}/rate`}>
+                              <Button className="bg-blue-600 hover:bg-blue-700">
+                                Rate Trader
+                              </Button>
+                            </Link>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        ) : (
+          <>
+          {/* Hero Section */}
+          <section className="relative px-20 mt-[99px] mb-[99px]">
           {/* Decorative elements */}
           <img
             className="w-[73px] h-[74px] absolute left-[360px] top-[146px] mt-[-231px] mb-[-231px] ml-[-61px] mr-[-61px]"
@@ -147,6 +244,8 @@ export const HomePage = (): JSX.Element => {
         
         {/* Footer */}
         <footer className="w-full h-[800px] bg-[#ab9ff2] mt-80" />
+        </>
+        )}
       </div>
     </div>
   );
