@@ -48,7 +48,7 @@ export const HomePage = (): JSX.Element => {
             src="/figmaAssets/star-2.svg"
           />
           <div className="absolute w-[27px] h-[35px] top-[173px] left-[522px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] ml-[-26px] mr-[-26px] mt-[-256px] mb-[-256px]" />
-          <div className="absolute w-[73px] h-[97px] top-[265px] left-[517.08px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] mt-[-296px] mb-[-296px] ml-[-26px] mr-[-26px]" />
+          <div className="absolute w-[73px] h-[97px] top-[265px] left-[517.08px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] mt-[-296px] mb-[-296px] ml-[-26px] mr-[-26px] z-[1]" />
           <div className="absolute w-[92px] h-[71px] top-[217px] left-[603px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] ml-[-26px] mr-[-26px] mt-[-296px] mb-[-296px]" />
           <img
             className="absolute w-[76px] h-[61px] top-[329px] left-[1216px] mt-[-300px] mb-[-300px]"
