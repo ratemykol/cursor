@@ -13,7 +13,7 @@ import { ArrowLeft, Star, Image as ImageIcon, Edit, Trash2 } from "lucide-react"
 
 export const TraderProfilePage = (): JSX.Element => {
   const { id } = useParams();
-  const [editingReview, setEditingReview] = useState<any>(null);
+
   const [visibleReviews, setVisibleReviews] = useState(20);
   const { toast } = useToast();
   const { isAuthenticated, user } = useAuth();
@@ -312,117 +312,13 @@ export const TraderProfilePage = (): JSX.Element => {
 
                           </div>
                           
-                          {/* Review Content - Edit Mode or Display Mode */}
-                          {editingReview?.id === rating.id ? (
-                            <div className="space-y-4 mt-4">
-                              {/* Edit Form */}
-                              <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                  <Label className="text-sm">Overall Rating</Label>
-                                  <Input
-                                    type="number"
-                                    min="1"
-                                    max="5"
-                                    value={editingReview.overallRating}
-                                    onChange={(e) => setEditingReview({
-                                      ...editingReview,
-                                      overallRating: parseInt(e.target.value)
-                                    })}
-                                    className="mt-1"
-                                  />
-                                </div>
-                                <div>
-                                  <Label className="text-sm">Profitability Rating</Label>
-                                  <Input
-                                    type="number"
-                                    min="1"
-                                    max="5"
-                                    value={editingReview.profitabilityRating}
-                                    onChange={(e) => setEditingReview({
-                                      ...editingReview,
-                                      profitabilityRating: parseInt(e.target.value)
-                                    })}
-                                    className="mt-1"
-                                  />
-                                </div>
-                                <div>
-                                  <Label className="text-sm">Trade Activity Rating</Label>
-                                  <Input
-                                    type="number"
-                                    min="1"
-                                    max="5"
-                                    value={editingReview.communicationRating}
-                                    onChange={(e) => setEditingReview({
-                                      ...editingReview,
-                                      communicationRating: parseInt(e.target.value)
-                                    })}
-                                    className="mt-1"
-                                  />
-                                </div>
-                                <div>
-                                  <Label className="text-sm">Reliability Rating</Label>
-                                  <Input
-                                    type="number"
-                                    min="1"
-                                    max="5"
-                                    value={editingReview.reliabilityRating}
-                                    onChange={(e) => setEditingReview({
-                                      ...editingReview,
-                                      reliabilityRating: parseInt(e.target.value)
-                                    })}
-                                    className="mt-1"
-                                  />
-                                </div>
-                              </div>
-                              
-                              <div>
-                                <Label className="text-sm">Comment</Label>
-                                <Textarea
-                                  value={editingReview.comment || ''}
-                                  onChange={(e) => setEditingReview({
-                                    ...editingReview,
-                                    comment: e.target.value
-                                  })}
-                                  className="mt-1 min-h-[80px]"
-                                />
-                              </div>
-                              
-                              <div className="flex gap-2">
-                                <Button 
-                                  size="sm"
-                                  onClick={() => {
-                                    updateReviewMutation.mutate({
-                                      reviewId: rating.id,
-                                      data: {
-                                        comment: editingReview.comment,
-                                        overallRating: editingReview.overallRating,
-                                        profitabilityRating: editingReview.profitabilityRating,
-                                        communicationRating: editingReview.communicationRating,
-                                        reliabilityRating: editingReview.reliabilityRating,
-                                      }
-                                    });
-                                  }}
-                                  className="bg-[#ab9ff2] hover:bg-[#9990e6]"
-                                >
-                                  Save Changes
-                                </Button>
-                                <Button 
-                                  size="sm" 
-                                  variant="outline"
-                                  onClick={() => setEditingReview(null)}
-                                >
-                                  Cancel
-                                </Button>
-                              </div>
-                            </div>
-                          ) : (
-                            <>
-                              {rating.comment && (
-                                <p className="text-gray-700 mb-3">{rating.comment}</p>
-                              )}
-                              
-                              {/* Rating bars and tags layout */}
-                              <div className="flex justify-between items-start gap-6">
+                          {/* Review Content */}
+                          {rating.comment && (
+                            <p className="text-gray-700 mb-3">{rating.comment}</p>
+                          )}
+                          
+                          {/* Rating bars and tags layout */}
+                          <div className="flex justify-between items-start gap-6">
                                 {/* Rating bars - left side */}
                                 <div className="flex flex-wrap gap-6 flex-1">
                                   <div className="flex items-center gap-2">
@@ -476,8 +372,6 @@ export const TraderProfilePage = (): JSX.Element => {
                                   </div>
                                 )}
                               </div>
-                            </>
-                          )}
                         </div>
                       </div>
                     </div>
