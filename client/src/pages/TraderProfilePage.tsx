@@ -207,10 +207,25 @@ export const TraderProfilePage = (): JSX.Element => {
 
                   {/* Wallet Address */}
                   <div className="mb-4">
-                    <p className="text-sm text-gray-600 mb-1">
-                      Wallet: 
-                      <span 
-                        className="font-mono text-gray-800 cursor-pointer hover:text-[#ab9ff2] transition-colors duration-200 ml-1"
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm text-gray-600 mb-1">
+                        Wallet: 
+                        <span 
+                          className="font-mono text-gray-800 cursor-pointer hover:text-[#ab9ff2] transition-colors duration-200 ml-1"
+                          onClick={() => {
+                            navigator.clipboard.writeText(trader.walletAddress);
+                            toast({
+                              title: "Copied to clipboard",
+                              description: "Wallet address copied successfully",
+                            });
+                          }}
+                          title="Click to copy wallet address"
+                        >
+                          {trader.walletAddress}
+                        </span>
+                      </p>
+                      <Button 
+                        className="bg-[#ab9ff2] text-black rounded-md transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu px-3 py-1 text-sm"
                         onClick={() => {
                           navigator.clipboard.writeText(trader.walletAddress);
                           toast({
@@ -218,11 +233,10 @@ export const TraderProfilePage = (): JSX.Element => {
                             description: "Wallet address copied successfully",
                           });
                         }}
-                        title="Click to copy wallet address"
                       >
-                        {trader.walletAddress}
-                      </span>
-                    </p>
+                        CA
+                      </Button>
+                    </div>
                   </div>
 
                   {/* Bio */}
