@@ -1251,14 +1251,26 @@ export const AdminPage = (): JSX.Element => {
                     : "Create Trader"}
                 </Button>
                 {view === "create" && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={createSampleTraders}
-                    disabled={createMutation.isPending}
-                  >
-                    Add Sample Data
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={createSampleTraders}
+                      disabled={createMutation.isPending}
+                    >
+                      Add Sample Data
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => importKolscanMutation.mutate()}
+                      disabled={importKolscanMutation.isPending}
+                      className="flex items-center gap-2"
+                    >
+                      <Upload size={16} />
+                      {importKolscanMutation.isPending ? "Importing..." : "Import from Kolscan"}
+                    </Button>
+                  </div>
                 )}
               </div>
             </form>
