@@ -105,8 +105,8 @@ export const UserProfilePage = (): JSX.Element => {
   }
 
   return (
-    <div className="bg-white flex flex-row justify-center w-full">
-      <div className="bg-white overflow-hidden w-full max-w-[1920px] relative">
+    <div className="bg-white w-full min-h-screen">
+      <div className="bg-white overflow-hidden w-full max-w-[1920px] relative mx-auto">
         <Header />
         
         <div className="flex justify-center items-start min-h-[calc(100vh-200px)] px-32 py-16">
