@@ -158,6 +158,9 @@ Changelog:
 - June 20, 2025. Added automatic Twitter profile image fetching for trader profiles using Twitter usernames extracted from URLs
 - June 20, 2025. Created dual input system for trader profile images: manual URL input OR automatic Twitter profile image fetching
 - June 20, 2025. Added refresh button in admin panel to manually update Twitter profile images for existing traders
+- June 20, 2025. Fixed rating submission validation errors by aligning server field expectations with frontend data structure
+- June 20, 2025. Implemented automatic page refresh after rating submission using query cache invalidation for real-time updates
+- June 20, 2025. Successfully imported 56 KOL traders with automatic Twitter profile image fetching and validated rating system functionality
 ```
 
 ## User Preferences

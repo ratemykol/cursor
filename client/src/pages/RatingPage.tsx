@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,6 +17,7 @@ export const RatingPage = (): JSX.Element => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { isAuthenticated, isLoading: authLoading, user } = useAuth();
+  const queryClient = useQueryClient();
   const [overallRating, setOverallRating] = useState([3]);
   const [profitabilityRating, setProfitabilityRating] = useState([3]);
   const [communicationRating, setCommunicationRating] = useState([3]);
@@ -70,6 +71,11 @@ export const RatingPage = (): JSX.Element => {
       return response.json();
     },
     onSuccess: () => {
+      // Invalidate and refetch trader data to refresh the profile page
+      queryClient.invalidateQueries({ queryKey: [`/api/traders/${id}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/traders/${id}/ratings`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/traders'] });
+      
       toast({
         title: "Success",
         description: "Your rating has been submitted!",
