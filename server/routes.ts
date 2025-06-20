@@ -599,6 +599,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin User Management Routes
+  app.get('/api/admin/users', isAdmin, async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.put('/api/admin/users/:userId', isAdmin, [
+    param('userId').notEmpty().withMessage('User ID is required'),
+    body('username')
+      .isLength({ min: 3, max: 30 })
+      .withMessage('Username must be between 3 and 30 characters')
+      .trim()
+      .escape(),
+    handleValidationErrors
+  ], async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { username } = req.body;
+      
+      const updatedUser = await storage.updateUserUsername(userId, username);
+      res.json(updatedUser);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
