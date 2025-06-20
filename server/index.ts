@@ -12,22 +12,11 @@ const app = express();
 // Trust proxy for rate limiting in Replit environment
 app.set('trust proxy', 1);
 
-// Security middleware configuration
+// Minimal security middleware - only in production
 if (process.env.NODE_ENV === 'production') {
-  // Production security with helmet - disable CSP here since we set it manually later
   app.use(helmet({
-    contentSecurityPolicy: false, // Disabled - we set CSP manually below
+    contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
-    hidePoweredBy: true,
-    frameguard: { action: 'deny' },
-    noSniff: true,
-    hsts: {
-      maxAge: 31536000,
-      includeSubDomains: true,
-      preload: true
-    },
-    xssFilter: true,
-    referrerPolicy: { policy: 'no-referrer' }
   }));
 }
 
@@ -54,52 +43,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// IP obfuscation and anti-doxxing middleware - only in production
-if (process.env.NODE_ENV === 'production') {
-  app.use((req, res, next) => {
-    // Remove real IP from logs and headers
-    const originalIP = req.ip;
-    
-    // Override IP with anonymized version for logging
-    Object.defineProperty(req, 'ip', {
-      value: 'xxx.xxx.xxx.xxx',
-      writable: false,
-      configurable: false
-    });
-    
-    // Remove identifying headers that could leak server info
-    delete req.headers['x-forwarded-for'];
-    delete req.headers['x-real-ip'];
-    delete req.headers['x-forwarded-host'];
-    delete req.headers['x-forwarded-proto'];
-    delete req.headers['x-forwarded-port'];
-    delete req.headers['forwarded'];
-    delete req.headers['via'];
-    delete req.headers['x-cluster-client-ip'];
-    delete req.headers['cf-connecting-ip'];
-    delete req.headers['true-client-ip'];
-    delete req.headers['x-original-forwarded-for'];
-    
-    next();
-  });
-}
-
-// Hide server fingerprinting information
-app.use((req, res, next) => {
-  // Only apply server obfuscation in production
-  if (process.env.NODE_ENV === 'production') {
-    res.setHeader('Server', 'nginx');
-    
-    // Randomize response timing to prevent timing attacks
-    const delay = Math.floor(Math.random() * 50);
-    setTimeout(() => {
-      next();
-    }, delay);
-  } else {
-    // Skip delays and obfuscation in development
-    next();
-  }
-});
+// Skip anti-doxxing middleware in development to prevent timing issues
 
 // CORS configuration - permissive in development, strict in production
 if (process.env.NODE_ENV === 'production') {
@@ -217,31 +161,23 @@ app.use((req, res, next) => {
 
 // Skip MIME type middleware - will be handled by Vite in development
 
-// Configure CSP for production and development
-if (process.env.NODE_ENV === 'production') {
-  // Production CSP - comprehensive policy for Replit deployment
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    res.setHeader('Content-Security-Policy', 
-      "default-src 'self'; " +
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://replit.com https://replit.app; " +
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-      "img-src 'self' data: https: blob:; " +
-      "connect-src 'self' ws: wss: https:; " +
-      "font-src 'self' https://fonts.gstatic.com; " +
-      "object-src 'none'; " +
-      "base-uri 'self'; " +
-      "frame-ancestors 'none';"
-    );
-    next();
-  });
-} else {
-  // Development - remove CSP headers completely
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    res.removeHeader('Content-Security-Policy');
-    res.removeHeader('Content-Security-Policy-Report-Only');
-    next();
-  });
-}
+// Completely disable all CSP in development to prevent JavaScript blocking
+app.use((req: Request, res: Response, next: NextFunction) => {
+  // Remove all CSP headers that might block JavaScript execution
+  res.removeHeader('Content-Security-Policy');
+  res.removeHeader('Content-Security-Policy-Report-Only');
+  res.removeHeader('X-Content-Security-Policy');
+  res.removeHeader('X-WebKit-CSP');
+  
+  // Also remove other restrictive headers in development
+  if (process.env.NODE_ENV !== 'production') {
+    res.removeHeader('X-Frame-Options');
+    res.removeHeader('X-Content-Type-Options');
+    res.removeHeader('X-XSS-Protection');
+  }
+  
+  next();
+});
 
 (async () => {
   const server = await registerRoutes(app);
