@@ -142,6 +142,7 @@ Changelog:
 - June 20, 2025. Reduced yellow eclipse decorative element size by 20% for better visual balance
 - June 20, 2025. Removed blue eclipse decorative element from hero section for cleaner design
 - June 20, 2025. Added new blue eclipse element (91.7x71.2px, -15° rotation) to homepage hero section
+- June 20, 2025. Fixed white bars issue when zooming out in Chrome by implementing full-width background coverage across all pages
 ```
 
 ## User Preferences
