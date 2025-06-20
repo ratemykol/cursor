@@ -10,55 +10,117 @@ import express from "express";
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-// Helper function to demonstrate kolscan data structure
+// Helper function to scrape kolscan.io leaderboard
 async function scrapeKolscanLeaderboard(): Promise<any[]> {
-  // Since kolscan.io/monthly-leaderboard returns 404, return sample data structure
-  // In a real implementation, you would need to find the correct kolscan API endpoint
-  const sampleTraders = [
-    {
-      name: 'CryptoKing',
-      walletAddress: 'DRCCgKGtCqGNhCdvJKBYGrXZqG3VSTvWXrVqj82ELfp2',
-      twitterUrl: 'https://twitter.com/cryptoking',
-      specialty: 'KOL Trading',
-      verified: true,
-      bio: 'Top performing KOL trader'
-    },
-    {
-      name: 'SolanaWhale',
-      walletAddress: 'GHWKpbvQ9LVm8XcvFhKNqqHd2JvZKpF4kYMqNhFZDrjG',
-      twitterUrl: 'https://twitter.com/solanawhale',
-      specialty: 'KOL Trading', 
-      verified: true,
-      bio: 'High volume Solana trader'
-    },
-    {
-      name: 'DeFiMaster',
-      walletAddress: 'BpvQEKGzNgqFmJ7RxtKrPpGdVbK4hJ3ZqSRCZyF2Tv8s',
-      twitterUrl: 'https://twitter.com/defimaster',
-      specialty: 'KOL Trading',
-      verified: true,
-      bio: 'DeFi protocol specialist'
-    },
-    {
-      name: 'MemeTrader',
-      walletAddress: 'CQxZr4LpGNwY3m8vKHdF2jGfVc6JqPpT9sWbX7nRkEhL',
-      twitterUrl: null,
-      specialty: 'KOL Trading',
-      verified: true,
-      bio: 'Meme coin trading expert'
-    },
-    {
-      name: 'AlphaSeeker',
-      walletAddress: 'FKpLm3Ej8vGnRdJqTbN9KsHc2nWfVz4Y6tCrXmGpQsLd',
-      twitterUrl: 'https://twitter.com/alphaseeker',
-      specialty: 'KOL Trading',
-      verified: true,
-      bio: 'Alpha finding specialist'
-    }
-  ];
+  try {
+    const response = await axios.get('https://kolscan.io/leaderboard', {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1'
+      },
+      timeout: 15000
+    });
 
-  console.log(`Returning ${sampleTraders.length} sample traders (kolscan endpoint unavailable)`);
-  return sampleTraders;
+    const $ = cheerio.load(response.data);
+    const traders: any[] = [];
+
+    // Look for leaderboard entries with various selectors
+    const selectors = [
+      'table tr',
+      '[class*="leaderboard"] tr',
+      '[class*="row"]',
+      '[class*="item"]',
+      '[class*="trader"]',
+      'li'
+    ];
+
+    for (const selector of selectors) {
+      $(selector).each((index, element) => {
+        if (traders.length >= 20) return false; // Stop when we have enough
+
+        const $row = $(element);
+        const rowText = $row.text();
+        
+        // Find Solana wallet addresses (Base58 format)
+        const walletMatches = rowText.match(/[1-9A-HJ-NP-Za-km-z]{32,44}/g);
+        
+        if (walletMatches && walletMatches.length > 0) {
+          const walletAddress = walletMatches[0];
+          
+          // Skip if we already have this wallet
+          if (traders.some(t => t.walletAddress === walletAddress)) {
+            return;
+          }
+          
+          // Extract trader name
+          let name = '';
+          const textElements = $row.find('*').map((i, el) => $(el).text().trim()).get();
+          
+          // Look for text that could be a name
+          for (const text of textElements) {
+            if (text && 
+                text.length > 2 && 
+                text.length < 30 &&
+                !text.match(/[1-9A-HJ-NP-Za-km-z]{32,44}/) && // Not a wallet
+                !text.match(/^\d+\.?\d*$/) && // Not just numbers
+                !text.match(/^\$/) && // Not price
+                !text.match(/^#/) && // Not rank number
+                text !== walletAddress) {
+              name = text.replace(/^@/, '').trim();
+              break;
+            }
+          }
+          
+          // Extract Twitter links
+          const twitterUrl = $row.find('a[href*="twitter.com"], a[href*="x.com"]').attr('href') || null;
+          
+          // Only add if we have a name or Twitter
+          if (name || twitterUrl) {
+            traders.push({
+              name: name || `Trader_${traders.length + 1}`,
+              walletAddress,
+              twitterUrl,
+              specialty: 'KOL Trading',
+              verified: true,
+              bio: 'KOL trader from kolscan leaderboard'
+            });
+          }
+        }
+      });
+      
+      if (traders.length > 0) break; // Stop searching if we found traders
+    }
+
+    // If no structured data found, try aggressive text parsing
+    if (traders.length === 0) {
+      const pageText = $.text();
+      const walletMatches = pageText.match(/[1-9A-HJ-NP-Za-km-z]{32,44}/g);
+      
+      if (walletMatches) {
+        walletMatches.slice(0, 10).forEach((wallet, index) => {
+          traders.push({
+            name: `KOL_${index + 1}`,
+            walletAddress: wallet,
+            twitterUrl: null,
+            specialty: 'KOL Trading',
+            verified: true,
+            bio: 'Extracted from kolscan leaderboard'
+          });
+        });
+      }
+    }
+
+    console.log(`Extracted ${traders.length} traders from kolscan leaderboard`);
+    return traders;
+    
+  } catch (error: any) {
+    console.error('Kolscan scraping failed:', error.message);
+    throw new Error(`Unable to access kolscan leaderboard: ${error.message}`);
+  }
 }
 
 // Helper function to extract Twitter username from URL
