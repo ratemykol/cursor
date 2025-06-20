@@ -138,6 +138,11 @@ export const AdminPage = (): JSX.Element => {
     queryKey: ["/api/admin/users"],
   });
 
+  // Type the data arrays to avoid unknown type errors
+  const typedTraders = traders as any[];
+  const typedReviews = reviews as any[];
+  const typedUsers = users as any[];
+
   const createMutation = useMutation({
     mutationFn: async (traderData: any) => {
       const response = await fetch("/api/traders", {
@@ -521,7 +526,7 @@ export const AdminPage = (): JSX.Element => {
             <div className="text-center py-8">Loading traders...</div>
           ) : (
             <div className="grid gap-4">
-              {traders.map((trader: any) => (
+              {typedTraders.map((trader: any) => (
                 <Card key={trader.id} className="p-4">
                   <div className="flex justify-between items-start">
                     <div className="flex items-start gap-4 flex-1">
@@ -606,7 +611,7 @@ export const AdminPage = (): JSX.Element => {
                 </Card>
               ))}
               
-              {traders.length === 0 && (
+              {typedTraders.length === 0 && (
                 <Card className="p-8 text-center">
                   <p className="text-gray-600 mb-4">No traders found. Create your first trader profile!</p>
                   <Button onClick={createKOLTraders} variant="outline">
@@ -675,7 +680,7 @@ export const AdminPage = (): JSX.Element => {
             <div className="text-center py-8">Loading users...</div>
           ) : (
             <div className="space-y-4">
-              {users
+              {typedUsers
                 .filter((user: any) => 
                   !userSearch || 
                   user.username?.toLowerCase().includes(userSearch.toLowerCase()) ||
@@ -786,11 +791,11 @@ export const AdminPage = (): JSX.Element => {
               ))}
               
               {/* Empty state messages */}
-              {users.length === 0 ? (
+              {typedUsers.length === 0 ? (
                 <Card className="p-8 text-center">
                   <p className="text-gray-600">No users found.</p>
                 </Card>
-              ) : users
+              ) : typedUsers
                 .filter((user: any) => 
                   !userSearch || 
                   user.username?.toLowerCase().includes(userSearch.toLowerCase()) ||
@@ -862,7 +867,7 @@ export const AdminPage = (): JSX.Element => {
             <div className="text-center py-8">Loading reviews...</div>
           ) : (
             <div className="space-y-4">
-              {reviews
+              {typedReviews
                 .filter((review: any) => 
                   !reviewSearch || 
                   review.reviewerName?.toLowerCase().includes(reviewSearch.toLowerCase())
