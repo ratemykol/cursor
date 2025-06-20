@@ -5,11 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
+import { Star, Edit, Trash2, ExternalLink } from "lucide-react";
 
 export const UserProfilePage = (): JSX.Element => {
   const [, setLocation] = useLocation();
