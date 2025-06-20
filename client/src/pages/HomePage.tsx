@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
+import { ErrorState, InlineErrorState } from "@/components/ui/error-state";
+import { useErrorHandler } from "@/hooks/useErrorHandler";
 import { Star, Image, Search, TrendingUp, Crown } from "lucide-react";
 
 export const HomePage = (): JSX.Element => {
@@ -14,9 +16,10 @@ export const HomePage = (): JSX.Element => {
   const [scrollPaused, setScrollPaused] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { handleApiError, handleNetworkError } = useErrorHandler();
 
   // Fetch search results when search query exists
-  const { data: searchResults = [], isLoading } = useQuery({
+  const { data: searchResults = [], isLoading, error: searchError } = useQuery({
     queryKey: ['/api/traders', searchQuery.trim()],
     queryFn: async () => {
       const query = searchQuery.trim();
@@ -26,15 +29,42 @@ export const HomePage = (): JSX.Element => {
       url.searchParams.set('q', query);
       
       const response = await fetch(url.toString());
-      if (!response.ok) throw new Error('Search failed');
+      if (!response.ok) {
+        if (response.status === 0) {
+          handleNetworkError();
+        } else {
+          handleApiError({ status: response.status, message: 'Search failed' }, 'search');
+        }
+        throw new Error('Search failed');
+      }
       return response.json();
     },
     enabled: searchQuery.trim().length > 0,
+    retry: (failureCount, error) => {
+      if (failureCount < 2) return true;
+      return false;
+    },
   });
 
   // Fetch all traders for cards
-  const { data: allTraders, isLoading: isLoadingTraders } = useQuery({
+  const { data: allTraders, isLoading: isLoadingTraders, error: tradersError, refetch: refetchTraders } = useQuery({
     queryKey: ["/api/traders"],
+    queryFn: async () => {
+      const response = await fetch('/api/traders');
+      if (!response.ok) {
+        if (response.status === 0) {
+          handleNetworkError();
+        } else {
+          handleApiError({ status: response.status, message: 'Failed to load traders' }, 'traders');
+        }
+        throw new Error('Failed to load traders');
+      }
+      return response.json();
+    },
+    retry: (failureCount, error) => {
+      if (failureCount < 2) return true;
+      return false;
+    },
   });
 
   // Background colors for trader cards
@@ -170,9 +200,20 @@ export const HomePage = (): JSX.Element => {
               <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg mt-1 max-h-60 overflow-y-auto z-50">
                 {isLoading ? (
                   <div className="p-4 text-center text-gray-500">Loading...</div>
+                ) : searchError ? (
+                  <div className="p-3">
+                    <InlineErrorState
+                      severity="error"
+                      message="Failed to search traders. Please try again."
+                      onRetry={() => window.location.reload()}
+                    />
+                  </div>
                 ) : !Array.isArray(searchResults) || searchResults.length === 0 ? (
-                  <div className="p-4 text-center">
-                    <p className="text-red-500 font-medium">No Results</p>
+                  <div className="p-3">
+                    <InlineErrorState
+                      severity="info"
+                      message={searchQuery.trim() ? "No traders found for your search." : "Start typing to search traders..."}
+                    />
                   </div>
                 ) : (
                   <div>
@@ -280,6 +321,16 @@ export const HomePage = (): JSX.Element => {
                     </CardContent>
                   </Card>
                 )))
+              ) : tradersError ? (
+                <div className="flex-shrink-0 w-full flex justify-center items-center ml-8">
+                  <ErrorState
+                    severity="error"
+                    title="Failed to Load Traders"
+                    message="Unable to fetch trader data. Please check your connection and try again."
+                    onRetry={() => refetchTraders()}
+                    className="max-w-md"
+                  />
+                </div>
               ) : (
                 // Duplicate cards for seamless scrolling
                 ([...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
