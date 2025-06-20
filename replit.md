@@ -172,6 +172,7 @@ Changelog:
 - June 20, 2025. Customized duplicate review error message to display "Only one review is allowed per user!" with enhanced frontend error handling
 - June 20, 2025. Extended autorefresh to trigger on logout events for complete data refresh
 - June 20, 2025. Fixed admin button visibility issue by updating useAdmin hook to properly clear admin status when users log out
+- June 20, 2025. Fixed critical security vulnerability CVE-2025-30208 by upgrading Vite from 5.4.14 to 5.4.19
 ```
 
 ## User Preferences
