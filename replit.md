@@ -138,6 +138,7 @@ Changelog:
 - June 20, 2025. Rescaled entire website layout for optimal 1920x1080 resolution display
 - June 20, 2025. Updated decorative eclipse element back to proper oval shape on homepage
 - June 20, 2025. Added additional yellow eclipse decorative element with 15-degree rotation to homepage
+- June 20, 2025. Removed decorative element from hero section to clean up homepage design
 ```
 
 ## User Preferences
