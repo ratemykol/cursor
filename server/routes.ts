@@ -467,19 +467,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     param('id')
       .isInt({ min: 1 })
       .withMessage('Trader ID must be a positive integer'),
-    body('rating')
+    body('overallRating')
       .isInt({ min: 1, max: 5 })
-      .withMessage('Rating must be between 1 and 5'),
-    body('strategy')
+      .withMessage('Overall rating must be between 1 and 5'),
+    body('strategyRating')
       .isInt({ min: 1, max: 5 })
       .withMessage('Strategy rating must be between 1 and 5'),
-    body('communication')
+    body('communicationRating')
       .isInt({ min: 1, max: 5 })
       .withMessage('Communication rating must be between 1 and 5'),
-    body('reliability')
+    body('reliabilityRating')
       .isInt({ min: 1, max: 5 })
       .withMessage('Reliability rating must be between 1 and 5'),
-    body('profitability')
+    body('profitabilityRating')
       .isInt({ min: 1, max: 5 })
       .withMessage('Profitability rating must be between 1 and 5'),
     body('comment')
@@ -505,18 +505,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const traderId = parseInt(req.params.id);
       
-      // Map frontend fields to database schema
+      // Use the request body directly as it matches the database schema
       const ratingData = {
         traderId,
         userId: user.id,
         reviewerName: req.body.reviewerName || user.username || 'Anonymous',
-        overallRating: req.body.rating,
-        strategyRating: req.body.strategy,
-        communicationRating: req.body.communication,
-        reliabilityRating: req.body.reliability,
-        profitabilityRating: req.body.profitability,
+        overallRating: req.body.overallRating,
+        strategyRating: req.body.strategyRating,
+        communicationRating: req.body.communicationRating,
+        reliabilityRating: req.body.reliabilityRating,
+        profitabilityRating: req.body.profitabilityRating,
         comment: req.body.comment || null,
-        tags: []
+        tags: req.body.tags || []
       };
       
       const validatedData = insertRatingSchema.parse(ratingData);
@@ -524,7 +524,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(rating);
     } catch (error: any) {
       console.error('Rating validation error:', error);
-      res.status(400).json({ error: error.message });
+      res.status(400).json({ 
+        error: "Validation failed", 
+        details: error.message,
+        received: req.body 
+      });
     }
   });
 
