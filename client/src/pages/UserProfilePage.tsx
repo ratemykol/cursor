@@ -589,8 +589,7 @@ export const UserProfilePage = (): JSX.Element => {
           </div>
         </DialogContent>
       </Dialog>
-    )}
-      </div>
+      )}
     </>
   );
 };
