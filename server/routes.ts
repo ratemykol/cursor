@@ -68,6 +68,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Trader profile picture upload
+  app.post("/api/upload/trader-profile-picture", isAdmin, upload.single('profilePicture'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+
+      const fileUrl = `/uploads/${req.file.filename}`;
+      
+      res.json({ 
+        message: "Trader profile picture uploaded successfully",
+        profileImageUrl: fileUrl 
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Trader routes
   app.get("/api/traders", async (req, res) => {
     try {

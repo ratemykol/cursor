@@ -27,9 +27,44 @@ export const AdminPage = (): JSX.Element => {
   const [specialty, setSpecialty] = useState("");
   const [verified, setVerified] = useState(false);
   const [profileImage, setProfileImage] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // File upload mutation for trader profile pictures
+  const uploadFileMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append('profilePicture', file);
+      
+      const response = await fetch("/api/upload/trader-profile-picture", {
+        method: "POST",
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "File upload failed");
+      }
+      
+      return response.json();
+    },
+    onSuccess: (data) => {
+      setProfileImage(data.profileImageUrl);
+      toast({
+        title: "Profile picture uploaded",
+        description: "Trader profile picture has been uploaded successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Upload failed",
+        description: error.message || "Failed to upload profile picture",
+        variant: "destructive",
+      });
+    },
+  });
 
   // Check authentication and admin status
   if (adminLoading) {
@@ -250,6 +285,34 @@ export const AdminPage = (): JSX.Element => {
     resetForm();
     setEditingTrader(null);
     setView("create");
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.includes('png')) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select a PNG file",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select a file smaller than 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setSelectedFile(file);
+      uploadFileMutation.mutate(file);
+    }
   };
 
   const handleDelete = (trader: any) => {
@@ -709,12 +772,14 @@ export const AdminPage = (): JSX.Element => {
               </div>
 
               <div>
-                <Label htmlFor="profileImage">Profile Image URL</Label>
+                <Label htmlFor="profilePicture">Profile Picture (PNG only)</Label>
                 <Input
-                  id="profileImage"
-                  value={profileImage}
-                  onChange={(e) => setProfileImage(e.target.value)}
-                  placeholder="https://example.com/image.jpg"
+                  id="profilePicture"
+                  name="profilePicture"
+                  type="file"
+                  accept=".png"
+                  onChange={handleFileChange}
+                  className="border-2 border-[#9f98b3]"
                 />
                 {profileImage && (
                   <div className="mt-2">
