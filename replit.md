@@ -146,6 +146,7 @@ Changelog:
 - June 20, 2025. Implemented file upload system for profile pictures replacing URL inputs with proper file handling
 - June 20, 2025. Added support for both PNG and JPEG file formats for profile picture uploads with 5MB size limit
 - June 20, 2025. Removed orange/pink eclipse decorative element from search page for cleaner design
+- June 20, 2025. Moved top traders section higher up the page by reducing top margin from 480px to 240px
 ```
 
 ## User Preferences
