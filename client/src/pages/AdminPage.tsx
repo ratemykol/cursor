@@ -23,6 +23,7 @@ export const AdminPage = (): JSX.Element => {
   const [reviewSearch, setReviewSearch] = useState("");
   const [editingUser, setEditingUser] = useState<any>(null);
   const [editingUsername, setEditingUsername] = useState("");
+  const [userSearch, setUserSearch] = useState("");
   
   const [name, setName] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
@@ -583,11 +584,34 @@ export const AdminPage = (): JSX.Element => {
             <h1 className="text-2xl font-bold">Admin Panel - Manage Users</h1>
           </div>
 
+          {/* User Search */}
+          <div className="mb-6">
+            <div className="max-w-md">
+              <Label htmlFor="userSearch" className="block text-sm font-medium text-gray-700 mb-2">
+                Search Users by Username
+              </Label>
+              <Input
+                id="userSearch"
+                type="text"
+                placeholder="Enter username to search..."
+                value={userSearch}
+                onChange={(e) => setUserSearch(e.target.value)}
+                className="w-full"
+              />
+            </div>
+          </div>
+
           {usersLoading ? (
             <div className="text-center py-8">Loading users...</div>
           ) : (
             <div className="space-y-4">
-              {users.map((user: any) => (
+              {users
+                .filter((user: any) => 
+                  !userSearch || 
+                  user.username?.toLowerCase().includes(userSearch.toLowerCase()) ||
+                  user.email?.toLowerCase().includes(userSearch.toLowerCase())
+                )
+                .map((user: any) => (
                 <Card key={user.id} className="border border-gray-200">
                   <CardContent className="p-6">
                     <div className="flex justify-between items-start">
@@ -691,9 +715,26 @@ export const AdminPage = (): JSX.Element => {
                 </Card>
               ))}
               
-              {users.length === 0 && (
+              {/* Empty state messages */}
+              {users.length === 0 ? (
                 <Card className="p-8 text-center">
                   <p className="text-gray-600">No users found.</p>
+                </Card>
+              ) : users
+                .filter((user: any) => 
+                  !userSearch || 
+                  user.username?.toLowerCase().includes(userSearch.toLowerCase()) ||
+                  user.email?.toLowerCase().includes(userSearch.toLowerCase())
+                ).length === 0 && userSearch && (
+                <Card className="p-8 text-center">
+                  <p className="text-gray-600">No users found matching "{userSearch}".</p>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setUserSearch("")}
+                    className="mt-4"
+                  >
+                    Clear Search
+                  </Button>
                 </Card>
               )}
             </div>
