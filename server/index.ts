@@ -228,23 +228,35 @@ app.use((req, res, next) => {
   next();
 });
 
-// Fix MIME types for static assets in production
-app.use((req, res, next) => {
-  // Set correct MIME types for assets
+// Fix MIME types for static assets
+app.use('/assets', (req, res, next) => {
   if (req.url.endsWith('.css')) {
     res.setHeader('Content-Type', 'text/css');
   } else if (req.url.endsWith('.js')) {
     res.setHeader('Content-Type', 'application/javascript');
-  } else if (req.url.endsWith('.json') && !req.url.startsWith('/api/')) {
-    res.setHeader('Content-Type', 'application/json');
   }
   next();
 });
 
-// Completely disable CSP in development
-if (process.env.NODE_ENV !== 'production') {
-  app.use((req, res, next) => {
-    // Remove any CSP headers completely
+// Configure CSP for production and development
+if (process.env.NODE_ENV === 'production') {
+  // Production CSP - allow Replit scripts
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    res.setHeader('Content-Security-Policy', 
+      "default-src 'self'; " +
+      "script-src 'self' 'unsafe-eval' https://replit.com; " +
+      "style-src 'self' 'unsafe-inline'; " +
+      "img-src 'self' data: https:; " +
+      "connect-src 'self' ws: wss:; " +
+      "font-src 'self'; " +
+      "object-src 'none'; " +
+      "base-uri 'self';"
+    );
+    next();
+  });
+} else {
+  // Development - remove CSP headers completely
+  app.use((req: Request, res: Response, next: NextFunction) => {
     res.removeHeader('Content-Security-Policy');
     res.removeHeader('Content-Security-Policy-Report-Only');
     next();
