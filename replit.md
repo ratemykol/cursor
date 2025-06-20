@@ -172,7 +172,6 @@ Changelog:
 - June 20, 2025. Customized duplicate review error message to display "Only one review is allowed per user!" with enhanced frontend error handling
 - June 20, 2025. Extended autorefresh to trigger on logout events for complete data refresh
 - June 20, 2025. Fixed admin button visibility issue by updating useAdmin hook to properly clear admin status when users log out
-- June 20, 2025. Implemented horizontal click and drag scrolling for top trader cards with mouse event handlers and hidden scrollbar styling
 ```
 
 ## User Preferences

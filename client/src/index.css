@@ -187,18 +187,3 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
-
-/* Hide scrollbar for drag scrolling */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-/* Smooth scrolling for the trader cards container */
-.trader-scroll-container {
-  scroll-behavior: smooth;
-}
