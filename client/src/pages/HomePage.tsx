@@ -231,7 +231,7 @@ export const HomePage = (): JSX.Element => {
         </section>
 
         {/* Top Traders Section */}
-        <section className="mt-[240px] relative">
+        <section className="mt-[120px] relative">
           {/* Decorative elements - scaled for 1920x1080 */}
           <img
             className="w-[210px] h-[200px] absolute left-[60px] top-[470px] mt-[-1213px] mb-[-1213px] pt-[6px] pb-[6px] ml-[-52px] mr-[-52px]"
