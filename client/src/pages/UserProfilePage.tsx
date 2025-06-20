@@ -145,11 +145,18 @@ export const UserProfilePage = (): JSX.Element => {
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to update review");
+        let errorMessage = "Failed to update review";
+        try {
+          const error = await response.json();
+          errorMessage = error.error || errorMessage;
+        } catch {
+          errorMessage = `Server error: ${response.status} ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
       }
 
-      return response.json();
+      const result = await response.json();
+      return result;
     },
     onSuccess: () => {
       toast({
