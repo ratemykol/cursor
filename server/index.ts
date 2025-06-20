@@ -42,25 +42,13 @@ if (process.env.NODE_ENV === 'production') {
     referrerPolicy: { policy: 'no-referrer' }
   }));
 } else {
-  // Development CSP that allows Vite features
+  // Completely disable security headers in development for Vite
   app.use(helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://replit.com"],
-        imgSrc: ["'self'", "data:", "https:", "blob:"],
-        fontSrc: ["'self'", "https://fonts.gstatic.com"],
-        connectSrc: ["'self'", "wss:", "ws:", "https:"],
-        mediaSrc: ["'self'"],
-        objectSrc: ["'none'"],
-        frameSrc: ["'self'", "https://replit.com"],
-      },
-    },
+    contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
-    hidePoweredBy: true,
+    hidePoweredBy: false,
     frameguard: false,
-    noSniff: true,
+    noSniff: false,
     hsts: false,
     xssFilter: false,
     referrerPolicy: false
@@ -82,6 +70,13 @@ app.use((req, res, next) => {
     res.setHeader('Referrer-Policy', 'no-referrer');
     res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
     res.setHeader('Server-Timing', '');
+  } else {
+    // Remove all security headers in development
+    res.removeHeader('X-Content-Type-Options');
+    res.removeHeader('X-Frame-Options');
+    res.removeHeader('X-XSS-Protection');
+    res.removeHeader('Referrer-Policy');
+    res.removeHeader('Content-Security-Policy');
   }
   
   next();
