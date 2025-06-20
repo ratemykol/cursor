@@ -24,6 +24,8 @@ export interface IStorage {
   registerUser(userData: UserRegistration): Promise<User>;
   authenticateUser(credentials: UserLogin): Promise<User | null>;
   updateUserProfile(userId: string, profileData: Partial<User>): Promise<User>;
+  getAllUsers(): Promise<User[]>;
+  updateUserUsername(userId: string, username: string): Promise<User>;
   
   // Trader operations
   getTrader(id: number): Promise<Trader | undefined>;
@@ -365,6 +367,45 @@ export class DatabaseStorage implements IStorage {
       .where(eq(ratings.id, id))
       .returning();
     return result.length > 0;
+  }
+
+  // User management methods
+  async getAllUsers(): Promise<User[]> {
+    try {
+      const allUsers = await db.select().from(users).orderBy(users.createdAt);
+      return allUsers;
+    } catch (error) {
+      console.error("Error fetching all users:", error);
+      throw new Error("Failed to fetch users");
+    }
+  }
+
+  async updateUserUsername(userId: string, username: string): Promise<User> {
+    try {
+      // Check if username is already taken by another user
+      const existingUser = await db.select().from(users).where(eq(users.username, username));
+      if (existingUser.length > 0 && existingUser[0].id !== userId) {
+        throw new Error("Username is already taken");
+      }
+
+      const [updatedUser] = await db
+        .update(users)
+        .set({ 
+          username,
+          updatedAt: new Date()
+        })
+        .where(eq(users.id, userId))
+        .returning();
+
+      if (!updatedUser) {
+        throw new Error("User not found");
+      }
+
+      return updatedUser;
+    } catch (error) {
+      console.error("Error updating username:", error);
+      throw error;
+    }
   }
 }
 
