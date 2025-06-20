@@ -5,35 +5,15 @@ import { Input } from "@/components/ui/input";
 import { useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
-import { ShapeEditor } from "@/components/ShapeEditor";
-import { Star, Image, Search, TrendingUp, Crown, Settings } from "lucide-react";
+import { Star, Image, Search, TrendingUp, Crown } from "lucide-react";
 
 export const HomePage = (): JSX.Element => {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [scrollPaused, setScrollPaused] = useState(false);
-  const [showShapeEditor, setShowShapeEditor] = useState(false);
-  const [shapePositions, setShapePositions] = useState({
-    star: { x: 2.5, y: -19 },
-    'purple-eclipse': { x: -12, y: -15 },
-    'black-eclipse': { x: 5, y: -13 },
-    'pink-eclipse': { x: 26, y: -16 },
-    'orange-eclipse': { x: 11, y: -18 },
-    'green-eclipse': { x: 12, y: -15 },
-    'light-purple-eclipse': { x: 19, y: -16 },
-    'yellow-eclipse': { x: 20, y: -14 },
-    'grey-eclipse': { x: 20, y: -26 }
-  });
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleShapeUpdate = (shapeId: string, x: number, y: number) => {
-    setShapePositions(prev => ({
-      ...prev,
-      [shapeId]: { x, y }
-    }));
-  };
 
   // Fetch search results when search query exists
   const { data: searchResults = [], isLoading } = useQuery({
@@ -134,89 +114,51 @@ export const HomePage = (): JSX.Element => {
   };
 
   return (
-    <div className="bg-white w-full min-h-screen">
-      <div className="bg-white overflow-hidden w-full relative">
+    <div className="bg-white flex flex-row justify-center w-full">
+      <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
         <Header currentPage="home" />
-        
-        {/* Floating Shape Editor Button */}
-        <Button
-          onClick={() => setShowShapeEditor(true)}
-          className="fixed bottom-6 left-6 z-50 rounded-full w-12 h-12 p-0 bg-purple-600 hover:bg-purple-700"
-          title="Edit Shape Positions"
-        >
-          <Settings className="w-5 h-5" />
-        </Button>
 
         {/* Hero Section */}
-        <section className="container-1920 relative px-8 lg:px-16 xl:px-24 mt-20 lg:mt-[120px] mb-24 lg:mb-[120px] overflow-hidden">
-          {/* Decorative elements with zoom-responsive positioning */}
+        <section className="relative px-20 mt-[99px] mb-[99px]">
+          {/* Decorative elements */}
           <img
-            className="absolute left-[25%] top-[20%] z-[1]"
-            style={{
-              width: '4.5625rem',
-              height: '4.625rem'
-            }}
+            className="w-[73px] h-[74px] absolute left-[360px] top-[146px] mt-[-231px] mb-[-231px] ml-[-61px] mr-[-61px]"
             alt="Star"
             src="/figmaAssets/star-2.svg"
           />
-          <div 
-            className="absolute top-[24%] left-[36%] bg-[#3c315b] rotate-[96deg] z-[1]"
-            style={{
-              width: '1.6875rem',
-              height: '2.1875rem',
-              borderRadius: '0.8288rem/1.0825rem'
-            }}
-          />
-          <div 
-            className="absolute top-[36%] left-[36%] bg-[#ffd13f] rotate-[15deg] z-[1]"
-            style={{
-              width: '4.5625rem',
-              height: '6.0625rem',
-              borderRadius: '2.2725rem/3.0275rem'
-            }}
-          />
-          <div 
-            className="absolute top-[30%] left-[42%] bg-[#4a87f2] rotate-[-15deg] z-[1]"
-            style={{
-              width: '5.75rem',
-              height: '4.4375rem',
-              borderRadius: '2.8656rem/2.225rem'
-            }}
-          />
+          <div className="absolute w-[27px] h-[35px] top-[173px] left-[522px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] ml-[-26px] mr-[-26px] mt-[-256px] mb-[-256px]" />
+          <div className="absolute w-[73px] h-[97px] top-[265px] left-[517.08px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] mt-[-296px] mb-[-296px] ml-[-26px] mr-[-26px] z-[1]" />
+          <div className="absolute w-[92px] h-[71px] top-[217px] left-[603px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] ml-[-26px] mr-[-26px] mt-[-296px] mb-[-296px]" />
           <img
-            className="absolute top-[45%] right-[15%] z-[1]"
-            style={{
-              width: '4.75rem',
-              height: '3.8125rem'
-            }}
+            className="absolute w-[76px] h-[61px] top-[329px] left-[1216px] mt-[-300px] mb-[-300px]"
             alt="Polygon"
             src="/figmaAssets/polygon-1.svg"
           />
 
-          <div className="max-w-5xl mx-auto text-center relative z-[5]">
-            <h2 className="font-medium text-[#3c315b] text-[85px] xl:text-[95px] leading-tight">
+          <div className="max-w-3xl mx-auto text-center relative z-[5]">
+            <h2 className="font-medium text-[#3c315b] text-[69px] leading-tight">
               Rate Your Crypto KOLs
             </h2>
-            <p className="font-medium text-[#9f98b3] text-[28px] xl:text-[32px] mt-6">
+            <p className="font-medium text-[#9f98b3] text-[22px] mt-4">
               Find and review KOLs based on their performance, reliability, and
               trading strategies
             </p>
           </div>
 
           {/* Search Bar with Dropdown */}
-          <div className="mt-20 relative max-w-4xl mx-auto z-[10]" ref={dropdownRef}>
+          <div className="mt-16 relative max-w-3xl mx-auto z-[10]" ref={dropdownRef}>
             <div className="relative">
               <div className="relative">
                 <Input
                   ref={inputRef}
-                  className="h-14 rounded-[5px] border-2 border-[#9f98b3] pl-6 pr-32 w-full text-lg"
+                  className="h-11 rounded-[5px] border-2 border-[#9f98b3] pl-4 pr-28 w-full"
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={handleSearchChange}
                   onKeyPress={handleKeyPress}
                 />
                 <Button 
-                  className="absolute right-0 top-0 h-full w-[130px] bg-[#ab9ff2] text-[#3c315b] rounded-r-[5px] rounded-l-none font-medium text-lg transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center justify-center border-2 border-[#9f98b3] border-l-0"
+                  className="absolute right-0 top-0 h-full w-[108px] bg-[#ab9ff2] text-[#3c315b] rounded-r-[5px] rounded-l-none font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center justify-center border-2 border-[#9f98b3] border-l-0"
                   onClick={() => {
                     if (searchQuery.trim()) {
                       setLocation(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
@@ -290,105 +232,27 @@ export const HomePage = (): JSX.Element => {
         </section>
 
         {/* Top Traders Section */}
-        <section className="container-1920 mt-[480px] relative px-8 lg:px-16 xl:px-24">
-          {/* Decorative elements - dynamic positioning */}
+        <section className="mt-96 relative">
+          {/* Decorative elements */}
           <img
-            className="absolute z-[1]"
-            style={{
-              width: '10.9375rem',
-              height: '11rem',
-              left: `${shapePositions.star.x}%`,
-              top: `${shapePositions.star.y}%`
-            }}
+            className="w-[175px] h-44 absolute left-[39px] top-[392px] mt-[-1013px] mb-[-1013px]"
             alt="Star"
             src="/figmaAssets/star-1.svg"
           />
-          <div 
-            className="absolute bg-[#ab9ff2] rotate-[-76deg] z-[0]"
-            style={{
-              width: '17.6875rem',
-              height: '24.75rem',
-              borderRadius: '8.8375rem/12.38125rem',
-              left: `${shapePositions['purple-eclipse'].x}%`,
-              top: `${shapePositions['purple-eclipse'].y}%`
-            }}
-          />
-          <div 
-            className="absolute bg-black rotate-[15deg] z-[1]"
-            style={{
-              width: '7.875rem',
-              height: '11.625rem',
-              borderRadius: '3.93125rem/5.7975rem',
-              left: `${shapePositions['black-eclipse'].x}%`,
-              top: `${shapePositions['black-eclipse'].y}%`
-            }}
-          />
-          <div 
-            className="absolute bg-[#ffdadc] rotate-[96deg] z-[1]"
-            style={{
-              width: '5.9375rem',
-              height: '10.3125rem',
-              borderRadius: '2.976875rem/5.15875rem',
-              left: `${shapePositions['pink-eclipse'].x}%`,
-              top: `${shapePositions['pink-eclipse'].y}%`
-            }}
-          />
-          <div 
-            className="absolute bg-[#ff7243] rotate-[15deg] z-[1]"
-            style={{
-              width: '7.875rem',
-              height: '11.625rem',
-              borderRadius: '3.93125rem/5.7975rem',
-              right: `${shapePositions['orange-eclipse'].x}%`,
-              top: `${shapePositions['orange-eclipse'].y}%`
-            }}
-          />
-          <div 
-            className="absolute bg-[#2ec08b] rotate-[-76deg] z-[0]"
-            style={{
-              width: '17.6875rem',
-              height: '24.75rem',
-              borderRadius: '8.8375rem/12.38125rem',
-              right: `${shapePositions['green-eclipse'].x}%`,
-              top: `${shapePositions['green-eclipse'].y}%`
-            }}
-          />
-          <div 
-            className="absolute bg-[#e2dffd] rotate-[-18deg] z-[1]"
-            style={{
-              width: '7.875rem',
-              height: '11.625rem',
-              borderRadius: '3.93125rem/5.7975rem',
-              right: `${shapePositions['light-purple-eclipse'].x}%`,
-              top: `${shapePositions['light-purple-eclipse'].y}%`
-            }}
-          />
-          <div 
-            className="absolute bg-[#ffffc4] rotate-[32deg] z-[1]"
-            style={{
-              width: '3.25rem',
-              height: '4.5625rem',
-              borderRadius: '1.619375rem/2.271875rem',
-              right: `${shapePositions['yellow-eclipse'].x}%`,
-              top: `${shapePositions['yellow-eclipse'].y}%`
-            }}
-          />
-          <div 
-            className="absolute bg-[#d9d9d9] rotate-[-15deg] z-[-1]"
-            style={{
-              width: '25.104rem',
-              height: '16.217rem',
-              borderRadius: '12.552rem/8.1085rem',
-              right: `${shapePositions['grey-eclipse'].x}%`,
-              top: `${shapePositions['grey-eclipse'].y}%`
-            }}
-          />
+          <div className="absolute w-[283px] h-[396px] top-[693px] left-[-174px] bg-[#ab9ff2] rounded-[141.4px/198.1px] rotate-[-76deg] mt-[-1000px] mb-[-1000px]" />
+          <div className="absolute w-[126px] h-[186px] top-[756px] left-[78px] bg-black rounded-[62.9px/92.76px] rotate-[15deg] mt-[-932px] mb-[-932px]" />
+          <div className="absolute w-[95px] h-[165px] top-[600px] left-[382px] bg-[#ffdadc] rounded-[47.63px/82.54px] rotate-[96deg] mt-[-959px] mb-[-959px] ml-[-28px] mr-[-28px]" />
+          <div className="absolute w-[126px] h-[186px] top-[454px] left-[1285px] bg-[#ff7243] rounded-[62.9px/92.76px] rotate-[15deg] mt-[-938px] mb-[-938px] ml-[-230px] mr-[-230px] z-[1]" />
+          <div className="absolute w-[283px] h-[396px] top-[678px] left-[1256px] bg-[#2ec08b] rounded-[141.4px/198.1px] rotate-[-76deg] mt-[-827px] mb-[-827px]" />
+          <div className="absolute w-[126px] h-[186px] top-[587px] left-[1031px] bg-[#e2dffd] rounded-[62.9px/92.76px] rotate-[-18deg] mt-[-838px] mb-[-838px] ml-[-258px] mr-[-258px]" />
+          <div className="absolute w-[52px] h-[73px] top-[706px] left-[1009px] bg-[#ffffc4] rounded-[25.91px/36.35px] rotate-[32deg] ml-[-249px] mr-[-249px] mt-[-834px] mb-[-834px]" />
+          <div className="absolute w-[401.66px] h-[259.47px] top-[-20px] left-[1100px] bg-[#d9d9d9] rounded-[200.83px/129.735px] rotate-[-15deg] z-[-1]" />
 
-          <div className="text-center mb-20">
-            <h2 className="font-medium text-[#3c315b] text-[85px] xl:text-[95px]">
+          <div className="text-center mb-16">
+            <h2 className="font-medium text-[#3c315b] text-[69px]">
               Top Traders
             </h2>
-            <p className="font-medium text-[#9f98b3] text-[28px] xl:text-[32px] mt-6">
+            <p className="font-medium text-[#9f98b3] text-[22px] mt-4">
               Discover top performing meme coin traders with verified track
               records
             </p>
@@ -397,12 +261,12 @@ export const HomePage = (): JSX.Element => {
           {/* Trader Cards */}
           <div className="relative w-full overflow-hidden py-8">
             <div 
-              className={`trader-scroll-container flex gap-8 will-change-transform animate-scroll ${scrollPaused ? 'paused' : ''}`}
+              className={`trader-scroll-container flex gap-6 will-change-transform animate-scroll ${scrollPaused ? 'paused' : ''}`}
               style={{ 
-                width: `${rankedTraders.length * 3 * 280}px`,
+                width: `${rankedTraders.length * 3 * 250}px`,
                 minWidth: '100vw',
-                paddingTop: '50px',
-                paddingBottom: '50px'
+                paddingTop: '40px',
+                paddingBottom: '40px'
               }}
             >
               {isLoadingTraders ? (
@@ -410,7 +274,7 @@ export const HomePage = (): JSX.Element => {
                 Array.from({ length: 10 }).map((_, index) => (
                   <Card
                     key={index}
-                    className={`flex-shrink-0 w-[260px] h-[460px] ${cardColors[index]} rounded-[15px] border-none shadow-none animate-pulse ml-8`}
+                    className={`flex-shrink-0 w-[234px] h-[420px] ${cardColors[index]} rounded-[15px] border-none shadow-none animate-pulse ml-6`}
                   >
                     <CardContent className="p-0 flex flex-col items-center px-4">
                       <div className="w-[91px] h-[97px] mt-[30px] bg-white/50 rounded-[45.5px/48.5px]" />
@@ -425,7 +289,7 @@ export const HomePage = (): JSX.Element => {
                 [...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
                   <Card
                     key={`${trader.id}-${index}`}
-                    className={`flex-shrink-0 w-[260px] h-[460px] ${trader.rank === 1 ? 'diamond-background golden-shine' : trader.bgColor} rounded-[15px] border-none shadow-none relative cursor-pointer trader-card ml-8`}
+                    className={`flex-shrink-0 w-[234px] h-[420px] ${trader.rank === 1 ? 'diamond-background golden-shine' : trader.bgColor} rounded-[15px] border-none shadow-none relative cursor-pointer trader-card ml-6`}
                     onMouseEnter={() => setScrollPaused(true)}
                     onMouseLeave={() => setScrollPaused(false)}
                   >
@@ -517,13 +381,6 @@ export const HomePage = (): JSX.Element => {
         {/* Footer */}
         <footer className="w-full h-[400px] bg-[#ab9ff2] mt-80" />
       </div>
-
-      {/* Shape Editor Modal */}
-      <ShapeEditor
-        isOpen={showShapeEditor}
-        onClose={() => setShowShapeEditor(false)}
-        onUpdateShape={handleShapeUpdate}
-      />
     </div>
   );
 };
