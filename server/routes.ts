@@ -2,6 +2,9 @@ import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertTraderSchema, insertRatingSchema, userRegistrationSchema, userLoginSchema } from "@shared/schema";
+import { upload } from "./upload";
+import path from "path";
+import express from "express";
 
 // Admin middleware to check if user is admin
 const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
@@ -32,6 +35,39 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Serve uploaded files statically
+  app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
+  // File upload routes
+  app.post("/api/upload/profile-picture", isAuthenticated, upload.single('profilePicture'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+
+      const fileUrl = `/uploads/${req.file.filename}`;
+      
+      // Update user's profile with new image URL
+      const user = (req.session as any)?.user;
+      const updatedUser = await storage.updateUserProfile(user.id, {
+        profileImageUrl: fileUrl,
+      });
+
+      // Update session
+      (req.session as any).user = {
+        ...user,
+        profileImageUrl: updatedUser.profileImageUrl,
+      };
+
+      res.json({ 
+        message: "Profile picture uploaded successfully",
+        profileImageUrl: fileUrl 
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Trader routes
   app.get("/api/traders", async (req, res) => {
     try {
