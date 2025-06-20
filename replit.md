@@ -175,6 +175,7 @@ Changelog:
 - June 20, 2025. Fixed critical security vulnerability CVE-2025-30208 by upgrading Vite from 5.4.14 to 5.4.19
 - June 20, 2025. Fixed bio persistence issue by adding bio field to session data during user authentication
 - June 20, 2025. Fixed infinite scrolling for trader cards on homepage to be truly seamless without reset jumps
+- June 20, 2025. Fixed hover behavior to pause animation smoothly without position reset using animation-play-state
 ```
 
 ## User Preferences
