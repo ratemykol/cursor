@@ -209,14 +209,14 @@ export const HomePage = (): JSX.Element => {
               <div className="relative">
                 <Input
                   ref={inputRef}
-                  className="h-11 rounded-[5px] border-2 border-[#9f98b3] pl-4 pr-28 w-full"
+                  className="h-14 rounded-[5px] border-2 border-[#9f98b3] pl-6 pr-32 w-full text-lg"
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={handleSearchChange}
                   onKeyPress={handleKeyPress}
                 />
                 <Button 
-                  className="absolute right-0 top-0 h-full w-[108px] bg-[#ab9ff2] text-[#3c315b] rounded-r-[5px] rounded-l-none font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center justify-center border-2 border-[#9f98b3] border-l-0"
+                  className="absolute right-0 top-0 h-full w-[130px] bg-[#ab9ff2] text-[#3c315b] rounded-r-[5px] rounded-l-none font-medium text-lg transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center justify-center border-2 border-[#9f98b3] border-l-0"
                   onClick={() => {
                     if (searchQuery.trim()) {
                       setLocation(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
@@ -290,7 +290,7 @@ export const HomePage = (): JSX.Element => {
         </section>
 
         {/* Top Traders Section */}
-        <section className="mt-96 relative">
+        <section className="container-1920 mt-[480px] relative px-8 lg:px-16 xl:px-24">
           {/* Decorative elements - dynamic positioning */}
           <img
             className="absolute z-[1]"
@@ -384,11 +384,11 @@ export const HomePage = (): JSX.Element => {
             }}
           />
 
-          <div className="text-center mb-16">
-            <h2 className="font-medium text-[#3c315b] text-[69px]">
+          <div className="text-center mb-20">
+            <h2 className="font-medium text-[#3c315b] text-[85px] xl:text-[95px]">
               Top Traders
             </h2>
-            <p className="font-medium text-[#9f98b3] text-[22px] mt-4">
+            <p className="font-medium text-[#9f98b3] text-[28px] xl:text-[32px] mt-6">
               Discover top performing meme coin traders with verified track
               records
             </p>
@@ -397,12 +397,12 @@ export const HomePage = (): JSX.Element => {
           {/* Trader Cards */}
           <div className="relative w-full overflow-hidden py-8">
             <div 
-              className={`trader-scroll-container flex gap-6 will-change-transform animate-scroll ${scrollPaused ? 'paused' : ''}`}
+              className={`trader-scroll-container flex gap-8 will-change-transform animate-scroll ${scrollPaused ? 'paused' : ''}`}
               style={{ 
-                width: `${rankedTraders.length * 3 * 250}px`,
+                width: `${rankedTraders.length * 3 * 280}px`,
                 minWidth: '100vw',
-                paddingTop: '40px',
-                paddingBottom: '40px'
+                paddingTop: '50px',
+                paddingBottom: '50px'
               }}
             >
               {isLoadingTraders ? (
@@ -410,7 +410,7 @@ export const HomePage = (): JSX.Element => {
                 Array.from({ length: 10 }).map((_, index) => (
                   <Card
                     key={index}
-                    className={`flex-shrink-0 w-[234px] h-[420px] ${cardColors[index]} rounded-[15px] border-none shadow-none animate-pulse ml-6`}
+                    className={`flex-shrink-0 w-[260px] h-[460px] ${cardColors[index]} rounded-[15px] border-none shadow-none animate-pulse ml-8`}
                   >
                     <CardContent className="p-0 flex flex-col items-center px-4">
                       <div className="w-[91px] h-[97px] mt-[30px] bg-white/50 rounded-[45.5px/48.5px]" />
@@ -425,7 +425,7 @@ export const HomePage = (): JSX.Element => {
                 [...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
                   <Card
                     key={`${trader.id}-${index}`}
-                    className={`flex-shrink-0 w-[234px] h-[420px] ${trader.rank === 1 ? 'diamond-background golden-shine' : trader.bgColor} rounded-[15px] border-none shadow-none relative cursor-pointer trader-card ml-6`}
+                    className={`flex-shrink-0 w-[260px] h-[460px] ${trader.rank === 1 ? 'diamond-background golden-shine' : trader.bgColor} rounded-[15px] border-none shadow-none relative cursor-pointer trader-card ml-8`}
                     onMouseEnter={() => setScrollPaused(true)}
                     onMouseLeave={() => setScrollPaused(false)}
                   >
