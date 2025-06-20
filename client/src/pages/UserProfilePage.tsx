@@ -267,7 +267,8 @@ export const UserProfilePage = (): JSX.Element => {
   }
 
   return (
-    <div className="bg-white w-full min-h-screen">
+    <>
+      <div className="bg-white w-full min-h-screen">
       <div className="bg-white overflow-hidden w-full max-w-[1920px] relative mx-auto">
         <Header />
         
@@ -456,6 +457,140 @@ export const UserProfilePage = (): JSX.Element => {
           </Card>
         </div>
       </div>
-    </div>
+      </div>
+
+      {/* Edit Review Modal */}
+      {editingReview && (
+      <Dialog open={!!editingReview} onOpenChange={() => setEditingReview(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              Edit Review for {editingReview.traderName}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setEditingReview(null)}
+              >
+                <X size={16} />
+              </Button>
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {/* Overall Rating */}
+            <div>
+              <Label className="text-sm font-medium">Overall Rating</Label>
+              <div className="flex items-center gap-2 mt-1">
+                <Slider
+                  value={editFormData.overallRating}
+                  onValueChange={(value) => setEditFormData(prev => ({ ...prev, overallRating: value }))}
+                  max={5}
+                  min={1}
+                  step={1}
+                  className="flex-1"
+                />
+                <span className="text-sm font-medium w-8">{editFormData.overallRating[0]}/5</span>
+              </div>
+            </div>
+
+            {/* Strategy Rating */}
+            <div>
+              <Label className="text-sm font-medium">Strategy</Label>
+              <div className="flex items-center gap-2 mt-1">
+                <Slider
+                  value={editFormData.strategyRating}
+                  onValueChange={(value) => setEditFormData(prev => ({ ...prev, strategyRating: value }))}
+                  max={5}
+                  min={1}
+                  step={1}
+                  className="flex-1"
+                />
+                <span className="text-sm font-medium w-8">{editFormData.strategyRating[0]}/5</span>
+              </div>
+            </div>
+
+            {/* Communication Rating */}
+            <div>
+              <Label className="text-sm font-medium">Communication</Label>
+              <div className="flex items-center gap-2 mt-1">
+                <Slider
+                  value={editFormData.communicationRating}
+                  onValueChange={(value) => setEditFormData(prev => ({ ...prev, communicationRating: value }))}
+                  max={5}
+                  min={1}
+                  step={1}
+                  className="flex-1"
+                />
+                <span className="text-sm font-medium w-8">{editFormData.communicationRating[0]}/5</span>
+              </div>
+            </div>
+
+            {/* Reliability Rating */}
+            <div>
+              <Label className="text-sm font-medium">Reliability</Label>
+              <div className="flex items-center gap-2 mt-1">
+                <Slider
+                  value={editFormData.reliabilityRating}
+                  onValueChange={(value) => setEditFormData(prev => ({ ...prev, reliabilityRating: value }))}
+                  max={5}
+                  min={1}
+                  step={1}
+                  className="flex-1"
+                />
+                <span className="text-sm font-medium w-8">{editFormData.reliabilityRating[0]}/5</span>
+              </div>
+            </div>
+
+            {/* Profitability Rating */}
+            <div>
+              <Label className="text-sm font-medium">Profitability</Label>
+              <div className="flex items-center gap-2 mt-1">
+                <Slider
+                  value={editFormData.profitabilityRating}
+                  onValueChange={(value) => setEditFormData(prev => ({ ...prev, profitabilityRating: value }))}
+                  max={5}
+                  min={1}
+                  step={1}
+                  className="flex-1"
+                />
+                <span className="text-sm font-medium w-8">{editFormData.profitabilityRating[0]}/5</span>
+              </div>
+            </div>
+
+            {/* Comment */}
+            <div>
+              <Label className="text-sm font-medium">Comment</Label>
+              <Textarea
+                value={editFormData.comment}
+                onChange={(e) => setEditFormData(prev => ({ ...prev, comment: e.target.value }))}
+                placeholder="Share your experience..."
+                rows={3}
+                className="mt-1"
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-2 pt-4">
+              <Button
+                onClick={handleSaveEdit}
+                disabled={updateReviewMutation.isPending}
+                className="flex-1 bg-[#ab9ff2] text-[#3c315b] hover:bg-[#DCDAF0]"
+              >
+                {updateReviewMutation.isPending ? "Saving..." : "Save Changes"}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setEditingReview(null)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    )}
+      </div>
+    </>
   );
 };
