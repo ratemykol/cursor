@@ -119,53 +119,53 @@ export const HomePage = (): JSX.Element => {
         <Header currentPage="home" />
 
         {/* Hero Section */}
-        <section className="relative px-20 mt-[99px] mb-[99px]">
-          {/* Decorative elements */}
+        <section className="relative px-32 mt-[120px] mb-[120px]">
+          {/* Decorative elements - scaled for 1920x1080 */}
           <img
-            className="w-[73px] h-[74px] absolute left-[360px] top-[146px] mt-[-231px] mb-[-231px] ml-[-61px] mr-[-61px]"
+            className="w-[90px] h-[91px] absolute left-[480px] top-[146px] mt-[-231px] mb-[-231px] ml-[-61px] mr-[-61px]"
             alt="Star"
             src="/figmaAssets/star-2.svg"
           />
-          <div className="absolute w-[27px] h-[35px] top-[173px] left-[522px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] ml-[-26px] mr-[-26px] mt-[-256px] mb-[-256px]" />
-          <div className="absolute w-[73px] h-[97px] top-[265px] left-[517.08px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] mt-[-296px] mb-[-296px] ml-[-26px] mr-[-26px] z-[1]" />
-          <div className="absolute w-[92px] h-[71px] top-[217px] left-[603px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] ml-[-26px] mr-[-26px] mt-[-296px] mb-[-296px]" />
+          <div className="absolute w-[32px] h-[42px] top-[173px] left-[670px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] ml-[-26px] mr-[-26px] mt-[-256px] mb-[-256px]" />
+          <div className="absolute w-[88px] h-[117px] top-[265px] left-[664px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] mt-[-296px] mb-[-296px] ml-[-26px] mr-[-26px] z-[1]" />
+          <div className="absolute w-[110px] h-[85px] top-[217px] left-[770px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] ml-[-26px] mr-[-26px] mt-[-296px] mb-[-296px]" />
           <img
-            className="absolute w-[76px] h-[61px] top-[329px] left-[1216px] mt-[-300px] mb-[-300px]"
+            className="absolute w-[92px] h-[73px] top-[329px] left-[1520px] mt-[-300px] mb-[-300px]"
             alt="Polygon"
             src="/figmaAssets/polygon-1.svg"
           />
 
-          <div className="max-w-3xl mx-auto text-center relative z-[5]">
-            <h2 className="font-medium text-[#3c315b] text-[69px] leading-tight">
+          <div className="max-w-4xl mx-auto text-center relative z-[5]">
+            <h2 className="font-medium text-[#3c315b] text-[82px] leading-tight">
               Rate Your Crypto KOLs
             </h2>
-            <p className="font-medium text-[#9f98b3] text-[22px] mt-4">
+            <p className="font-medium text-[#9f98b3] text-[26px] mt-6">
               Find and review KOLs based on their performance, reliability, and
               trading strategies
             </p>
           </div>
 
           {/* Search Bar with Dropdown */}
-          <div className="mt-16 relative max-w-3xl mx-auto z-[10]" ref={dropdownRef}>
+          <div className="mt-20 relative max-w-4xl mx-auto z-[10]" ref={dropdownRef}>
             <div className="relative">
               <div className="relative">
                 <Input
                   ref={inputRef}
-                  className="h-11 rounded-[5px] border-2 border-[#9f98b3] pl-4 pr-28 w-full"
+                  className="h-14 rounded-[6px] border-2 border-[#9f98b3] pl-6 pr-32 w-full text-lg"
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={handleSearchChange}
                   onKeyPress={handleKeyPress}
                 />
                 <Button 
-                  className="absolute right-0 top-0 h-full w-[108px] bg-[#ab9ff2] text-[#3c315b] rounded-r-[5px] rounded-l-none font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center justify-center border-2 border-[#9f98b3] border-l-0"
+                  className="absolute right-0 top-0 h-full w-[128px] bg-[#ab9ff2] text-[#3c315b] rounded-r-[6px] rounded-l-none font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center justify-center border-2 border-[#9f98b3] border-l-0 text-lg"
                   onClick={() => {
                     if (searchQuery.trim()) {
                       setLocation(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
                     }
                   }}
                 >
-                  <Search size={20} />
+                  <Search size={24} />
                 </Button>
               </div>
             </div>
@@ -232,41 +232,41 @@ export const HomePage = (): JSX.Element => {
         </section>
 
         {/* Top Traders Section */}
-        <section className="mt-96 relative">
-          {/* Decorative elements */}
+        <section className="mt-[480px] relative">
+          {/* Decorative elements - scaled for 1920x1080 */}
           <img
-            className="w-[175px] h-44 absolute left-[39px] top-[392px] mt-[-1013px] mb-[-1013px]"
+            className="w-[210px] h-[200px] absolute left-[60px] top-[470px] mt-[-1213px] mb-[-1213px]"
             alt="Star"
             src="/figmaAssets/star-1.svg"
           />
-          <div className="absolute w-[283px] h-[396px] top-[693px] left-[-174px] bg-[#ab9ff2] rounded-[141.4px/198.1px] rotate-[-76deg] mt-[-1000px] mb-[-1000px]" />
-          <div className="absolute w-[126px] h-[186px] top-[756px] left-[78px] bg-black rounded-[62.9px/92.76px] rotate-[15deg] mt-[-932px] mb-[-932px]" />
-          <div className="absolute w-[95px] h-[165px] top-[600px] left-[382px] bg-[#ffdadc] rounded-[47.63px/82.54px] rotate-[96deg] mt-[-959px] mb-[-959px] ml-[-28px] mr-[-28px]" />
-          <div className="absolute w-[126px] h-[186px] top-[454px] left-[1285px] bg-[#ff7243] rounded-[62.9px/92.76px] rotate-[15deg] mt-[-938px] mb-[-938px] ml-[-230px] mr-[-230px] z-[1]" />
-          <div className="absolute w-[283px] h-[396px] top-[678px] left-[1256px] bg-[#2ec08b] rounded-[141.4px/198.1px] rotate-[-76deg] mt-[-827px] mb-[-827px]" />
-          <div className="absolute w-[126px] h-[186px] top-[587px] left-[1031px] bg-[#e2dffd] rounded-[62.9px/92.76px] rotate-[-18deg] mt-[-838px] mb-[-838px] ml-[-258px] mr-[-258px]" />
-          <div className="absolute w-[52px] h-[73px] top-[706px] left-[1009px] bg-[#ffffc4] rounded-[25.91px/36.35px] rotate-[32deg] ml-[-249px] mr-[-249px] mt-[-834px] mb-[-834px]" />
-          <div className="absolute w-[401.66px] h-[259.47px] top-[-20px] left-[1100px] bg-[#d9d9d9] rounded-[200.83px/129.735px] rotate-[-15deg] z-[-1]" />
+          <div className="absolute w-[340px] h-[475px] top-[830px] left-[-209px] bg-[#ab9ff2] rounded-[169.7px/237.8px] rotate-[-76deg] mt-[-1200px] mb-[-1200px]" />
+          <div className="absolute w-[150px] h-[223px] top-[907px] left-[94px] bg-black rounded-[75.5px/111.3px] rotate-[15deg] mt-[-1118px] mb-[-1118px]" />
+          <div className="absolute w-[114px] h-[198px] top-[720px] left-[458px] bg-[#ffdadc] rounded-[57.2px/99px] rotate-[96deg] mt-[-1151px] mb-[-1151px] ml-[-34px] mr-[-34px]" />
+          <div className="absolute w-[150px] h-[223px] top-[545px] left-[1620px] bg-[#ff7243] rounded-[75.5px/111.3px] rotate-[15deg] mt-[-1126px] mb-[-1126px] ml-[-276px] mr-[-276px] z-[1]" />
+          <div className="absolute w-[340px] h-[475px] top-[814px] left-[1587px] bg-[#2ec08b] rounded-[169.7px/237.8px] rotate-[-76deg] mt-[-992px] mb-[-992px]" />
+          <div className="absolute w-[150px] h-[223px] top-[704px] left-[1307px] bg-[#e2dffd] rounded-[75.5px/111.3px] rotate-[-18deg] mt-[-1006px] mb-[-1006px] ml-[-310px] mr-[-310px]" />
+          <div className="absolute w-[62px] h-[88px] top-[847px] left-[1281px] bg-[#ffffc4] rounded-[31.1px/43.6px] rotate-[32deg] ml-[-299px] mr-[-299px] mt-[-1001px] mb-[-1001px]" />
+          <div className="absolute w-[482px] h-[311px] top-[-24px] left-[1380px] bg-[#d9d9d9] rounded-[241px/155.6px] rotate-[-15deg] z-[-1]" />
 
-          <div className="text-center mb-16">
-            <h2 className="font-medium text-[#3c315b] text-[69px]">
+          <div className="text-center mb-20">
+            <h2 className="font-medium text-[#3c315b] text-[82px]">
               Top Traders
             </h2>
-            <p className="font-medium text-[#9f98b3] text-[22px] mt-4">
+            <p className="font-medium text-[#9f98b3] text-[26px] mt-6">
               Discover top performing meme coin traders with verified track
               records
             </p>
           </div>
 
           {/* Trader Cards */}
-          <div className="relative w-full overflow-hidden py-8">
+          <div className="relative w-full overflow-hidden py-10">
             <div 
-              className={`trader-scroll-container flex gap-6 will-change-transform animate-scroll ${scrollPaused ? 'paused' : ''}`}
+              className={`trader-scroll-container flex gap-8 will-change-transform animate-scroll ${scrollPaused ? 'paused' : ''}`}
               style={{ 
-                width: `${rankedTraders.length * 3 * 250}px`,
+                width: `${rankedTraders.length * 3 * 300}px`,
                 minWidth: '100vw',
-                paddingTop: '40px',
-                paddingBottom: '40px'
+                paddingTop: '50px',
+                paddingBottom: '50px'
               }}
             >
               {isLoadingTraders ? (
@@ -274,13 +274,13 @@ export const HomePage = (): JSX.Element => {
                 Array.from({ length: 10 }).map((_, index) => (
                   <Card
                     key={index}
-                    className={`flex-shrink-0 w-[234px] h-[420px] ${cardColors[index]} rounded-[15px] border-none shadow-none animate-pulse ml-6`}
+                    className={`flex-shrink-0 w-[280px] h-[500px] ${cardColors[index]} rounded-[18px] border-none shadow-none animate-pulse ml-8`}
                   >
-                    <CardContent className="p-0 flex flex-col items-center px-4">
-                      <div className="w-[91px] h-[97px] mt-[30px] bg-white/50 rounded-[45.5px/48.5px]" />
-                      <div className="mt-4 bg-white/50 rounded-full w-16 h-6" />
-                      <div className="mt-3 mb-4 bg-white/50 rounded-full w-20 h-6" />
-                      <div className="mt-3 mb-4 bg-white/50 rounded-full w-24 h-6" />
+                    <CardContent className="p-0 flex flex-col items-center px-5">
+                      <div className="w-[109px] h-[116px] mt-[36px] bg-white/50 rounded-[54.5px/58px]" />
+                      <div className="mt-5 bg-white/50 rounded-full w-20 h-7" />
+                      <div className="mt-4 mb-5 bg-white/50 rounded-full w-24 h-7" />
+                      <div className="mt-4 mb-5 bg-white/50 rounded-full w-28 h-7" />
                     </CardContent>
                   </Card>
                 ))
@@ -289,14 +289,14 @@ export const HomePage = (): JSX.Element => {
                 [...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
                   <Card
                     key={`${trader.id}-${index}`}
-                    className={`flex-shrink-0 w-[234px] h-[420px] ${trader.rank === 1 ? 'diamond-background golden-shine' : trader.bgColor} rounded-[15px] border-none shadow-none relative cursor-pointer trader-card ml-6`}
+                    className={`flex-shrink-0 w-[280px] h-[500px] ${trader.rank === 1 ? 'diamond-background golden-shine' : trader.bgColor} rounded-[18px] border-none shadow-none relative cursor-pointer trader-card ml-8`}
                     onMouseEnter={() => setScrollPaused(true)}
                     onMouseLeave={() => setScrollPaused(false)}
                   >
-                    <CardContent className="p-0 flex flex-col items-center px-4">
+                    <CardContent className="p-0 flex flex-col items-center px-5">
                       {/* Profile Image with Crown for Rank 1 */}
-                      <div className="relative w-[91px] h-[97px] mt-[30px]">
-                        <div className="w-full h-full bg-white rounded-[45.5px/48.5px] overflow-hidden flex items-center justify-center">
+                      <div className="relative w-[109px] h-[116px] mt-[36px]">
+                        <div className="w-full h-full bg-white rounded-[54.5px/58px] overflow-hidden flex items-center justify-center">
                           {trader.profileImage ? (
                             <img 
                               src={trader.profileImage} 
@@ -304,34 +304,34 @@ export const HomePage = (): JSX.Element => {
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <Image size={32} className="text-gray-400" />
+                            <Image size={38} className="text-gray-400" />
                           )}
                         </div>
                         {/* Crown for Rank 1 only */}
                         {trader.rank === 1 && (
-                          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                            <Crown className="w-8 h-8 text-yellow-500 fill-yellow-400 drop-shadow-lg" />
+                          <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                            <Crown className="w-10 h-10 text-yellow-500 fill-yellow-400 drop-shadow-lg" />
                           </div>
                         )}
                       </div>
                       
                       {/* Rank Tag */}
-                      <div className="mt-4">
-                        <span className="bg-white text-black px-3 py-1 rounded-full text-xs font-medium">
+                      <div className="mt-5">
+                        <span className="bg-white text-black px-4 py-2 rounded-full text-sm font-medium">
                           Rank: {trader.rank}
                         </span>
                       </div>
                       
                       {/* Name Tag */}
-                      <div className="mt-3 mb-4">
-                        <span className="bg-white text-black px-3 py-1 rounded-full text-xs font-medium">
+                      <div className="mt-4 mb-5">
+                        <span className="bg-white text-black px-4 py-2 rounded-full text-sm font-medium">
                           {trader.name}
                         </span>
                       </div>
                       
                       {/* Specialty Tag */}
-                      <div className="mb-4">
-                        <span className="bg-white text-black px-3 py-1 rounded-full text-xs font-medium">
+                      <div className="mb-5">
+                        <span className="bg-white text-black px-4 py-2 rounded-full text-sm font-medium">
                           {trader.specialty || 'Crypto Expert'}
                         </span>
                       </div>
