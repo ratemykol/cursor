@@ -2,6 +2,7 @@ import {
   users,
   traders,
   ratings,
+  userBadges,
   type User,
   type UpsertUser,
   type Trader,
@@ -10,6 +11,8 @@ import {
   type InsertRating,
   type UserRegistration,
   type UserLogin,
+  type UserBadge,
+  type InsertUserBadge,
 } from "@shared/schema";
 import bcrypt from "bcryptjs";
 import { db } from "./db";
