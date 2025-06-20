@@ -164,7 +164,16 @@ export const UserProfilePage = (): JSX.Element => {
   }
 
   if (!isAuthenticated) {
-    return null; // Will redirect via useEffect
+    return (
+      <div className="bg-white flex flex-row justify-center w-full">
+        <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
+          <Header />
+          <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-20">
+            <div className="text-center">Redirecting to sign in...</div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
