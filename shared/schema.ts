@@ -49,6 +49,7 @@ export const traders = pgTable("traders", {
   profileImage: varchar("profile_image", { length: 500 }),
   specialty: varchar("specialty", { length: 255 }),
   verified: boolean("verified").default(false),
+  twitterUrl: varchar("twitter_url", { length: 500 }),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
