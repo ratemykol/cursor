@@ -417,36 +417,64 @@ export const AdminPage = (): JSX.Element => {
     }
   };
 
-  const createSampleTraders = () => {
-    const sampleTraders = [
-      {
-        name: "CryptoKing2024",
-        walletAddress: "0x742d35Cc6634C0532925a3b8D404fA503e8d4125",
-        bio: "Professional crypto trader with 5+ years experience in DeFi and NFT markets. Specializing in meme coins and high-risk/high-reward strategies.",
-        specialty: "Meme Coins & DeFi",
-        verified: true,
-        profileImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=CryptoKing2024",
-      },
-      {
-        name: "BlockchainExpert",
-        walletAddress: "0x8ba1f109551bD432803012645Hac136c22C501e8",
-        bio: "Experienced trader focusing on fundamental analysis and long-term investments in blockchain technology.",
-        specialty: "Fundamental Analysis",
-        verified: true,
-        profileImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=BlockchainExpert",
-      },
-      {
-        name: "NFTWhale",
-        walletAddress: "0x1234567890abcdef1234567890abcdef12345678",
-        bio: "NFT collector and trader with expertise in digital art markets and gaming tokens.",
-        specialty: "NFT Trading",
-        verified: false,
-        profileImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=NFTWhale",
-      },
+  const createKOLTraders = () => {
+    const kolTraders = [
+      { name: "N'o", twitterUrl: "https://x.com/Nosa1x", walletAddress: "Di75xbVUg3u1qcmZci3NcZ8rjFMj7tsnYEoFdEMjS4ow" },
+      { name: "Latuche", twitterUrl: "https://x.com/Latuche95", walletAddress: "GJA1HEbxGnqBhBifH9uQauzXSB53to5rhDrzmKxhSU65" },
+      { name: "Jijo", twitterUrl: "https://x.com/jijo_exe", walletAddress: "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk" },
+      { name: "Kadenox", twitterUrl: "https://x.com/kadenox", walletAddress: "3pZ59YENxDAcjaKa3sahZJBcgER4rGYi4v6BpPurmsGj" },
+      { name: "Pandora", twitterUrl: "https://x.com/pandoraflips", walletAddress: "UxuuMeyX2pZPHmGZ2w3Q8MysvExCAquMtvEfqp2etvm" },
+      { name: "Heyitsyolo", twitterUrl: "https://x.com/Heyitsyolotv", walletAddress: "Av3xWHJ5EsoLZag6pr7LKbrGgLRTaykXomDD5kBhL9YQ" },
+      { name: "Beaver", twitterUrl: "https://x.com/beaverd", walletAddress: "GM7Hrz2bDq33ezMtL6KGidSWZXMWgZ6qBuugkb5H8NvN" },
+      { name: "Sebastian", twitterUrl: "https://x.com/Saint_pablo123", walletAddress: "3BLjRcxWGtR7WRshJ3hL25U3RjWr5Ud98wMcczQqk4Ei" },
+      { name: "0xSevere", twitterUrl: "https://x.com/0xSevere", walletAddress: "9FNz4MjPUmnJqTf6yEDbL1D4SsHVh7uA8zRHhR5K138r" },
+      { name: "YOUNIZ", twitterUrl: "https://x.com/YOUNIZ_XLZ", walletAddress: "EKDDjxzJ39Bjkr47NiARGJDKFVxiiV9WNJ5XbtEhPEXP" },
+      { name: "West", twitterUrl: "https://x.com/ratwizardx", walletAddress: "JDd3hy3gQn2V982mi1zqhNqUw1GfV2UL6g76STojCJPN" },
+      { name: "Letterbomb", twitterUrl: "https://x.com/ihateoop", walletAddress: "BtMBMPkoNbnLF9Xn552guQq528KKXcsNBNNBre3oaQtr" },
+      { name: "Bandit", twitterUrl: "https://x.com/bandeeeez", walletAddress: "5B79fMkcFeRTiwm7ehsZsFiKsC7m7n1Bgv9yLxPp9q2X" },
+      { name: "The Doc", twitterUrl: "https://x.com/KayTheDoc", walletAddress: "DYAn4XpAkN5mhiXkRB7dGq4Jadnx6XYgu8L5b3WGhbrt" },
+      { name: "Boogie", twitterUrl: "https://x.com/boogiepnl", walletAddress: "2m8Mc2ngJCmpbEEoYhwT9U929z6C4CPKLatWnR775u9a" },
+      { name: "Smokez", twitterUrl: "https://x.com/SmokezXBT", walletAddress: "5t9xBNuDdGTGpjaPTx6hKd7sdRJbvtKS8Mhq6qVbo8Qz" },
+      { name: "Ozark", twitterUrl: "https://x.com/ohzarke", walletAddress: "DZAa55HwXgv5hStwaTEJGXZz1DhHejvpb7Yr762urXam" },
+      { name: "Groovy", twitterUrl: "https://x.com/0xGroovy", walletAddress: "34ZEH778zL8ctkLwxxERLX5ZnUu6MuFyX9CWrs8kucMw" },
+      { name: "Mr Frog", twitterUrl: "https://x.com/TheMisterFrog", walletAddress: "4DdrfiDHpmx55i4SPssxVzS9ZaKLb8qr45NKY9Er9nNh" },
+      { name: "Classic", twitterUrl: "https://x.com/simplyclassic69", walletAddress: "DsqRyTUh1R37asYcVf1KdX4CNnz5DKEFmnXvgT4NfTPE" },
+      { name: "Hail", twitterUrl: "https://x.com/ignHail", walletAddress: "HA1L7GhQfypSRdfBi3tCkkCVEdEcBVYqBSQCENCrwPuB" },
+      { name: "Meechie", twitterUrl: "https://x.com/973Meech", walletAddress: "EkdbN4v1v88Z8LjxhXWgLc8m1iZUqxUMS6vzNvEdTJkU" },
+      { name: "Orange", twitterUrl: "https://x.com/OrangeSBS", walletAddress: "96sErVjEN7LNJ6Uvj63bdRWZxNuBngj56fnT9biHLKBf" },
+      { name: "Mitch", twitterUrl: "https://x.com/idrawline", walletAddress: "4Be9CvxqHW6BYiRAxW9Q3xu1ycTMWaL5z8NX4HR3ha7t" },
+      { name: "TIL", twitterUrl: "https://x.com/tilcrypto", walletAddress: "EHg5YkU2SZBTvuT87rUsvxArGp3HLeye1fXaSDfuMyaf" },
+      { name: "Goob", twitterUrl: "https://x.com/ifullclipp", walletAddress: "9BkauJdFYUyBkNBZwV4mNNyfeVKhHvjULb7cL4gFQaLt" },
+      { name: "Fashr", twitterUrl: "https://x.com/FASHRCrypto", walletAddress: "719sfKUjiMThumTt2u39VMGn612BZyCcwbM5Pe8SqFYz" },
+      { name: "Idontpaytaxes", twitterUrl: "https://x.com/untaxxable", walletAddress: "2T5NgDDidkvhJQg8AHDi74uCFwgp25pYFMRZXBaCUNBH" },
+      { name: "Xander", twitterUrl: "https://x.com/xandereef", walletAddress: "B3wagQZiZU2hKa5pUCj6rrdhWsX3Q6WfTTnki9PjwzMh" },
+      { name: "Qtdegen", twitterUrl: "https://x.com/qtdegen", walletAddress: "7tiRXPM4wwBMRMYzmywRAE6jveS3gDbNyxgRrEoU6RLA" },
+      { name: "Oura", twitterUrl: "https://x.com/Oura456", walletAddress: "4WPTQA7BB4iRdrPhgNpJihGcxKh8T43gLjMn5PbEVfQw" },
+      { name: "Insentos", twitterUrl: "https://x.com/insentos", walletAddress: "7SDs3PjT2mswKQ7Zo4FTucn9gJdtuW4jaacPA65BseHS" },
+      { name: "Lynk", twitterUrl: "https://x.com/lynk0x", walletAddress: "CkPFGv2Wv1vwdWjtXioEgb8jhZQfs3eVZez3QCetu7xD" },
+      { name: "Issa", twitterUrl: "https://x.com/issathecooker", walletAddress: "2BU3NAzgRA2gg2MpzwwXpA8X4CCRaLgrf6TY1FKfJPX2" },
+      { name: "ShockedJS", twitterUrl: "https://x.com/ShockedJS", walletAddress: "6m5sW6EAPAHncxnzapi1ZVJNRb9RZHQ3Bj7FD84X9rAF" },
+      { name: "Leens", twitterUrl: "https://x.com/leensx100", walletAddress: "7iabBMwmSvS4CFPcjW2XYZY53bUCHzXjCFEFhxeYP4CY" },
+      { name: "Henn100x", twitterUrl: "https://x.com/henn100x", walletAddress: "FRbUNvGxYNC1eFngpn7AD3f14aKKTJVC6zSMtvj2dyCS" },
+      { name: "Saif", twitterUrl: "https://x.com/degensaif", walletAddress: "BuhkHhM3j4viF71pMTd23ywxPhF35LUnc2QCLAvUxCdW" },
+      { name: "Red", twitterUrl: "https://x.com/redwithbag", walletAddress: "7ABz8qEFZTHPkovMDsmQkm64DZWN5wRtU7LEtD2ShkQ6" },
+      { name: "CartiTheMenace", twitterUrl: "https://x.com/CartiTheMenace", walletAddress: "A6fVPXt9bqon1LQoJi4HQ5xkhavLKEo77N5CZef2jpmR" }
     ];
 
-    sampleTraders.forEach((trader) => {
-      createMutation.mutate(trader);
+    // Add profiles with automatic Twitter image fetching and crypto trader specialties
+    kolTraders.forEach((trader, index) => {
+      setTimeout(() => {
+        const traderData = {
+          name: trader.name,
+          walletAddress: trader.walletAddress,
+          twitterUrl: trader.twitterUrl,
+          specialty: "Crypto Trading",
+          verified: true,
+          bio: `Professional crypto trader and KOL with expertise in Solana ecosystem trading.`,
+          profileImage: null // Will be auto-fetched from Twitter
+        };
+        createMutation.mutate(traderData);
+      }, index * 1000); // Stagger requests by 1 second to avoid rate limiting
     });
   };
 
@@ -578,8 +606,8 @@ export const AdminPage = (): JSX.Element => {
               {traders.length === 0 && (
                 <Card className="p-8 text-center">
                   <p className="text-gray-600 mb-4">No traders found. Create your first trader profile!</p>
-                  <Button onClick={createSampleTraders} variant="outline">
-                    Add Sample Data
+                  <Button onClick={createKOLTraders} variant="outline">
+                    Import KOL Traders (40)
                   </Button>
                 </Card>
               )}
@@ -1207,10 +1235,10 @@ export const AdminPage = (): JSX.Element => {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={createSampleTraders}
+                    onClick={createKOLTraders}
                     disabled={createMutation.isPending}
                   >
-                    Add Sample Data
+                    Import KOL Traders (40)
                   </Button>
                 )}
               </div>
