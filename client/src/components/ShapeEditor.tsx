@@ -32,26 +32,46 @@ export const ShapeEditor = ({ isOpen, onClose, onUpdateShape }: ShapeEditorProps
   ]);
 
   const updateShapePosition = useCallback((shapeId: string, axis: 'x' | 'y', delta: number) => {
-    setShapes(prev => prev.map(shape => {
-      if (shape.id === shapeId) {
-        const newValue = axis === 'x' ? shape.x + delta : shape.y + delta;
-        const updatedShape = { ...shape, [axis]: newValue };
-        onUpdateShape(shapeId, updatedShape.x, updatedShape.y);
-        return updatedShape;
-      }
-      return shape;
-    }));
+    setShapes(prev => {
+      const newShapes = prev.map(shape => {
+        if (shape.id === shapeId) {
+          const newValue = axis === 'x' ? shape.x + delta : shape.y + delta;
+          return { ...shape, [axis]: newValue };
+        }
+        return shape;
+      });
+      
+      // Use setTimeout to avoid state update during render
+      setTimeout(() => {
+        const updatedShape = newShapes.find(s => s.id === shapeId);
+        if (updatedShape) {
+          onUpdateShape(shapeId, updatedShape.x, updatedShape.y);
+        }
+      }, 0);
+      
+      return newShapes;
+    });
   }, [onUpdateShape]);
 
   const setShapePosition = useCallback((shapeId: string, axis: 'x' | 'y', value: number) => {
-    setShapes(prev => prev.map(shape => {
-      if (shape.id === shapeId) {
-        const updatedShape = { ...shape, [axis]: value };
-        onUpdateShape(shapeId, updatedShape.x, updatedShape.y);
-        return updatedShape;
-      }
-      return shape;
-    }));
+    setShapes(prev => {
+      const newShapes = prev.map(shape => {
+        if (shape.id === shapeId) {
+          return { ...shape, [axis]: value };
+        }
+        return shape;
+      });
+      
+      // Use setTimeout to avoid state update during render
+      setTimeout(() => {
+        const updatedShape = newShapes.find(s => s.id === shapeId);
+        if (updatedShape) {
+          onUpdateShape(shapeId, updatedShape.x, updatedShape.y);
+        }
+      }, 0);
+      
+      return newShapes;
+    });
   }, [onUpdateShape]);
 
   if (!isOpen) return null;

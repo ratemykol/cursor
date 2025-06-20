@@ -22,23 +22,30 @@
     min-height: 100vh;
   }
 
-  /* Responsive text scaling */
-  @media (max-width: 640px) {
+  /* Optimized scaling for 1920x1080 and similar resolutions */
+  @media (max-width: 1366px) {
     html {
       font-size: 14px;
     }
   }
 
-  @media (min-width: 641px) and (max-width: 1024px) {
+  @media (min-width: 1367px) and (max-width: 1919px) {
     html {
       font-size: 15px;
     }
   }
 
-  @media (min-width: 1025px) {
+  @media (min-width: 1920px) {
     html {
-      font-size: 16px;
+      font-size: 18px;
     }
+  }
+
+  /* Container for 1920x1080 optimization */
+  .container-1920 {
+    max-width: 1920px;
+    margin: 0 auto;
+    width: 100%;
   }
 
   /* Zoom-responsive decorative elements */
