@@ -155,6 +155,9 @@ Changelog:
 - June 20, 2025. Added advanced anti-doxxing protection including IP obfuscation, server fingerprinting prevention, reconnaissance blocking, honeypot systems, and comprehensive identity protection measures
 - June 20, 2025. Added user search functionality to admin panel for filtering users by username or email with real-time results
 - June 20, 2025. Implemented email uniqueness validation for user signup to prevent duplicate email accounts with proper error handling
+- June 20, 2025. Added automatic Twitter profile image fetching for trader profiles using Twitter usernames extracted from URLs
+- June 20, 2025. Created dual input system for trader profile images: manual URL input OR automatic Twitter profile image fetching
+- June 20, 2025. Added refresh button in admin panel to manually update Twitter profile images for existing traders
 ```
 
 ## User Preferences

@@ -12,7 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import { apiRequest } from "@/lib/queryClient";
 import { Header } from "@/components/Header";
-import { Edit, Plus, Save, X, Upload, Image, Trash2 } from "lucide-react";
+import { Edit, Plus, Save, X, Upload, Image, Trash2, RefreshCw } from "lucide-react";
 
 export const AdminPage = (): JSX.Element => {
   const { isAuthenticated } = useAuth();
