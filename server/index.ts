@@ -216,17 +216,19 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    // Add MIME type middleware before static serving
-    app.use((req, res, next) => {
-      if (req.url.endsWith('.css')) {
+    // Custom static file middleware with forced MIME types
+    app.use('/assets', (req, res, next) => {
+      const filePath = req.path;
+      if (filePath.endsWith('.css')) {
         res.setHeader('Content-Type', 'text/css; charset=utf-8');
-      } else if (req.url.endsWith('.js')) {
+        res.setHeader('Cache-Control', 'public, max-age=31536000');
+      } else if (filePath.endsWith('.js')) {
         res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-      } else if (req.url.endsWith('.json')) {
-        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        res.setHeader('Cache-Control', 'public, max-age=31536000');
       }
       next();
     });
+    
     serveStatic(app);
   }
 
