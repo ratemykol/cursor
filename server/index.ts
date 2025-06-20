@@ -231,10 +231,9 @@ app.use((req, res, next) => {
 // Completely disable CSP in development
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, res, next) => {
-    // Remove any CSP headers completely and set permissive policy for Replit
+    // Remove any CSP headers completely
     res.removeHeader('Content-Security-Policy');
     res.removeHeader('Content-Security-Policy-Report-Only');
-    res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob: ws: wss:; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src *; img-src * data: blob:; style-src * 'unsafe-inline';");
     next();
   });
 }

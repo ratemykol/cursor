@@ -174,9 +174,6 @@ Changelog:
 - June 20, 2025. Fixed admin button visibility issue by updating useAdmin hook to properly clear admin status when users log out
 - June 20, 2025. Fixed critical security vulnerability CVE-2025-30208 by upgrading Vite from 5.4.14 to 5.4.19
 - June 20, 2025. Fixed bio persistence issue by adding bio field to session data during user authentication
-- June 20, 2025. Fixed deployment white screen issue by resolving SESSION_SECRET configuration and React hooks errors
-- June 20, 2025. Disabled CSP headers in development mode to resolve browser rendering compatibility issues
-- June 20, 2025. Fixed missing queryFn in useAdmin hook that was causing React Hooks order violations
 ```
 
 ## User Preferences
