@@ -140,6 +140,7 @@ Changelog:
 - June 20, 2025. Added additional yellow eclipse decorative element with 15-degree rotation to homepage
 - June 20, 2025. Removed decorative element from hero section to clean up homepage design
 - June 20, 2025. Reduced yellow eclipse decorative element size by 20% for better visual balance
+- June 20, 2025. Removed blue eclipse decorative element from hero section for cleaner design
 ```
 
 ## User Preferences
