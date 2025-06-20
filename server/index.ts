@@ -169,14 +169,14 @@ const sessionSecret = process.env.SESSION_SECRET || 'development-session-secret-
 app.use(session({
   store: new pgStore({
     conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
+    createTableIfMissing: true,
     tableName: 'sessions',
   }),
   secret: sessionSecret as string,
-  name: 'sessionId', // Don't use default session name
+  name: 'sessionId',
   resave: false,
   saveUninitialized: false,
-  rolling: true, // Reset expiration on activity
+  rolling: true,
   cookie: {
     secure: process.env.NODE_ENV === 'production', // HTTPS only in production
     httpOnly: true, // Prevent XSS
@@ -215,26 +215,32 @@ app.use((req, res, next) => {
   next();
 });
 
-// Fix MIME types for all static assets
+// Fix MIME types for static assets - must run BEFORE static file serving
 app.use((req, res, next) => {
-  // Override any existing Content-Type for CSS and JS files
+  // Aggressively override Content-Type for CSS and JS files
+  const originalSend = res.send;
+  const originalSendFile = res.sendFile;
   const originalSetHeader = res.setHeader;
+  
+  // Override setHeader to force correct MIME types
   res.setHeader = function(name: string, value: any) {
     if (name.toLowerCase() === 'content-type') {
-      if (req.url.endsWith('.css')) {
-        return originalSetHeader.call(this, name, 'text/css');
-      } else if (req.url.endsWith('.js')) {
-        return originalSetHeader.call(this, name, 'application/javascript');
+      if (req.url.endsWith('.css') || req.url.includes('.css')) {
+        return originalSetHeader.call(this, name, 'text/css; charset=utf-8');
+      } else if (req.url.endsWith('.js') || req.url.includes('.js')) {
+        return originalSetHeader.call(this, name, 'application/javascript; charset=utf-8');
       }
     }
     return originalSetHeader.call(this, name, value);
   };
   
-  // Also set headers directly for assets
-  if (req.url.includes('/assets/') && req.url.endsWith('.css')) {
-    res.setHeader('Content-Type', 'text/css');
-  } else if (req.url.includes('/assets/') && req.url.endsWith('.js')) {
-    res.setHeader('Content-Type', 'application/javascript');
+  // Pre-set headers for known asset routes
+  if (req.url.includes('/assets/')) {
+    if (req.url.includes('.css')) {
+      res.setHeader('Content-Type', 'text/css; charset=utf-8');
+    } else if (req.url.includes('.js')) {
+      res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+    }
   }
   
   next();
