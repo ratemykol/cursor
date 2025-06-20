@@ -375,7 +375,59 @@ export const HomePage = (): JSX.Element => {
         <div className="h-64"></div>
         
         {/* Footer */}
-        <footer className="w-full h-[400px] bg-[#ab9ff2] mt-80" />
+        <footer className="w-full bg-[#ab9ff2] mt-80 py-16 px-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+              {/* Company Info */}
+              <div className="col-span-1 md:col-span-2">
+                <h3 className="text-black font-bold text-xl mb-4">RateMyKOL</h3>
+                <p className="text-black text-sm mb-4 leading-relaxed">
+                  The premier platform for rating and reviewing crypto traders. 
+                  Discover top performing KOLs with verified track records and 
+                  make informed decisions about who to follow in the crypto space.
+                </p>
+                <div className="flex space-x-4">
+                  <span className="text-black text-xs">© 2025 RateMyKOL. All rights reserved.</span>
+                </div>
+              </div>
+
+              {/* Quick Links */}
+              <div>
+                <h4 className="text-black font-semibold text-lg mb-4">Quick Links</h4>
+                <ul className="space-y-2">
+                  <li><a href="/" className="text-black text-sm hover:underline">Home</a></li>
+                  <li><a href="/search" className="text-black text-sm hover:underline">Search Traders</a></li>
+                  <li><a href="/signin" className="text-black text-sm hover:underline">Sign In</a></li>
+                  <li><a href="/signup" className="text-black text-sm hover:underline">Sign Up</a></li>
+                </ul>
+              </div>
+
+              {/* Support */}
+              <div>
+                <h4 className="text-black font-semibold text-lg mb-4">Support</h4>
+                <ul className="space-y-2">
+                  <li><a href="#" className="text-black text-sm hover:underline">Help Center</a></li>
+                  <li><a href="#" className="text-black text-sm hover:underline">Contact Us</a></li>
+                  <li><a href="#" className="text-black text-sm hover:underline">Privacy Policy</a></li>
+                  <li><a href="#" className="text-black text-sm hover:underline">Terms of Service</a></li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Bottom bar */}
+            <div className="border-t border-black/20 pt-6 flex flex-col md:flex-row justify-between items-center">
+              <div className="text-black text-xs mb-4 md:mb-0">
+                Made for the crypto community by traders, for traders.
+              </div>
+              <div className="flex space-x-6">
+                <span className="text-black text-xs">Follow us:</span>
+                <a href="#" className="text-black text-xs hover:underline">Twitter</a>
+                <a href="#" className="text-black text-xs hover:underline">Discord</a>
+                <a href="#" className="text-black text-xs hover:underline">Telegram</a>
+              </div>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   );
