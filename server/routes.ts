@@ -723,8 +723,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         id: user.id,
         username: user.username,
         email: user.email,
+        bio: user.bio,
         profileImageUrl: user.profileImageUrl,
         authType: user.authType,
+        role: user.role,
       };
       
       // Remove password hash from response
@@ -776,6 +778,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email: updatedUser.email,
         bio: updatedUser.bio,
         profileImageUrl: updatedUser.profileImageUrl,
+        role: updatedUser.role,
       };
 
       res.json(updatedUser);
