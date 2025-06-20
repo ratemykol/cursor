@@ -67,8 +67,9 @@ export const SearchPage = (): JSX.Element => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen relative max-w-[1920px] mx-auto">
-      <Header currentPage="search" />
+    <div className="bg-gray-50 flex flex-row justify-center w-full min-h-screen">
+      <div className="bg-gray-50 min-h-screen relative max-w-[1920px] w-full">
+        <Header currentPage="search" />
       {/* Decorative background elements - scaled for 1920x1080 */}
       <img
         className="w-[90px] h-[91px] absolute left-[480px] top-[240px] z-[1]"
@@ -202,6 +203,7 @@ export const SearchPage = (): JSX.Element => {
             )}
           </>
         )}
+        </div>
       </div>
     </div>
   );
