@@ -566,9 +566,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = (req.session as any)?.user;
       const reviewId = parseInt(req.params.id);
       
-      // Verify the review belongs to the user
-      const existingReview = await storage.updateRating(reviewId, {});
-      if (!existingReview || existingReview.userId !== user.id) {
+      // First get the existing review to verify ownership
+      const existingReviews = await storage.getUserRatings(user.id);
+      const existingReview = existingReviews.find((review: any) => review.id === reviewId);
+      
+      if (!existingReview) {
         return res.status(403).json({ error: "You can only edit your own reviews" });
       }
 
