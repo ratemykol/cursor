@@ -1090,6 +1090,37 @@ export const AdminPage = (): JSX.Element => {
                 )}
               </div>
 
+              <div className="text-center text-gray-500 text-sm">
+                — OR —
+              </div>
+
+              <div>
+                <Label htmlFor="profileImageUrl">Profile Image URL</Label>
+                <Input
+                  id="profileImageUrl"
+                  value={profileImage}
+                  onChange={(e) => setProfileImage(e.target.value)}
+                  placeholder="https://example.com/profile-image.jpg"
+                />
+                <p className="text-sm text-gray-500 mt-1">
+                  Enter a direct link to an image file (JPG, PNG, GIF)
+                </p>
+                {profileImage && profileImage.startsWith('http') && (
+                  <div className="mt-2">
+                    <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
+                      <img 
+                        src={profileImage} 
+                        alt="Profile preview"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <div>
                 <Label htmlFor="bio">Bio</Label>
                 <Textarea
