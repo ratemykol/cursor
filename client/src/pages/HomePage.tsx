@@ -122,7 +122,7 @@ export const HomePage = (): JSX.Element => {
         <section className="relative px-32 mt-[120px] mb-[120px]">
           {/* Decorative elements - scaled for 1920x1080 */}
           <img
-            className="w-[90px] h-[91px] absolute left-[480px] top-[146px] mt-[-231px] mb-[-231px] ml-[-61px] mr-[-61px]"
+            className="w-[90px] h-[91px] absolute left-[480px] top-[146px] mt-[-229px] mb-[-229px] ml-[449px] mr-[449px]"
             alt="Star"
             src="/figmaAssets/star-2.svg"
           />
@@ -271,7 +271,7 @@ export const HomePage = (): JSX.Element => {
             >
               {isLoadingTraders ? (
                 // Loading skeleton
-                Array.from({ length: 10 }).map((_, index) => (
+                (Array.from({ length: 10 }).map((_, index) => (
                   <Card
                     key={index}
                     className={`flex-shrink-0 w-[280px] h-[500px] ${cardColors[index]} rounded-[18px] border-none shadow-none animate-pulse ml-8`}
@@ -283,10 +283,10 @@ export const HomePage = (): JSX.Element => {
                       <div className="mt-4 mb-5 bg-white/50 rounded-full w-28 h-7" />
                     </CardContent>
                   </Card>
-                ))
+                )))
               ) : (
                 // Duplicate cards for seamless scrolling
-                [...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
+                ([...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
                   <Card
                     key={`${trader.id}-${index}`}
                     className={`flex-shrink-0 w-[280px] h-[500px] ${trader.rank === 1 ? 'diamond-background golden-shine' : trader.bgColor} rounded-[18px] border-none shadow-none relative cursor-pointer trader-card ml-8`}
@@ -369,7 +369,7 @@ export const HomePage = (): JSX.Element => {
                       </div>
                     </CardContent>
                   </Card>
-                ))
+                )))
               )}
             </div>
           </div>
