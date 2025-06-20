@@ -148,7 +148,7 @@ export const HomePage = (): JSX.Element => {
         </Button>
 
         {/* Hero Section */}
-        <section className="relative px-4 sm:px-8 md:px-12 lg:px-20 mt-16 sm:mt-20 md:mt-24 lg:mt-[99px] mb-16 sm:mb-20 md:mb-24 lg:mb-[99px] overflow-hidden">
+        <section className="container-1920 relative px-8 lg:px-16 xl:px-24 mt-20 lg:mt-[120px] mb-24 lg:mb-[120px] overflow-hidden">
           {/* Decorative elements with zoom-responsive positioning */}
           <img
             className="absolute left-[25%] top-[20%] z-[1]"
@@ -193,18 +193,18 @@ export const HomePage = (): JSX.Element => {
             src="/figmaAssets/polygon-1.svg"
           />
 
-          <div className="max-w-3xl mx-auto text-center relative z-[5]">
-            <h2 className="font-medium text-[#3c315b] text-3xl sm:text-4xl md:text-5xl lg:text-[69px] leading-tight">
+          <div className="max-w-5xl mx-auto text-center relative z-[5]">
+            <h2 className="font-medium text-[#3c315b] text-[85px] xl:text-[95px] leading-tight">
               Rate Your Crypto KOLs
             </h2>
-            <p className="font-medium text-[#9f98b3] text-base sm:text-lg md:text-xl lg:text-[22px] mt-4">
+            <p className="font-medium text-[#9f98b3] text-[28px] xl:text-[32px] mt-6">
               Find and review KOLs based on their performance, reliability, and
               trading strategies
             </p>
           </div>
 
           {/* Search Bar with Dropdown */}
-          <div className="mt-16 relative max-w-3xl mx-auto z-[10]" ref={dropdownRef}>
+          <div className="mt-20 relative max-w-4xl mx-auto z-[10]" ref={dropdownRef}>
             <div className="relative">
               <div className="relative">
                 <Input
