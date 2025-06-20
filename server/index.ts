@@ -75,38 +75,35 @@ app.use((req, res, next) => {
   next();
 });
 
-// IP obfuscation and anti-doxxing middleware
-app.use((req, res, next) => {
-  // Remove real IP from logs and headers
-  const originalIP = req.ip;
-  const forwardedFor = req.get('X-Forwarded-For');
-  const realIP = req.get('X-Real-IP');
-  
-  // Override IP with anonymized version for logging
-  Object.defineProperty(req, 'ip', {
-    value: 'xxx.xxx.xxx.xxx',
-    writable: false,
-    configurable: false
+// IP obfuscation and anti-doxxing middleware - only in production
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    // Remove real IP from logs and headers
+    const originalIP = req.ip;
+    
+    // Override IP with anonymized version for logging
+    Object.defineProperty(req, 'ip', {
+      value: 'xxx.xxx.xxx.xxx',
+      writable: false,
+      configurable: false
+    });
+    
+    // Remove identifying headers that could leak server info
+    delete req.headers['x-forwarded-for'];
+    delete req.headers['x-real-ip'];
+    delete req.headers['x-forwarded-host'];
+    delete req.headers['x-forwarded-proto'];
+    delete req.headers['x-forwarded-port'];
+    delete req.headers['forwarded'];
+    delete req.headers['via'];
+    delete req.headers['x-cluster-client-ip'];
+    delete req.headers['cf-connecting-ip'];
+    delete req.headers['true-client-ip'];
+    delete req.headers['x-original-forwarded-for'];
+    
+    next();
   });
-  
-  // Remove identifying headers that could leak server info
-  delete req.headers['x-forwarded-for'];
-  delete req.headers['x-real-ip'];
-  delete req.headers['x-forwarded-host'];
-  delete req.headers['x-forwarded-proto'];
-  delete req.headers['x-forwarded-port'];
-  delete req.headers['forwarded'];
-  delete req.headers['via'];
-  delete req.headers['x-cluster-client-ip'];
-  delete req.headers['cf-connecting-ip'];
-  delete req.headers['true-client-ip'];
-  delete req.headers['x-original-forwarded-for'];
-  
-  // Store original IP in a secure way if needed for legitimate purposes
-  req._originalIP = originalIP;
-  
-  next();
-});
+}
 
 // Hide server fingerprinting information
 app.use((req, res, next) => {
@@ -125,12 +122,10 @@ app.use((req, res, next) => {
   }
 });
 
-// Advanced CORS configuration with IP protection
-app.use(cors({
-  origin: function (origin, callback) {
-    // In production, be very strict about origins
-    if (process.env.NODE_ENV === 'production') {
-      // Only allow specific domains you control
+// CORS configuration - permissive in development, strict in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(cors({
+    origin: function (origin, callback) {
       const allowedOrigins = process.env.ALLOWED_ORIGINS ? 
         process.env.ALLOWED_ORIGINS.split(',') : [];
       
@@ -139,32 +134,18 @@ app.use(cors({
       } else {
         callback(new Error('Origin not allowed by CORS policy'));
       }
-    } else {
-      // Development mode - allow localhost
-      const allowedOrigins = [
-        'http://localhost:5000',
-        'http://127.0.0.1:5000',
-      ];
-      
-      if (process.env.REPLIT_DOMAINS) {
-        const replitDomains = process.env.REPLIT_DOMAINS.split(',');
-        replitDomains.forEach(domain => {
-          allowedOrigins.push(`https://${domain}`);
-        });
-      }
-      
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Origin not allowed by CORS policy'));
-      }
-    }
-  },
-  credentials: true,
-  // Prevent preflight request information leakage
-  preflightContinue: false,
-  optionsSuccessStatus: 204
-}));
+    },
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204
+  }));
+} else {
+  // Very permissive CORS for development
+  app.use(cors({
+    origin: true,
+    credentials: true
+  }));
+}
 
 // Rate limiting - disabled in development, enabled in production
 if (process.env.NODE_ENV === 'production') {
