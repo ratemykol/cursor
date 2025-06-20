@@ -47,8 +47,8 @@ export const AdminPage = (): JSX.Element => {
 
   if (!isAuthenticated) {
     return (
-      <div className="bg-white flex flex-row justify-center w-full">
-        <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
+      <div className="bg-white w-full min-h-screen">
+        <div className="bg-white overflow-hidden w-full max-w-[1440px] relative mx-auto">
           <Header currentPage="admin" />
           <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-20">
             <Card className="w-full max-w-md">
@@ -64,8 +64,8 @@ export const AdminPage = (): JSX.Element => {
 
   if (!isAdmin) {
     return (
-      <div className="bg-white flex flex-row justify-center w-full">
-        <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
+      <div className="bg-white w-full min-h-screen">
+        <div className="bg-white overflow-hidden w-full max-w-[1440px] relative mx-auto">
           <Header currentPage="admin" />
           <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-20">
             <Card className="w-full max-w-md">
@@ -321,7 +321,8 @@ export const AdminPage = (): JSX.Element => {
 
   if (view === "list") {
     return (
-      <div className="bg-white min-h-screen max-w-[1920px] mx-auto">
+      <div className="bg-white w-full min-h-screen">
+        <div className="bg-white min-h-screen max-w-[1920px] mx-auto">
         <Header currentPage="admin" />
         <div className="container mx-auto px-16 py-12">
           {/* Navigation Tabs */}
@@ -421,13 +422,15 @@ export const AdminPage = (): JSX.Element => {
             </div>
           )}
         </div>
+        </div>
       </div>
     );
   }
 
   if (view === "reviews") {
     return (
-      <div className="bg-white min-h-screen">
+      <div className="bg-white w-full min-h-screen">
+        <div className="bg-white min-h-screen max-w-[1920px] mx-auto">
         <Header currentPage="admin" />
         <div className="container mx-auto px-8 py-8">
           {/* Navigation Tabs */}
@@ -644,12 +647,14 @@ export const AdminPage = (): JSX.Element => {
             </div>
           )}
         </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white w-full min-h-screen">
+      <div className="bg-white min-h-screen max-w-[1920px] mx-auto">
       <Header currentPage="admin" />
       <div className="container mx-auto px-8 py-8 max-w-2xl">
         <Card>
@@ -774,6 +779,7 @@ export const AdminPage = (): JSX.Element => {
             </form>
           </CardContent>
         </Card>
+      </div>
       </div>
     </div>
   );
