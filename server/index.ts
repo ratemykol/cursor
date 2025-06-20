@@ -13,55 +13,64 @@ const app = express();
 app.set('trust proxy', 1);
 
 // Advanced security middleware for identity protection
-app.use(helmet({
-  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      scriptSrc: ["'self'", "'unsafe-eval'"],
-      imgSrc: ["'self'", "data:", "https:", "blob:"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      connectSrc: ["'self'", "wss:", "ws:"],
-      mediaSrc: ["'self'"],
-      objectSrc: ["'none'"],
-      frameSrc: ["'none'"],
+if (process.env.NODE_ENV === 'production') {
+  // Full security in production
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        scriptSrc: ["'self'", "'unsafe-eval'"],
+        imgSrc: ["'self'", "data:", "https:", "blob:"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        connectSrc: ["'self'", "wss:", "ws:"],
+        mediaSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        frameSrc: ["'none'"],
+      },
     },
-  } : false,
-  crossOriginEmbedderPolicy: false,
-  // Hide server information
-  hidePoweredBy: true,
-  // Prevent clickjacking
-  frameguard: { action: 'deny' },
-  // Prevent MIME type sniffing
-  noSniff: true,
-  // Force HTTPS in production
-  hsts: process.env.NODE_ENV === 'production' ? {
-    maxAge: 31536000,
-    includeSubDomains: true,
-    preload: true
-  } : false,
-  // Prevent XSS attacks
-  xssFilter: true,
-  // Hide referrer information
-  referrerPolicy: { policy: 'no-referrer' }
-}));
+    crossOriginEmbedderPolicy: false,
+    hidePoweredBy: true,
+    frameguard: { action: 'deny' },
+    noSniff: true,
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true
+    },
+    xssFilter: true,
+    referrerPolicy: { policy: 'no-referrer' }
+  }));
+} else {
+  // Minimal security in development to allow Vite
+  app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+    hidePoweredBy: true,
+    frameguard: false,
+    noSniff: true,
+    hsts: false,
+    xssFilter: false,
+    referrerPolicy: false
+  }));
+}
 
 // Remove server signatures and identifying headers
 app.disable('x-powered-by');
 app.use((req, res, next) => {
-  // Remove identifying headers
+  // Always remove identifying headers
   res.removeHeader('X-Powered-By');
   res.removeHeader('Server');
   
-  // Add security headers to prevent information leakage
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  res.setHeader('Referrer-Policy', 'no-referrer');
-  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
-  
-  // Hide server timing information
-  res.setHeader('Server-Timing', '');
+  // Only add restrictive security headers in production
+  if (process.env.NODE_ENV === 'production') {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Referrer-Policy', 'no-referrer');
+    res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+    res.setHeader('Server-Timing', '');
+  }
   
   next();
 });
@@ -101,14 +110,19 @@ app.use((req, res, next) => {
 
 // Hide server fingerprinting information
 app.use((req, res, next) => {
-  // Prevent server version detection
-  res.setHeader('Server', 'nginx'); // Generic server name
-  
-  // Randomize response timing to prevent timing attacks
-  const delay = Math.floor(Math.random() * 50);
-  setTimeout(() => {
+  // Only apply server obfuscation in production
+  if (process.env.NODE_ENV === 'production') {
+    res.setHeader('Server', 'nginx');
+    
+    // Randomize response timing to prevent timing attacks
+    const delay = Math.floor(Math.random() * 50);
+    setTimeout(() => {
+      next();
+    }, delay);
+  } else {
+    // Skip delays and obfuscation in development
     next();
-  }, delay);
+  }
 });
 
 // Advanced CORS configuration with IP protection
