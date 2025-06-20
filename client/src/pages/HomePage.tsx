@@ -434,7 +434,7 @@ export const HomePage = (): JSX.Element => {
               </div>
               <div className="flex space-x-6">
                 <span className="text-black text-xs">Follow us:</span>
-                <a href="#" className="text-black text-xs hover:underline">Twitter</a>
+                <a href="https://x.com/RateMyKOLL" target="_blank" rel="noopener noreferrer" className="text-black text-xs hover:underline">Twitter</a>
                 <a href="#" className="text-black text-xs hover:underline">Discord</a>
                 <a href="#" className="text-black text-xs hover:underline">Telegram</a>
               </div>
