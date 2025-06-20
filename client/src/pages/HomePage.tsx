@@ -318,11 +318,24 @@ export const HomePage = (): JSX.Element => {
                         </span>
                       </div>
                       
-                      {/* Name Tag */}
-                      <div className="mt-4 mb-5">
+                      {/* Name Tag with Twitter Icon */}
+                      <div className="mt-4 mb-5 flex items-center justify-center gap-2">
                         <span className="bg-white text-black px-4 py-2 rounded-full text-sm font-medium">
                           {trader.name}
                         </span>
+                        {trader.twitterUrl && (
+                          <button
+                            onClick={() => window.open(trader.twitterUrl, '_blank')}
+                            className="w-6 h-6 rounded-full overflow-hidden hover:scale-110 transition-transform duration-200 flex-shrink-0"
+                            title="View Twitter Profile"
+                          >
+                            <img 
+                              src="/twitter-blue.png" 
+                              alt="Twitter"
+                              className="w-full h-full object-cover"
+                            />
+                          </button>
+                        )}
                       </div>
                       
                       {/* Specialty Tag */}

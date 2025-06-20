@@ -161,9 +161,24 @@ export const SearchPage = (): JSX.Element => {
                           
                           {/* Trader Info */}
                           <div className="flex-1">
-                            <h3 className="text-xl font-semibold text-gray-900 mb-1">
-                              {trader.name}
-                            </h3>
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="text-xl font-semibold text-gray-900">
+                                {trader.name}
+                              </h3>
+                              {trader.twitterUrl && (
+                                <button
+                                  onClick={() => window.open(trader.twitterUrl, '_blank')}
+                                  className="w-6 h-6 rounded-full overflow-hidden hover:scale-110 transition-transform duration-200 flex-shrink-0"
+                                  title="View Twitter Profile"
+                                >
+                                  <img 
+                                    src="/twitter-blue.png" 
+                                    alt="Twitter"
+                                    className="w-full h-full object-cover"
+                                  />
+                                </button>
+                              )}
+                            </div>
                             <p className="text-gray-600 text-sm mb-2">{trader.specialty || 'Crypto Trader'}</p>
                             
                             {/* Rating Display */}

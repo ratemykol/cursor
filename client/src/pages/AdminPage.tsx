@@ -442,6 +442,19 @@ export const AdminPage = (): JSX.Element => {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <h3 className="text-lg font-semibold">{trader.name}</h3>
+                          {trader.twitterUrl && (
+                            <button
+                              onClick={() => window.open(trader.twitterUrl, '_blank')}
+                              className="w-6 h-6 rounded-full overflow-hidden hover:scale-110 transition-transform duration-200 flex-shrink-0"
+                              title="View Twitter Profile"
+                            >
+                              <img 
+                                src="/twitter-blue.png" 
+                                alt="Twitter"
+                                className="w-full h-full object-cover"
+                              />
+                            </button>
+                          )}
                           {trader.verified && (
                             <Badge className="bg-blue-100 text-blue-800">Verified</Badge>
                           )}
