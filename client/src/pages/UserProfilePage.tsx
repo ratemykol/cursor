@@ -7,12 +7,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Slider } from "@/components/ui/slider";
 import { useAuth } from "@/hooks/useAuth";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { useLocation, Link } from "wouter";
-import { Star, Edit, Trash2, ExternalLink } from "lucide-react";
+import { Star, Edit, Trash2, ExternalLink, X } from "lucide-react";
 
 export const UserProfilePage = (): JSX.Element => {
   const [, setLocation] = useLocation();
@@ -27,6 +29,15 @@ export const UserProfilePage = (): JSX.Element => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [activeTab, setActiveTab] = useState("profile");
   const [editingReview, setEditingReview] = useState<any>(null);
+  const [editFormData, setEditFormData] = useState({
+    overallRating: [3],
+    strategyRating: [3],
+    communicationRating: [3],
+    reliabilityRating: [3],
+    profitabilityRating: [3],
+    comment: "",
+    tags: [] as string[],
+  });
 
   // Fetch user reviews
   const { data: userReviews = [], isLoading: reviewsLoading } = useQuery({
@@ -123,6 +134,40 @@ export const UserProfilePage = (): JSX.Element => {
     },
   });
 
+  // Update review mutation
+  const updateReviewMutation = useMutation({
+    mutationFn: async ({ reviewId, reviewData }: { reviewId: number; reviewData: any }) => {
+      const response = await fetch(`/api/ratings/${reviewId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(reviewData),
+        credentials: "include"
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to update review");
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Review updated successfully",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/user/reviews"] });
+      setEditingReview(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -159,6 +204,40 @@ export const UserProfilePage = (): JSX.Element => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateProfileMutation.mutate(formData);
+  };
+
+  // Handle opening edit modal
+  const handleEditReview = (review: any) => {
+    setEditingReview(review);
+    setEditFormData({
+      overallRating: [review.overallRating],
+      strategyRating: [review.strategyRating],
+      communicationRating: [review.communicationRating],
+      reliabilityRating: [review.reliabilityRating],
+      profitabilityRating: [review.profitabilityRating],
+      comment: review.comment || "",
+      tags: review.tags || [],
+    });
+  };
+
+  // Handle saving edited review
+  const handleSaveEdit = () => {
+    if (!editingReview) return;
+
+    const reviewData = {
+      overallRating: editFormData.overallRating[0],
+      strategyRating: editFormData.strategyRating[0],
+      communicationRating: editFormData.communicationRating[0],
+      reliabilityRating: editFormData.reliabilityRating[0],
+      profitabilityRating: editFormData.profitabilityRating[0],
+      comment: editFormData.comment,
+      tags: editFormData.tags,
+    };
+
+    updateReviewMutation.mutate({
+      reviewId: editingReview.id,
+      reviewData,
+    });
   };
 
   if (isLoading) {
@@ -358,7 +437,7 @@ export const UserProfilePage = (): JSX.Element => {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    onClick={() => setEditingReview(review)}
+                                    onClick={() => handleEditReview(review)}
                                   >
                                     <Edit size={14} className="mr-1" />
                                     Edit
