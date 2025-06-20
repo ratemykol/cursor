@@ -9,6 +9,9 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
+// Trust proxy for rate limiting in Replit environment
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet({
   contentSecurityPolicy: process.env.NODE_ENV === 'production' ? {
@@ -56,33 +59,33 @@ app.use(cors({
   credentials: true,
 }));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  message: {
-    error: "Too many requests from this IP, please try again later."
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+// Rate limiting - disabled in development, enabled in production
+if (process.env.NODE_ENV === 'production') {
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: {
+      error: "Too many requests from this IP, please try again later."
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
 
-app.use(limiter);
+  app.use(limiter);
 
-// Stricter rate limiting for auth endpoints
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Limit each IP to 5 auth requests per windowMs
-  message: {
-    error: "Too many authentication attempts, please try again later."
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+  // Stricter rate limiting for auth endpoints
+  const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // Limit each IP to 5 auth requests per windowMs
+    message: {
+      error: "Too many authentication attempts, please try again later."
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
 
-app.use('/api/auth', authLimiter);
-app.use('/api/login', authLimiter);
-app.use('/api/register', authLimiter);
+  app.use('/api/auth', authLimiter);
+}
 
 // Body parsing with size limits
 app.use(express.json({ limit: '10mb' }));
