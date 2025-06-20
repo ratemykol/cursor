@@ -174,10 +174,6 @@ Changelog:
 - June 20, 2025. Fixed admin button visibility issue by updating useAdmin hook to properly clear admin status when users log out
 - June 20, 2025. Fixed critical security vulnerability CVE-2025-30208 by upgrading Vite from 5.4.14 to 5.4.19
 - June 20, 2025. Fixed bio persistence issue by adding bio field to session data during user authentication
-- June 20, 2025. Fixed infinite scrolling for trader cards on homepage to be truly seamless without reset jumps
-- June 20, 2025. Fixed hover behavior to pause animation smoothly without position reset using animation-play-state
-- June 20, 2025. Increased trader cards scroll speed by 30% (reduced animation duration from 45s to 31.5s)
-- June 20, 2025. Further increased scroll speed to 15 seconds for faster, more dynamic scrolling
 ```
 
 ## User Preferences
