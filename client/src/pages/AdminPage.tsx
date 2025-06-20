@@ -17,10 +17,12 @@ import { Edit, Plus, Save, X, Upload, Image, Trash2 } from "lucide-react";
 export const AdminPage = (): JSX.Element => {
   const { isAuthenticated } = useAuth();
   const { isAdmin, isLoading: adminLoading } = useAdmin();
-  const [view, setView] = useState<"list" | "create" | "edit" | "reviews">("list");
+  const [view, setView] = useState<"list" | "create" | "edit" | "reviews" | "users">("list");
   const [editingTrader, setEditingTrader] = useState<any>(null);
   const [editingReview, setEditingReview] = useState<any>(null);
   const [reviewSearch, setReviewSearch] = useState("");
+  const [editingUser, setEditingUser] = useState<any>(null);
+  const [editingUsername, setEditingUsername] = useState("");
   
   const [name, setName] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
@@ -128,6 +130,11 @@ export const AdminPage = (): JSX.Element => {
   // Fetch all reviews for admin management
   const { data: reviews = [], isLoading: reviewsLoading } = useQuery({
     queryKey: ["/api/admin/ratings"],
+  });
+
+  // Fetch all users for admin management
+  const { data: users = [], isLoading: usersLoading } = useQuery({
+    queryKey: ["/api/admin/users"],
   });
 
   const createMutation = useMutation({
@@ -258,6 +265,35 @@ export const AdminPage = (): JSX.Element => {
       toast({
         title: "Error",
         description: "Failed to delete review. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // User management mutations
+  const updateUserMutation = useMutation({
+    mutationFn: async ({ userId, username }: { userId: string; username: string }) => {
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: "PUT",
+        body: JSON.stringify({ username }),
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) throw new Error('Failed to update user');
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Username updated successfully!",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      setEditingUser(null);
+      setEditingUsername("");
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to update username. Please try again.",
         variant: "destructive",
       });
     },
@@ -409,6 +445,13 @@ export const AdminPage = (): JSX.Element => {
             >
               Manage Reviews
             </Button>
+            <Button 
+              variant={view === "users" ? "default" : "outline"}
+              onClick={() => setView("users")}
+              className="text-lg px-6 py-3"
+            >
+              Manage Users
+            </Button>
           </div>
 
           <div className="flex justify-between items-center mb-8">
@@ -498,6 +541,159 @@ export const AdminPage = (): JSX.Element => {
                   <Button onClick={createSampleTraders} variant="outline">
                     Add Sample Data
                   </Button>
+                </Card>
+              )}
+            </div>
+          )}
+        </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (view === "users") {
+    return (
+      <div className="bg-white w-full min-h-screen">
+        <div className="bg-white min-h-screen max-w-[1920px] mx-auto">
+        <Header currentPage="admin" />
+        <div className="container mx-auto px-8 py-8">
+          {/* Navigation Tabs */}
+          <div className="flex gap-4 mb-6">
+            <Button 
+              variant={view === "list" ? "default" : "outline"}
+              onClick={() => setView("list")}
+            >
+              Manage Traders
+            </Button>
+            <Button 
+              variant={view === "reviews" ? "default" : "outline"}
+              onClick={() => setView("reviews")}
+            >
+              Manage Reviews
+            </Button>
+            <Button 
+              variant={view === "users" ? "default" : "outline"}
+              onClick={() => setView("users")}
+            >
+              Manage Users
+            </Button>
+          </div>
+
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold">Admin Panel - Manage Users</h1>
+          </div>
+
+          {usersLoading ? (
+            <div className="text-center py-8">Loading users...</div>
+          ) : (
+            <div className="space-y-4">
+              {users.map((user: any) => (
+                <Card key={user.id} className="border border-gray-200">
+                  <CardContent className="p-6">
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-start gap-4 flex-1">
+                        {/* Profile Image */}
+                        <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                          {user.profileImage ? (
+                            <img 
+                              src={user.profileImage} 
+                              alt={user.username}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gray-300">
+                              <Image size={20} className="text-gray-500" />
+                            </div>
+                          )}
+                        </div>
+                        
+                        {/* User Info */}
+                        <div className="flex-1">
+                          {editingUser?.id === user.id ? (
+                            <div className="space-y-4">
+                              <div className="flex items-center gap-4">
+                                <div>
+                                  <Label htmlFor="editUsername" className="text-sm font-medium">Username</Label>
+                                  <Input
+                                    id="editUsername"
+                                    value={editingUsername}
+                                    onChange={(e) => setEditingUsername(e.target.value)}
+                                    className="w-64"
+                                    placeholder="Enter new username"
+                                  />
+                                </div>
+                                <div className="flex gap-2">
+                                  <Button 
+                                    size="sm"
+                                    onClick={() => {
+                                      if (editingUsername.trim()) {
+                                        updateUserMutation.mutate({
+                                          userId: user.id,
+                                          username: editingUsername.trim()
+                                        });
+                                      }
+                                    }}
+                                    disabled={updateUserMutation.isPending || !editingUsername.trim()}
+                                  >
+                                    {updateUserMutation.isPending ? "Saving..." : "Save"}
+                                  </Button>
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline"
+                                    onClick={() => {
+                                      setEditingUser(null);
+                                      setEditingUsername("");
+                                    }}
+                                  >
+                                    Cancel
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <h3 className="text-lg font-semibold">{user.username}</h3>
+                                {user.role === 'admin' && (
+                                  <Badge className="bg-red-100 text-red-800">Admin</Badge>
+                                )}
+                              </div>
+                              <p className="text-gray-600 text-sm mb-1">Email: {user.email || 'Not provided'}</p>
+                              <p className="text-gray-500 text-sm">
+                                User ID: {user.id}
+                              </p>
+                              <p className="text-gray-500 text-sm">
+                                Joined: {new Date(user.createdAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {editingUser?.id !== user.id && (
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setEditingUser(user);
+                              setEditingUsername(user.username);
+                            }}
+                            className="flex items-center gap-2"
+                          >
+                            <Edit size={14} />
+                            Edit Username
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              
+              {users.length === 0 && (
+                <Card className="p-8 text-center">
+                  <p className="text-gray-600">No users found.</p>
                 </Card>
               )}
             </div>
