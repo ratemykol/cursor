@@ -240,22 +240,22 @@ app.use('/assets', (req, res, next) => {
 
 // Configure CSP for production and development
 if (process.env.NODE_ENV === 'production') {
-  // Production CSP - allow Replit scripts
+  // Production CSP - allow Replit scripts and Google Fonts
   app.use((req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Content-Security-Policy', 
       "default-src 'self'; " +
       "script-src 'self' 'unsafe-eval' https://replit.com; " +
-      "style-src 'self' 'unsafe-inline'; " +
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
       "img-src 'self' data: https:; " +
       "connect-src 'self' ws: wss:; " +
-      "font-src 'self'; " +
+      "font-src 'self' https://fonts.gstatic.com; " +
       "object-src 'none'; " +
       "base-uri 'self';"
     );
     next();
   });
 } else {
-  // Development - remove CSP headers completely
+  // Development - completely remove CSP to avoid conflicts
   app.use((req: Request, res: Response, next: NextFunction) => {
     res.removeHeader('Content-Security-Policy');
     res.removeHeader('Content-Security-Policy-Report-Only');
