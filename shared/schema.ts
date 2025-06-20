@@ -36,10 +36,6 @@ export const users = pgTable("users", {
   bio: text("bio"),
   role: varchar("role", { length: 20 }).default("user"), // "admin" or "user"
   authType: varchar("auth_type", { length: 20 }).default("replit"), // "replit" or "local"
-  reviewStreak: integer("review_streak").default(0), // Current consecutive days with reviews
-  maxReviewStreak: integer("max_review_streak").default(0), // Highest streak achieved
-  totalReviews: integer("total_reviews").default(0), // Total number of reviews written
-  lastReviewDate: timestamp("last_review_date"), // Date of last review for streak calculation
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -77,17 +73,6 @@ export const ratings = pgTable("ratings", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// User badges/achievements table
-export const userBadges = pgTable("user_badges", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  badgeType: varchar("badge_type", { length: 50 }).notNull(), // "streak_3", "streak_7", "streak_30", "reviewer_10", etc.
-  badgeName: varchar("badge_name", { length: 100 }).notNull(), // "3-Day Streak", "Week Warrior", etc.
-  badgeDescription: text("badge_description").notNull(),
-  badgeIcon: varchar("badge_icon", { length: 100 }).notNull(), // emoji or icon identifier
-  earnedAt: timestamp("earned_at").defaultNow(),
-});
-
 // Relations
 export const tradersRelations = relations(traders, ({ many }) => ({
   ratings: many(ratings),
@@ -106,14 +91,6 @@ export const ratingsRelations = relations(ratings, ({ one }) => ({
 
 export const usersRelations = relations(users, ({ many }) => ({
   ratings: many(ratings),
-  badges: many(userBadges),
-}));
-
-export const userBadgesRelations = relations(userBadges, ({ one }) => ({
-  user: one(users, {
-    fields: [userBadges.userId],
-    references: [users.id],
-  }),
 }));
 
 // Insert schemas
@@ -152,5 +129,3 @@ export type Rating = typeof ratings.$inferSelect;
 export type InsertRating = z.infer<typeof insertRatingSchema>;
 export type UserRegistration = z.infer<typeof userRegistrationSchema>;
 export type UserLogin = z.infer<typeof userLoginSchema>;
-export type UserBadge = typeof userBadges.$inferSelect;
-export type InsertUserBadge = typeof userBadges.$inferInsert;
