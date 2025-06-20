@@ -96,7 +96,7 @@ export const SearchPage = (): JSX.Element => {
           <div className="relative">
             <Input
               className="h-14 rounded-[6px] border-2 border-[#9f98b3] pl-6 pr-32 w-full text-lg"
-              placeholder="Search..."
+              placeholder="Search for a trader..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyPress={handleKeyPress}
