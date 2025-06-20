@@ -12,8 +12,46 @@ export const HomePage = (): JSX.Element => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [scrollPaused, setScrollPaused] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Drag scrolling handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!scrollContainerRef.current) return;
+    setIsDragging(true);
+    setScrollPaused(true);
+    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
+    setScrollLeft(scrollContainerRef.current.scrollLeft);
+    scrollContainerRef.current.style.cursor = 'grabbing';
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+    setScrollPaused(false);
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.style.cursor = 'grab';
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    setScrollPaused(false);
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.style.cursor = 'grab';
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollContainerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // Multiply by 2 for faster scrolling
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+  };
 
   // Fetch search results when search query exists
   const { data: searchResults = [], isLoading } = useQuery({
@@ -255,15 +293,22 @@ export const HomePage = (): JSX.Element => {
           </div>
 
           {/* Trader Cards */}
-          <div className="relative w-full overflow-hidden py-10">
+          <div className="relative w-full py-10">
             <div 
-              className={`trader-scroll-container flex gap-8 will-change-transform animate-scroll ${scrollPaused ? 'paused' : ''}`}
+              ref={scrollContainerRef}
+              className={`trader-scroll-container flex gap-8 will-change-transform overflow-x-auto scrollbar-hide ${scrollPaused || isDragging ? 'paused' : 'animate-scroll'}`}
               style={{ 
                 width: `${rankedTraders.length * 3 * 300}px`,
                 minWidth: '100vw',
                 paddingTop: '50px',
-                paddingBottom: '50px'
+                paddingBottom: '50px',
+                cursor: isDragging ? 'grabbing' : 'grab',
+                userSelect: 'none'
               }}
+              onMouseDown={handleMouseDown}
+              onMouseLeave={handleMouseLeave}
+              onMouseUp={handleMouseUp}
+              onMouseMove={handleMouseMove}
             >
               {isLoadingTraders ? (
                 // Loading skeleton
@@ -288,6 +333,7 @@ export const HomePage = (): JSX.Element => {
                     className={`flex-shrink-0 w-[280px] h-[500px] ${trader.rank === 1 ? 'diamond-background golden-shine' : trader.bgColor} rounded-[18px] border-none shadow-none relative cursor-pointer trader-card ml-8`}
                     onMouseEnter={() => setScrollPaused(true)}
                     onMouseLeave={() => setScrollPaused(false)}
+                    onClick={() => !isDragging && setLocation(`/trader/${trader.id}`)}
                   >
                     <CardContent className="p-0 flex flex-col items-center px-5">
                       {/* Profile Image with Crown for Rank 1 */}
@@ -370,7 +416,12 @@ export const HomePage = (): JSX.Element => {
                       {/* View Profile Button */}
                       <div className="flex justify-center w-full">
                         <Button 
-                          onClick={() => setLocation(`/trader/${trader.id}`)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (!isDragging) {
+                              setLocation(`/trader/${trader.id}`);
+                            }
+                          }}
                           className="w-[168px] h-12 bg-white text-black font-medium text-lg transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#AB9FF2] hover:shadow-lg transform-gpu"
                         >
                           View Profile
