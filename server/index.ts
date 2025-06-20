@@ -228,6 +228,19 @@ app.use((req, res, next) => {
   next();
 });
 
+// Fix MIME types for static assets in production
+app.use((req, res, next) => {
+  // Set correct MIME types for assets
+  if (req.url.endsWith('.css')) {
+    res.setHeader('Content-Type', 'text/css');
+  } else if (req.url.endsWith('.js')) {
+    res.setHeader('Content-Type', 'application/javascript');
+  } else if (req.url.endsWith('.json') && !req.url.startsWith('/api/')) {
+    res.setHeader('Content-Type', 'application/json');
+  }
+  next();
+});
+
 // Completely disable CSP in development
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, res, next) => {
