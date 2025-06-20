@@ -25,6 +25,14 @@ export const UserProfilePage = (): JSX.Element => {
     profileImageUrl: "",
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [activeTab, setActiveTab] = useState("profile");
+  const [editingReview, setEditingReview] = useState<any>(null);
+
+  // Fetch user reviews
+  const { data: userReviews = [], isLoading: reviewsLoading } = useQuery({
+    queryKey: ["/api/user/reviews"],
+    enabled: isAuthenticated,
+  });
 
   // File upload mutation
   const uploadFileMutation = useMutation({
@@ -200,7 +208,14 @@ export const UserProfilePage = (): JSX.Element => {
               </div>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="profile">Profile Settings</TabsTrigger>
+                  <TabsTrigger value="reviews">My Reviews ({userReviews.length})</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="profile" className="mt-6">
+                  <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="username">Username</Label>
                   <Input
@@ -268,6 +283,96 @@ export const UserProfilePage = (): JSX.Element => {
                   {updateProfileMutation.isPending ? "Updating..." : "Update Profile"}
                 </Button>
               </form>
+                </TabsContent>
+                
+                <TabsContent value="reviews" className="mt-6">
+                  <div className="space-y-6">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-lg font-semibold">My Reviews</h3>
+                      <p className="text-sm text-gray-500">{userReviews.length} total reviews</p>
+                    </div>
+                    
+                    {reviewsLoading ? (
+                      <div className="text-center py-8">Loading reviews...</div>
+                    ) : userReviews.length === 0 ? (
+                      <div className="text-center py-8 text-gray-500">
+                        <p>You haven't written any reviews yet.</p>
+                        <Link href="/search">
+                          <Button variant="outline" className="mt-4">
+                            Find Traders to Review
+                          </Button>
+                        </Link>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {userReviews.map((review: any) => (
+                          <Card key={review.id} className="border border-gray-200">
+                            <CardContent className="p-6">
+                              <div className="flex justify-between items-start mb-4">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-3 mb-2">
+                                    <Link href={`/trader/${review.traderId}`}>
+                                      <h4 className="font-semibold text-lg hover:text-[#ab9ff2] cursor-pointer">
+                                        {review.traderName}
+                                      </h4>
+                                    </Link>
+                                    <ExternalLink size={16} className="text-gray-400" />
+                                  </div>
+                                  <div className="flex items-center gap-4 mb-2">
+                                    <div className="flex items-center gap-1">
+                                      {[1, 2, 3, 4, 5].map((star) => (
+                                        <Star
+                                          key={star}
+                                          size={16}
+                                          className={star <= review.overallRating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
+                                        />
+                                      ))}
+                                      <span className="text-sm font-medium ml-1">{review.overallRating}/5</span>
+                                    </div>
+                                    <span className="text-sm text-gray-500">
+                                      {new Date(review.createdAt).toLocaleDateString()}
+                                    </span>
+                                  </div>
+                                  <div className="flex gap-2 mb-3">
+                                    <Badge variant="outline">Strategy: {review.strategyRating}/5</Badge>
+                                    <Badge variant="outline">Communication: {review.communicationRating}/5</Badge>
+                                    <Badge variant="outline">Reliability: {review.reliabilityRating}/5</Badge>
+                                    <Badge variant="outline">Profitability: {review.profitabilityRating}/5</Badge>
+                                  </div>
+                                  {review.comment && (
+                                    <p className="text-gray-700 text-sm leading-relaxed mb-3">
+                                      {review.comment}
+                                    </p>
+                                  )}
+                                  {review.tags && review.tags.length > 0 && (
+                                    <div className="flex flex-wrap gap-1">
+                                      {review.tags.map((tag: string, index: number) => (
+                                        <Badge key={index} variant="secondary" className="text-xs">
+                                          {tag}
+                                        </Badge>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="flex gap-2 ml-4">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => setEditingReview(review)}
+                                  >
+                                    <Edit size={14} className="mr-1" />
+                                    Edit
+                                  </Button>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         </div>
