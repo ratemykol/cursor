@@ -259,13 +259,15 @@ export const HomePage = (): JSX.Element => {
             <div 
               className={`trader-scroll-container flex gap-8 will-change-transform animate-scroll ${scrollPaused ? 'paused' : ''}`}
               style={{ 
+                width: `${rankedTraders.length * 3 * 300}px`,
+                minWidth: '100vw',
                 paddingTop: '50px',
                 paddingBottom: '50px'
               }}
             >
               {isLoadingTraders ? (
                 // Loading skeleton
-                Array.from({ length: 10 }).map((_, index) => (
+                (Array.from({ length: 10 }).map((_, index) => (
                   <Card
                     key={index}
                     className={`flex-shrink-0 w-[280px] h-[500px] ${cardColors[index]} rounded-[18px] border-none shadow-none animate-pulse ml-8`}
@@ -277,10 +279,10 @@ export const HomePage = (): JSX.Element => {
                       <div className="mt-4 mb-5 bg-white/50 rounded-full w-28 h-7" />
                     </CardContent>
                   </Card>
-                ))
+                )))
               ) : (
-                // Create enough duplicates for seamless infinite scrolling
-                [...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
+                // Duplicate cards for seamless scrolling
+                ([...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
                   <Card
                     key={`${trader.id}-${index}`}
                     className={`flex-shrink-0 w-[280px] h-[500px] ${trader.rank === 1 ? 'diamond-background golden-shine' : trader.bgColor} rounded-[18px] border-none shadow-none relative cursor-pointer trader-card ml-8`}
@@ -376,7 +378,7 @@ export const HomePage = (): JSX.Element => {
                       </div>
                     </CardContent>
                   </Card>
-                ))
+                )))
               )}
             </div>
           </div>
