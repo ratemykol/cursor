@@ -99,25 +99,25 @@ export const TraderProfilePage = (): JSX.Element => {
 
   return (
     <div className="bg-white flex flex-row justify-center w-full">
-      <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
+      <div className="bg-white overflow-hidden w-full max-w-[1920px] relative">
         <Header />
         
         {/* Main Content */}
-        <div className="px-8 py-6 max-w-4xl mx-auto">
+        <div className="px-16 py-10 max-w-6xl mx-auto">
           {/* Back to Search */}
           <Link href="/search">
-            <Button variant="ghost" className="mb-6 p-0 h-auto font-normal text-gray-600 hover:text-gray-900">
-              <ArrowLeft size={16} className="mr-2" />
+            <Button variant="ghost" className="mb-8 p-0 h-auto font-normal text-gray-600 hover:text-gray-900 text-lg">
+              <ArrowLeft size={20} className="mr-3" />
               Back to Search
             </Button>
           </Link>
 
           {/* Main Profile Card */}
-          <Card className="mb-6 border border-gray-200 shadow-sm">
-            <CardContent className="p-8">
-              <div className="flex items-start gap-6">
+          <Card className="mb-8 border border-gray-200 shadow-sm">
+            <CardContent className="p-12">
+              <div className="flex items-start gap-8">
                 {/* Profile Image - Left Side */}
-                <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                <div className="w-28 h-28 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
                   {trader.profileImage ? (
                     <img 
                       src={trader.profileImage} 
@@ -134,17 +134,17 @@ export const TraderProfilePage = (): JSX.Element => {
                 {/* Content - Middle */}
                 <div className="flex-1">
                   {/* Trader Name */}
-                  <h1 className="text-2xl font-semibold text-gray-900 mb-1">
+                  <h1 className="text-3xl font-semibold text-gray-900 mb-2">
                     {trader.name}
                   </h1>
 
                   {/* Specialty */}
-                  <p className="text-gray-600 mb-3">
+                  <p className="text-gray-600 mb-4 text-lg">
                     {trader.specialty || 'new pairs terrorist'}
                   </p>
 
                   {/* Rating Stars and Count */}
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center gap-3 mb-4">
                     <div className="flex">
                       {renderStars(averageRating)}
                     </div>

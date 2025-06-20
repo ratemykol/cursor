@@ -321,29 +321,31 @@ export const AdminPage = (): JSX.Element => {
 
   if (view === "list") {
     return (
-      <div className="bg-white min-h-screen">
+      <div className="bg-white min-h-screen max-w-[1920px] mx-auto">
         <Header currentPage="admin" />
-        <div className="container mx-auto px-8 py-8">
+        <div className="container mx-auto px-16 py-12">
           {/* Navigation Tabs */}
-          <div className="flex gap-4 mb-6">
+          <div className="flex gap-6 mb-8">
             <Button 
               variant={view === "list" ? "default" : "outline"}
               onClick={() => setView("list")}
+              className="text-lg px-6 py-3"
             >
               Manage Traders
             </Button>
             <Button 
               variant={view === "reviews" ? "default" : "outline"}
               onClick={() => setView("reviews")}
+              className="text-lg px-6 py-3"
             >
               Manage Reviews
             </Button>
           </div>
 
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">Admin Panel - Manage Traders</h1>
-            <Button onClick={startCreate} className="flex items-center gap-2">
-              <Plus size={16} />
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-3xl font-bold">Admin Panel - Manage Traders</h1>
+            <Button onClick={startCreate} className="flex items-center gap-3 text-lg px-6 py-3">
+              <Plus size={20} />
               Create New Trader
             </Button>
           </div>

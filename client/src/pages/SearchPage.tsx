@@ -67,17 +67,17 @@ export const SearchPage = (): JSX.Element => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen relative">
+    <div className="bg-gray-50 min-h-screen relative max-w-[1920px] mx-auto">
       <Header currentPage="search" />
-      {/* Decorative background elements */}
+      {/* Decorative background elements - scaled for 1920x1080 */}
       <img
-        className="w-[73px] h-[74px] absolute left-[360px] top-[200px] z-[1]"
+        className="w-[90px] h-[91px] absolute left-[480px] top-[240px] z-[1]"
         alt="Star"
         src="/figmaAssets/star-2.svg"
       />
-      <div className="absolute w-[27px] h-[35px] top-[250px] left-[520px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] z-[1]" />
-      <div className="absolute w-[73px] h-[97px] top-[300px] left-[480px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] z-[1]" />
-      <div className="absolute w-[92px] h-[71px] top-[180px] left-[1100px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] z-[1]" />
+      <div className="absolute w-[32px] h-[42px] top-[300px] left-[670px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] z-[1]" />
+      <div className="absolute w-[88px] h-[117px] top-[360px] left-[620px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] z-[1]" />
+      <div className="absolute w-[110px] h-[85px] top-[216px] left-[1400px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] z-[1]" />
       <img
         className="absolute w-[76px] h-[61px] top-[350px] left-[1200px] z-[1]"
         alt="Polygon"
@@ -89,35 +89,35 @@ export const SearchPage = (): JSX.Element => {
       <div className="absolute w-[125.7px] h-[185.51px] top-[300px] left-[800px] rounded-[62.85px/92.755px] rotate-[15deg] z-[1] ml-[-864px] mr-[-864px] bg-[#000000] mt-[-31px] mb-[-31px]" />
       <div className="absolute w-[282px] h-[396px] top-[200px] left-[50px] bg-[#ab9ff2] rounded-[141px/198px] rotate-[-76deg] z-[1] ml-[1200px] mr-[1200px] mt-[441px] mb-[441px]" />
       <div className="absolute w-[95px] h-[165px] top-[400px] left-[600px] bg-[#ffdadc] rounded-[47.63px/82.54px] rotate-[96deg] z-[1] mt-[97px] mb-[97px] ml-[155px] mr-[155px] pl-[0px] pr-[0px] pt-[0px] pb-[0px]" />
-      <div className="container mx-auto px-8 py-8 relative z-[5]">
+      <div className="container mx-auto px-16 py-12 relative z-[5]">
         {/* Search Bar */}
-        <div className="max-w-2xl mx-auto mb-8">
+        <div className="max-w-4xl mx-auto mb-12">
           <div className="relative">
             <Input
-              className="h-11 rounded-[5px] border-2 border-[#9f98b3] pl-4 pr-28 w-full"
+              className="h-14 rounded-[6px] border-2 border-[#9f98b3] pl-6 pr-32 w-full text-lg"
               placeholder="Search..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyPress={handleKeyPress}
             />
             <Button 
-              className="absolute right-0 top-0 h-full w-[108px] bg-[#ab9ff2] text-[#3c315b] rounded-r-[5px] rounded-l-none font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center justify-center border-2 border-[#9f98b3] border-l-0"
+              className="absolute right-0 top-0 h-full w-[128px] bg-[#ab9ff2] text-[#3c315b] rounded-r-[6px] rounded-l-none font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center justify-center border-2 border-[#9f98b3] border-l-0 text-lg"
               onClick={handleSearch}
             >
-              <Search size={20} />
+              <Search size={24} />
             </Button>
           </div>
         </div>
 
         {/* Empty State - Show when no search input */}
         {!debouncedSearch && (
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <Card className="border border-gray-200 bg-white">
-              <CardContent className="p-12 text-center">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+              <CardContent className="p-16 text-center">
+                <h2 className="text-3xl font-semibold text-gray-900 mb-6">
                   Search for Crypto Traders
                 </h2>
-                <p className="text-gray-600">
+                <p className="text-gray-600 text-lg">
                   Enter a trader name or wallet address to find reviews and ratings.
                 </p>
               </CardContent>
