@@ -12,23 +12,11 @@ const app = express();
 // Trust proxy for rate limiting in Replit environment
 app.set('trust proxy', 1);
 
-// Advanced security middleware for identity protection
+// Security middleware configuration
 if (process.env.NODE_ENV === 'production') {
-  // Full security in production
+  // Production security with helmet - disable CSP here since we set it manually later
   app.use(helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-        scriptSrc: ["'self'", "'unsafe-eval'"],
-        imgSrc: ["'self'", "data:", "https:", "blob:"],
-        fontSrc: ["'self'", "https://fonts.gstatic.com"],
-        connectSrc: ["'self'", "wss:", "ws:"],
-        mediaSrc: ["'self'"],
-        objectSrc: ["'none'"],
-        frameSrc: ["'none'"],
-      },
-    },
+    contentSecurityPolicy: false, // Disabled - we set CSP manually below
     crossOriginEmbedderPolicy: false,
     hidePoweredBy: true,
     frameguard: { action: 'deny' },
@@ -42,7 +30,6 @@ if (process.env.NODE_ENV === 'production') {
     referrerPolicy: { policy: 'no-referrer' }
   }));
 }
-// No helmet in development - let Vite handle everything
 
 // Remove server signatures and identifying headers
 app.disable('x-powered-by');
@@ -228,34 +215,50 @@ app.use((req, res, next) => {
   next();
 });
 
-// Fix MIME types for static assets
-app.use('/assets', (req, res, next) => {
-  if (req.url.endsWith('.css')) {
+// Fix MIME types for all static assets
+app.use((req, res, next) => {
+  // Override any existing Content-Type for CSS and JS files
+  const originalSetHeader = res.setHeader;
+  res.setHeader = function(name: string, value: any) {
+    if (name.toLowerCase() === 'content-type') {
+      if (req.url.endsWith('.css')) {
+        return originalSetHeader.call(this, name, 'text/css');
+      } else if (req.url.endsWith('.js')) {
+        return originalSetHeader.call(this, name, 'application/javascript');
+      }
+    }
+    return originalSetHeader.call(this, name, value);
+  };
+  
+  // Also set headers directly for assets
+  if (req.url.includes('/assets/') && req.url.endsWith('.css')) {
     res.setHeader('Content-Type', 'text/css');
-  } else if (req.url.endsWith('.js')) {
+  } else if (req.url.includes('/assets/') && req.url.endsWith('.js')) {
     res.setHeader('Content-Type', 'application/javascript');
   }
+  
   next();
 });
 
 // Configure CSP for production and development
 if (process.env.NODE_ENV === 'production') {
-  // Production CSP - allow Replit scripts and Google Fonts
+  // Production CSP - comprehensive policy for Replit deployment
   app.use((req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Content-Security-Policy', 
       "default-src 'self'; " +
-      "script-src 'self' 'unsafe-eval' https://replit.com; " +
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://replit.com https://replit.app; " +
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-      "img-src 'self' data: https:; " +
-      "connect-src 'self' ws: wss:; " +
+      "img-src 'self' data: https: blob:; " +
+      "connect-src 'self' ws: wss: https:; " +
       "font-src 'self' https://fonts.gstatic.com; " +
       "object-src 'none'; " +
-      "base-uri 'self';"
+      "base-uri 'self'; " +
+      "frame-ancestors 'none';"
     );
     next();
   });
 } else {
-  // Development - completely remove CSP to avoid conflicts
+  // Development - remove CSP headers completely
   app.use((req: Request, res: Response, next: NextFunction) => {
     res.removeHeader('Content-Security-Policy');
     res.removeHeader('Content-Security-Policy-Report-Only');

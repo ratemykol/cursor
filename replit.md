@@ -179,6 +179,8 @@ Changelog:
 - June 20, 2025. Fixed MIME type configuration for static assets to resolve CSS and JavaScript loading errors in production deployment
 - June 20, 2025. Implemented comprehensive deployment fixes: SESSION_SECRET configuration, MIME type middleware for CSS files, and CSP updates to allow Replit scripts
 - June 20, 2025. Fixed Google Fonts CSP blocking issue by allowing fonts.googleapis.com and fonts.gstatic.com in Content Security Policy
+- June 20, 2025. Enhanced MIME type middleware with comprehensive Content-Type override for CSS/JS files to resolve persistent stylesheet loading errors
+- June 20, 2025. Consolidated security configuration by disabling conflicting helmet CSP and implementing unified CSP policy with Replit deployment support
 - June 20, 2025. Fixed bio persistence issue by adding bio field to session data during user authentication
 ```
 
