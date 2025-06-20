@@ -135,9 +135,6 @@ Changelog:
 - June 19, 2025. Protected all admin routes with middleware requiring admin role
 - June 19, 2025. Updated frontend to hide admin button for non-admin users
 - June 19, 2025. Added access denied page for unauthorized admin panel access
-- June 19, 2025. Removed admin mode functionality from trader profiles for security
-- June 19, 2025. Fixed white borders at 100% zoom by removing width restrictions and adding CSS reset
-- June 19, 2025. Fixed zoom layout issues by implementing responsive positioning and sizing for decorative elements
 ```
 
 ## User Preferences
