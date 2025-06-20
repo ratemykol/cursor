@@ -257,11 +257,10 @@ export const HomePage = (): JSX.Element => {
           {/* Trader Cards */}
           <div className="relative w-full overflow-hidden py-10">
             <div 
-              className={`trader-scroll-container flex gap-8 will-change-transform ${scrollPaused ? 'paused' : ''}`}
+              className={`trader-scroll-container flex gap-8 will-change-transform animate-scroll ${scrollPaused ? 'paused' : ''}`}
               style={{ 
                 paddingTop: '50px',
-                paddingBottom: '50px',
-                animation: scrollPaused ? 'none' : 'scroll-infinite 60s linear infinite'
+                paddingBottom: '50px'
               }}
             >
               {isLoadingTraders ? (
