@@ -161,6 +161,7 @@ Changelog:
 - June 20, 2025. Fixed rating submission validation errors by aligning server field expectations with frontend data structure
 - June 20, 2025. Implemented automatic page refresh after rating submission using query cache invalidation for real-time updates
 - June 20, 2025. Successfully imported 56 KOL traders with automatic Twitter profile image fetching and validated rating system functionality
+- June 20, 2025. Updated footer Twitter link to open https://x.com/RateMyKOLL in new tab with proper security attributes
 ```
 
 ## User Preferences
