@@ -291,10 +291,10 @@ export const AdminPage = (): JSX.Element => {
     const file = e.target.files?.[0];
     if (file) {
       // Validate file type
-      if (!file.type.includes('png')) {
+      if (!file.type.includes('png') && !file.type.includes('jpeg') && !file.type.includes('jpg')) {
         toast({
           title: "Invalid file type",
-          description: "Please select a PNG file",
+          description: "Please select a PNG or JPEG file",
           variant: "destructive",
         });
         return;
@@ -772,12 +772,12 @@ export const AdminPage = (): JSX.Element => {
               </div>
 
               <div>
-                <Label htmlFor="profilePicture">Profile Picture (PNG only)</Label>
+                <Label htmlFor="profilePicture">Profile Picture (PNG or JPEG)</Label>
                 <Input
                   id="profilePicture"
                   name="profilePicture"
                   type="file"
-                  accept=".png"
+                  accept=".png,.jpg,.jpeg"
                   onChange={handleFileChange}
                   className="border-2 border-[#9f98b3]"
                 />

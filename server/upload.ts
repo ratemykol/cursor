@@ -20,12 +20,12 @@ const storage = multer.diskStorage({
   }
 });
 
-// File filter to only allow PNG files
+// File filter to allow PNG and JPEG files
 const fileFilter = (req: any, file: any, cb: any) => {
-  if (file.mimetype === 'image/png') {
+  if (file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg') {
     cb(null, true);
   } else {
-    cb(new Error('Only PNG files are allowed!'), false);
+    cb(new Error('Only PNG and JPEG files are allowed!'), false);
   }
 };
 
