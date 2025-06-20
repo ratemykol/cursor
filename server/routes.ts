@@ -56,70 +56,63 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Anti-reconnaissance middleware - block common scanning attempts
-  app.use((req, res, next) => {
-    // Skip security blocking for development on localhost
-    if (process.env.NODE_ENV === 'development' && 
-        (req.hostname === 'localhost' || req.hostname === '127.0.0.1')) {
-      return next();
-    }
-
-    const suspiciousPatterns = [
-      /\.env/i,
-      /\.git/i,
-      /admin/i,
-      /phpmyadmin/i,
-      /wp-admin/i,
-      /cpanel/i,
-      /\.well-known/i,
-      /sitemap\.xml/i,
-      /robots\.txt/i,
-      /\.htaccess/i,
-      /server-status/i,
-      /server-info/i,
-      /config/i,
-      /backup/i,
-      /test/i,
-      /debug/i
-    ];
-    
-    const path = req.path.toLowerCase();
-    const isSuspicious = suspiciousPatterns.some(pattern => pattern.test(path));
-    
-    if (isSuspicious && !path.startsWith('/api/')) {
-      // Log the reconnaissance attempt
-      console.warn(`[SECURITY] Blocked reconnaissance attempt: ${path} from ${req.ip}`);
+  // Anti-reconnaissance middleware - only in production
+  if (process.env.NODE_ENV === 'production') {
+    app.use((req, res, next) => {
+      const suspiciousPatterns = [
+        /\.env/i,
+        /\.git/i,
+        /admin/i,
+        /phpmyadmin/i,
+        /wp-admin/i,
+        /cpanel/i,
+        /\.well-known/i,
+        /sitemap\.xml/i,
+        /robots\.txt/i,
+        /\.htaccess/i,
+        /server-status/i,
+        /server-info/i,
+        /config/i,
+        /backup/i,
+        /test/i,
+        /debug/i
+      ];
       
-      // Return generic 404 to avoid revealing server structure
-      return res.status(404).json({ error: 'Not found' });
-    }
-    
-    // Block requests with suspicious user agents
-    const userAgent = req.get('User-Agent') || '';
-    const suspiciousAgents = [
-      /nmap/i,
-      /masscan/i,
-      /zmap/i,
-      /nikto/i,
-      /sqlmap/i,
-      /gobuster/i,
-      /dirb/i,
-      /dirbuster/i,
-      /wpscan/i,
-      /nuclei/i,
-      /subfinder/i,
-      /httprobe/i,
-      /scanner/i,
-      /bot/i
-    ];
-    
-    if (suspiciousAgents.some(pattern => pattern.test(userAgent))) {
-      console.warn(`[SECURITY] Blocked suspicious user agent: ${userAgent} from ${req.ip}`);
-      return res.status(404).json({ error: 'Not found' });
-    }
-    
-    next();
-  });
+      const path = req.path.toLowerCase();
+      const isSuspicious = suspiciousPatterns.some(pattern => pattern.test(path));
+      
+      if (isSuspicious && !path.startsWith('/api/')) {
+        console.warn(`[SECURITY] Blocked reconnaissance attempt: ${path} from ${req.ip}`);
+        return res.status(404).json({ error: 'Not found' });
+      }
+      
+      // Block requests with suspicious user agents
+      const userAgent = req.get('User-Agent') || '';
+      const suspiciousAgents = [
+        /nmap/i,
+        /masscan/i,
+        /zmap/i,
+        /nikto/i,
+        /sqlmap/i,
+        /gobuster/i,
+        /dirb/i,
+        /dirbuster/i,
+        /wpscan/i,
+        /nuclei/i,
+        /subfinder/i,
+        /httprobe/i,
+        /scanner/i,
+        /bot/i
+      ];
+      
+      if (suspiciousAgents.some(pattern => pattern.test(userAgent))) {
+        console.warn(`[SECURITY] Blocked suspicious user agent: ${userAgent} from ${req.ip}`);
+        return res.status(404).json({ error: 'Not found' });
+      }
+      
+      next();
+    });
+  }
 
   // Serve uploaded files statically with security headers
   app.use('/uploads', (req, res, next) => {
