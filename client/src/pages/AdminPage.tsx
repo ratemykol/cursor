@@ -559,7 +559,10 @@ export const AdminPage = (): JSX.Element => {
                           )}
                         </div>
                         <p className="text-gray-600 mb-1">{trader.specialty || 'No specialty'}</p>
-                        <p className="text-sm text-gray-500 mb-2">Wallet: {trader.walletAddress}</p>
+                        <p className="text-sm text-gray-500 mb-1">Wallet: {trader.walletAddress}</p>
+                        <p className="text-sm text-blue-600 font-medium mb-2">
+                          Reviews: {trader.totalRatings || 0}
+                        </p>
                         {trader.bio && (
                           <p className="text-sm text-gray-700 line-clamp-2">{trader.bio}</p>
                         )}
