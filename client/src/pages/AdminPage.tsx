@@ -17,7 +17,7 @@ import { Edit, Plus, Save, X, Upload, Image, Trash2, RefreshCw } from "lucide-re
 export const AdminPage = (): JSX.Element => {
   const { isAuthenticated } = useAuth();
   const { isAdmin, isLoading: adminLoading } = useAdmin();
-  const [view, setView] = useState<"list" | "create" | "edit" | "reviews" | "users">("list");
+  const [view, setView] = useState<"list" | "create" | "edit" | "reviews" | "users" | "kolscan">("list");
   const [editingTrader, setEditingTrader] = useState<any>(null);
   const [editingReview, setEditingReview] = useState<any>(null);
   const [reviewSearch, setReviewSearch] = useState("");
@@ -271,51 +271,11 @@ export const AdminPage = (): JSX.Element => {
     },
   });
 
-  // Kolscan import mutations
-  const importKolscanMutation = useMutation({
-    mutationFn: async () => {
-      const response = await fetch("/api/admin/import-kolscan-traders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (!response.ok) throw new Error('Failed to import kolscan traders');
-      return response.json();
-    },
-    onSuccess: (data) => {
-      toast({
-        title: "Import Successful",
-        description: `Imported ${data.imported} traders from kolscan leaderboard${data.errors.length > 0 ? ` (${data.errors.length} errors)` : ''}`,
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/traders"] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Import Failed",
-        description: "Failed to import traders from kolscan leaderboard. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const previewKolscanMutation = useMutation({
-    mutationFn: async () => {
-      const response = await fetch("/api/admin/kolscan-leaderboard");
-      if (!response.ok) throw new Error('Failed to fetch kolscan data');
-      return response.json();
-    },
-    onSuccess: (data) => {
-      toast({
-        title: "Preview Ready",
-        description: `Found ${data.count} traders from kolscan leaderboard`,
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Preview Failed",
-        description: "Failed to fetch kolscan leaderboard data. The website may be temporarily unavailable.",
-        variant: "destructive",
-      });
-    },
+  // Kolscan data query
+  const { data: kolscanData, isLoading: kolscanLoading, refetch: refetchKolscan } = useQuery({
+    queryKey: ["/api/admin/kolscan-leaderboard"],
+    enabled: view === "kolscan",
+    retry: false,
   });
 
   // Twitter profile image refresh mutation
@@ -525,6 +485,13 @@ export const AdminPage = (): JSX.Element => {
               className="text-lg px-6 py-3"
             >
               Manage Users
+            </Button>
+            <Button 
+              variant={view === "kolscan" ? "default" : "outline"}
+              onClick={() => setView("kolscan")}
+              className="text-lg px-6 py-3"
+            >
+              Kolscan Data
             </Button>
           </div>
 
@@ -1251,26 +1218,14 @@ export const AdminPage = (): JSX.Element => {
                     : "Create Trader"}
                 </Button>
                 {view === "create" && (
-                  <div className="flex gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={createSampleTraders}
-                      disabled={createMutation.isPending}
-                    >
-                      Add Sample Data
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => importKolscanMutation.mutate()}
-                      disabled={importKolscanMutation.isPending}
-                      className="flex items-center gap-2"
-                    >
-                      <Upload size={16} />
-                      {importKolscanMutation.isPending ? "Importing..." : "Import from Kolscan"}
-                    </Button>
-                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={createSampleTraders}
+                    disabled={createMutation.isPending}
+                  >
+                    Add Sample Data
+                  </Button>
                 )}
               </div>
             </form>
@@ -1280,4 +1235,132 @@ export const AdminPage = (): JSX.Element => {
       </div>
     </div>
   );
+
+  // Kolscan Data View
+  if (view === "kolscan") {
+    return (
+      <div className="bg-white w-full min-h-screen">
+        <div className="bg-white min-h-screen max-w-[1920px] mx-auto">
+          <Header currentPage="admin" />
+          <div className="container mx-auto px-16 py-12">
+            {/* Navigation Tabs */}
+            <div className="flex gap-6 mb-8">
+              <Button 
+                variant={view === "list" ? "default" : "outline"}
+                onClick={() => setView("list")}
+                className="text-lg px-6 py-3"
+              >
+                Manage Traders
+              </Button>
+              <Button 
+                variant={view === "reviews" ? "default" : "outline"}
+                onClick={() => setView("reviews")}
+                className="text-lg px-6 py-3"
+              >
+                Manage Reviews
+              </Button>
+              <Button 
+                variant={view === "users" ? "default" : "outline"}
+                onClick={() => setView("users")}
+                className="text-lg px-6 py-3"
+              >
+                Manage Users
+              </Button>
+              <Button 
+                variant={view === "kolscan" ? "default" : "outline"}
+                onClick={() => setView("kolscan")}
+                className="text-lg px-6 py-3"
+              >
+                Kolscan Data
+              </Button>
+            </div>
+
+            <div className="flex justify-between items-center mb-8">
+              <h1 className="text-3xl font-bold">Kolscan Leaderboard Data</h1>
+              <Button 
+                onClick={() => refetchKolscan()}
+                disabled={kolscanLoading}
+                className="flex items-center gap-2"
+              >
+                <RefreshCw size={16} className={kolscanLoading ? "animate-spin" : ""} />
+                {kolscanLoading ? "Loading..." : "Refresh Data"}
+              </Button>
+            </div>
+
+            {kolscanLoading ? (
+              <div className="text-center py-8">Loading kolscan data...</div>
+            ) : kolscanData?.success === false ? (
+              <Card className="p-6">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-red-600 mb-2">Failed to Load Data</h3>
+                  <p className="text-gray-600 mb-4">{kolscanData.error || "Unable to fetch kolscan leaderboard data"}</p>
+                  <Button onClick={() => refetchKolscan()}>Try Again</Button>
+                </div>
+              </Card>
+            ) : kolscanData?.traders && kolscanData.traders.length > 0 ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Traders Found: {kolscanData.traders.length}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse border border-gray-300">
+                      <thead>
+                        <tr className="bg-gray-50">
+                          <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Name</th>
+                          <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Wallet Address</th>
+                          <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Twitter</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {kolscanData.traders.map((trader: any, index: number) => (
+                          <tr key={index} className="hover:bg-gray-50">
+                            <td className="border border-gray-300 px-4 py-3">
+                              {trader.name || 'N/A'}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-3">
+                              <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                                {trader.walletAddress || 'N/A'}
+                              </code>
+                            </td>
+                            <td className="border border-gray-300 px-4 py-3">
+                              {trader.twitterUrl ? (
+                                <a 
+                                  href={trader.twitterUrl} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 hover:text-blue-800 underline flex items-center gap-2"
+                                >
+                                  <img 
+                                    src="/twitter-blue.png" 
+                                    alt="Twitter"
+                                    className="w-4 h-4"
+                                  />
+                                  View Profile
+                                </a>
+                              ) : (
+                                <span className="text-gray-400">No Twitter</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="p-6">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-gray-600 mb-2">No Data Available</h3>
+                  <p className="text-gray-500 mb-4">No trader data found from kolscan leaderboard</p>
+                  <Button onClick={() => refetchKolscan()}>Load Data</Button>
+                </div>
+              </Card>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 };
