@@ -162,6 +162,12 @@ Changelog:
 - June 20, 2025. Implemented automatic page refresh after rating submission using query cache invalidation for real-time updates
 - June 20, 2025. Successfully imported 56 KOL traders with automatic Twitter profile image fetching and validated rating system functionality
 - June 20, 2025. Updated footer Twitter link to open https://x.com/RateMyKOLL in new tab with proper security attributes
+- June 20, 2025. Implemented one-review-per-trader restriction with server-side validation preventing duplicate reviews
+- June 20, 2025. Added comprehensive reviews management tab in user profile page with edit functionality
+- June 20, 2025. Created review editing modal with sliders for all rating categories and comment modification
+- June 20, 2025. Fixed review editing API endpoint issues and validation errors for proper functionality
+- June 20, 2025. Generated 10 realistic reviews for each of the 53 trader profiles using authentic reviewer personas
+- June 20, 2025. Added review count display to admin panel trader list showing total reviews per trader
 ```
 
 ## User Preferences
