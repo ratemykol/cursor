@@ -127,7 +127,7 @@ export const HomePage = (): JSX.Element => {
             src="/figmaAssets/star-2.svg"
           />
           <div className="absolute w-[32px] h-[42px] top-[173px] left-[670px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] ml-[-26px] mr-[-26px] mt-[-256px] mb-[-256px]" />
-          <div className="absolute w-[91.7px] h-[71.2px] top-[250px] left-[900px] bg-[#4a87f2] rounded-full rotate-[-15deg] mt-[-268px] mb-[-268px] ml-[-176px] mr-[-176px]" />
+          
           <img
             className="absolute w-[92px] h-[73px] top-[329px] left-[1520px] mt-[-300px] mb-[-300px]"
             alt="Polygon"
@@ -234,7 +234,7 @@ export const HomePage = (): JSX.Element => {
         <section className="mt-[120px] relative">
           {/* Decorative elements - scaled for 1920x1080 */}
           <img
-            className="w-[210px] h-[200px] absolute left-[60px] top-[470px] mt-[-1213px] mb-[-1213px] pt-[6px] pb-[6px] ml-[-52px] mr-[-52px]"
+            className="w-[210px] h-[200px] absolute left-[60px] top-[470px] pt-[6px] pb-[6px] ml-[-52px] mr-[-52px] mt-[-1087px] mb-[-1087px]"
             alt="Star"
             src="/figmaAssets/star-1.svg"
           />
