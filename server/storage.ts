@@ -13,7 +13,7 @@ import {
 } from "@shared/schema";
 import bcrypt from "bcryptjs";
 import { db } from "./db";
-import { eq, or, ilike, desc, sql } from "drizzle-orm";
+import { eq, or, ilike, desc, sql, and } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -422,6 +422,41 @@ export class DatabaseStorage implements IStorage {
       console.error("Error updating username:", error);
       throw error;
     }
+  }
+
+  async getUserRating(userId: string, traderId: number): Promise<Rating | undefined> {
+    const [rating] = await db
+      .select()
+      .from(ratings)
+      .where(and(eq(ratings.userId, userId), eq(ratings.traderId, traderId)));
+    return rating;
+  }
+
+  async getUserRatings(userId: string): Promise<any[]> {
+    return await db
+      .select({
+        id: ratings.id,
+        traderId: ratings.traderId,
+        userId: ratings.userId,
+        reviewerName: ratings.reviewerName,
+        overallRating: ratings.overallRating,
+        strategyRating: ratings.strategyRating,
+        communicationRating: ratings.communicationRating,
+        reliabilityRating: ratings.reliabilityRating,
+        profitabilityRating: ratings.profitabilityRating,
+        comment: ratings.comment,
+        tags: ratings.tags,
+        helpful: ratings.helpful,
+        notHelpful: ratings.notHelpful,
+        createdAt: ratings.createdAt,
+        updatedAt: ratings.updatedAt,
+        traderName: traders.name,
+        traderWallet: traders.walletAddress,
+      })
+      .from(ratings)
+      .leftJoin(traders, eq(ratings.traderId, traders.id))
+      .where(eq(ratings.userId, userId))
+      .orderBy(desc(ratings.createdAt));
   }
 }
 

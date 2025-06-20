@@ -505,6 +505,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const traderId = parseInt(req.params.id);
       
+      // Check if user has already reviewed this trader
+      const existingRating = await storage.getUserRating(user.id, traderId);
+      if (existingRating) {
+        return res.status(400).json({ 
+          error: "You have already reviewed this trader. You can only leave one review per trader." 
+        });
+      }
+      
       // Use the request body directly as it matches the database schema
       const ratingData = {
         traderId,
@@ -537,6 +545,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const stats = await storage.getRatingStats(id);
       res.json(stats);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // User reviews management routes
+  app.get("/api/user/reviews", isAuthenticated, async (req, res) => {
+    try {
+      const user = (req.session as any)?.user;
+      const reviews = await storage.getUserRatings(user.id);
+      res.json(reviews);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.put("/api/user/reviews/:id", isAuthenticated, async (req, res) => {
+    try {
+      const user = (req.session as any)?.user;
+      const reviewId = parseInt(req.params.id);
+      
+      // Verify the review belongs to the user
+      const existingReview = await storage.updateRating(reviewId, {});
+      if (!existingReview || existingReview.userId !== user.id) {
+        return res.status(403).json({ error: "You can only edit your own reviews" });
+      }
+
+      const updatedReview = await storage.updateRating(reviewId, {
+        overallRating: req.body.overallRating,
+        strategyRating: req.body.strategyRating,
+        communicationRating: req.body.communicationRating,
+        reliabilityRating: req.body.reliabilityRating,
+        profitabilityRating: req.body.profitabilityRating,
+        comment: req.body.comment,
+        tags: req.body.tags || [],
+        updatedAt: new Date()
+      });
+
+      res.json(updatedReview);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
