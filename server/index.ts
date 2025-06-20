@@ -42,9 +42,21 @@ if (process.env.NODE_ENV === 'production') {
     referrerPolicy: { policy: 'no-referrer' }
   }));
 } else {
-  // Minimal security in development to allow Vite
+  // Development CSP that allows Vite features
   app.use(helmet({
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://replit.com"],
+        imgSrc: ["'self'", "data:", "https:", "blob:"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        connectSrc: ["'self'", "wss:", "ws:", "https:"],
+        mediaSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        frameSrc: ["'self'", "https://replit.com"],
+      },
+    },
     crossOriginEmbedderPolicy: false,
     hidePoweredBy: true,
     frameguard: false,
