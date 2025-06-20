@@ -45,6 +45,9 @@ export const UserProfilePage = (): JSX.Element => {
     enabled: isAuthenticated,
   });
 
+  // Type the userReviews data to avoid unknown type errors
+  const typedUserReviews = userReviews as any[];
+
   // File upload mutation
   const uploadFileMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -298,7 +301,7 @@ export const UserProfilePage = (): JSX.Element => {
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="profile">Profile Settings</TabsTrigger>
-                  <TabsTrigger value="reviews">My Reviews ({userReviews.length})</TabsTrigger>
+                  <TabsTrigger value="reviews">My Reviews ({typedUserReviews.length})</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="profile" className="mt-6">
@@ -376,12 +379,12 @@ export const UserProfilePage = (): JSX.Element => {
                   <div className="space-y-6">
                     <div className="flex justify-between items-center">
                       <h3 className="text-lg font-semibold">My Reviews</h3>
-                      <p className="text-sm text-gray-500">{userReviews.length} total reviews</p>
+                      <p className="text-sm text-gray-500">{typedUserReviews.length} total reviews</p>
                     </div>
                     
                     {reviewsLoading ? (
                       <div className="text-center py-8">Loading reviews...</div>
-                    ) : userReviews.length === 0 ? (
+                    ) : typedUserReviews.length === 0 ? (
                       <div className="text-center py-8 text-gray-500">
                         <p>You haven't written any reviews yet.</p>
                         <Link href="/search">
@@ -392,7 +395,7 @@ export const UserProfilePage = (): JSX.Element => {
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        {userReviews.map((review: any) => (
+                        {typedUserReviews.map((review: any) => (
                           <Card key={review.id} className="border border-gray-200">
                             <CardContent className="p-6">
                               <div className="flex justify-between items-start mb-4">
