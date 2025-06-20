@@ -170,6 +170,8 @@ Changelog:
 - June 20, 2025. Added review count display to admin panel trader list showing total reviews per trader
 - June 20, 2025. Implemented autorefresh functionality that invalidates all queries when users switch between pages for real-time data updates
 - June 20, 2025. Customized duplicate review error message to display "Only one review is allowed per user!" with enhanced frontend error handling
+- June 20, 2025. Extended autorefresh to trigger on logout events for complete data refresh
+- June 20, 2025. Fixed admin button visibility issue by updating useAdmin hook to properly clear admin status when users log out
 ```
 
 ## User Preferences
