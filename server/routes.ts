@@ -488,6 +488,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       .withMessage('Comment must be less than 1000 characters')
       .trim()
       .escape(),
+    body('reviewerName')
+      .optional()
+      .isLength({ max: 100 })
+      .withMessage('Reviewer name must be less than 100 characters')
+      .trim()
+      .escape(),
     handleValidationErrors
   ], async (req, res) => {
     try {
@@ -498,14 +504,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const traderId = parseInt(req.params.id);
-      const validatedData = insertRatingSchema.parse({
-        ...req.body,
+      
+      // Map frontend fields to database schema
+      const ratingData = {
         traderId,
         userId: user.id,
-      });
+        reviewerName: req.body.reviewerName || user.username || 'Anonymous',
+        overallRating: req.body.rating,
+        strategyRating: req.body.strategy,
+        communicationRating: req.body.communication,
+        reliabilityRating: req.body.reliability,
+        profitabilityRating: req.body.profitability,
+        comment: req.body.comment || null,
+        tags: []
+      };
+      
+      const validatedData = insertRatingSchema.parse(ratingData);
       const rating = await storage.createRating(validatedData);
       res.status(201).json(rating);
     } catch (error: any) {
+      console.error('Rating validation error:', error);
       res.status(400).json({ error: error.message });
     }
   });
