@@ -15,11 +15,9 @@ async function scrapeKolscanLeaderboard(): Promise<any[]> {
   try {
     const response = await axios.get('https://kolscan.io/monthly-leaderboard', {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate',
-        'Connection': 'keep-alive'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5'
       },
       timeout: 10000
     });
@@ -27,87 +25,64 @@ async function scrapeKolscanLeaderboard(): Promise<any[]> {
     const $ = cheerio.load(response.data);
     const traders: any[] = [];
 
-    // Parse the leaderboard table - adjust selectors based on actual HTML structure
-    $('.leaderboard-row, .trader-row, tr').each((index, element) => {
-      const $row = $(element);
+    // Simple approach - look for table rows or any structure with wallet addresses
+    $('*').each((index, element) => {
+      const $el = $(element);
+      const text = $el.text();
       
-      // Extract trader name
-      const name = $row.find('.trader-name, .name, td:nth-child(2), .username').text().trim();
+      // Find Solana wallet addresses (Base58 format, 32-44 characters)
+      const walletMatch = text.match(/[1-9A-HJ-NP-Za-km-z]{32,44}/);
       
-      // Extract wallet address
-      const walletAddress = $row.find('.wallet-address, .address, .wallet, [data-wallet]').text().trim();
-      
-      // If not found, look for wallet pattern in table cells
-      let foundWalletAddress = walletAddress;
-      if (!foundWalletAddress) {
-        $row.find('td').each((i, el) => {
-          const text = $(el).text().trim();
-          if (text.match(/^[A-Za-z0-9]{32,44}$/)) { // Solana address pattern
-            foundWalletAddress = text;
-            return false; // Break the loop
+      if (walletMatch && traders.length < 20) {
+        const walletAddress = walletMatch[0];
+        
+        // Skip if we already have this wallet
+        if (traders.some(t => t.walletAddress === walletAddress)) {
+          return;
+        }
+        
+        // Look for trader name in the same element or nearby elements
+        let name = '';
+        const $parent = $el.closest('tr, div, li, .row');
+        
+        // Extract text that could be a name (not wallet, not numbers)
+        const possibleNames = $parent.find('*').map((i, el) => $(el).text().trim()).get();
+        
+        for (const possibleName of possibleNames) {
+          if (possibleName && 
+              possibleName.length > 2 && 
+              possibleName.length < 30 &&
+              !possibleName.match(/[1-9A-HJ-NP-Za-km-z]{32,44}/) && // Not a wallet
+              !possibleName.match(/^\d+\.?\d*$/) && // Not just numbers
+              !possibleName.match(/^\$/) && // Not price
+              possibleName !== walletAddress) {
+            name = possibleName.replace(/^@/, '').trim();
+            break;
           }
-        });
-      }
-      
-      // Extract Twitter link
-      const twitterLink = $row.find('a[href*="twitter.com"], a[href*="x.com"]').attr('href') ||
-                         $row.find('.social-links a, .twitter-link').attr('href');
-      
-      // Extract additional data if available
-      const pnl = $row.find('.pnl, .profit, .returns').text().trim();
-      const rank = $row.find('.rank, .position').text().trim() || (index + 1).toString();
-      
-      if (name && foundWalletAddress) {
-        traders.push({
-          name: name.replace(/^@/, ''), // Remove @ if present
-          walletAddress: foundWalletAddress,
-          twitterUrl: twitterLink || null,
-          pnl: pnl || null,
-          rank: parseInt(rank) || index + 1,
-          specialty: 'KOL Trading', // Default specialty for kolscan traders
-          verified: true, // Mark as verified since they're from leaderboard
-          bio: pnl ? `Top KOL trader with ${pnl} performance` : 'Top KOL trader from monthly leaderboard'
-        });
+        }
+        
+        // Look for Twitter links
+        const twitterUrl = $parent.find('a[href*="twitter.com"], a[href*="x.com"]').attr('href') || null;
+        
+        if (name || twitterUrl) {
+          traders.push({
+            name: name || `Trader_${traders.length + 1}`,
+            walletAddress,
+            twitterUrl,
+            specialty: 'KOL Trading',
+            verified: true,
+            bio: 'KOL trader from kolscan leaderboard'
+          });
+        }
       }
     });
 
-    // If main selector doesn't work, try alternative approaches
-    if (traders.length === 0) {
-      // Try to find any elements with wallet-like patterns
-      $('*').each((index, element) => {
-        const text = $(element).text().trim();
-        const walletMatch = text.match(/[A-Za-z0-9]{32,44}/);
-        
-        if (walletMatch && index < 50) { // Limit to first 50 to avoid noise
-          const $parent = $(element).closest('tr, .row, .item, .trader');
-          const name = $parent.find('*').filter((i, el) => {
-            const elText = $(el).text().trim();
-            return elText.length > 2 && elText.length < 30 && !elText.match(/[0-9]{32,}/);
-          }).first().text().trim();
-          
-          if (name && walletMatch[0]) {
-            traders.push({
-              name: name.replace(/^@/, ''),
-              walletAddress: walletMatch[0],
-              twitterUrl: null,
-              specialty: 'KOL Trading',
-              verified: true,
-              bio: 'Top KOL trader from monthly leaderboard'
-            });
-          }
-        }
-      });
-    }
-
-    // Remove duplicates based on wallet address
-    const uniqueTraders = traders.filter((trader, index, self) => 
-      index === self.findIndex(t => t.walletAddress === trader.walletAddress)
-    );
-
-    return uniqueTraders.slice(0, 20); // Return top 20 traders
-  } catch (error) {
-    console.error('Error scraping kolscan leaderboard:', error);
-    throw new Error('Failed to scrape kolscan leaderboard');
+    console.log(`Found ${traders.length} traders from kolscan`);
+    return traders;
+    
+  } catch (error: any) {
+    console.error('Kolscan scraping failed:', error.message);
+    throw new Error(`Unable to access kolscan leaderboard: ${error.message}`);
   }
 }
 
