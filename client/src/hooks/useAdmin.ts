@@ -3,16 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 export function useAdmin() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["/api/auth/admin-status"],
-    queryFn: async () => {
-      const response = await fetch("/api/auth/admin-status");
-      if (!response.ok) {
-        if (response.status === 401) {
-          return { isAdmin: false };
-        }
-        throw new Error("Failed to fetch admin status");
-      }
-      return response.json();
-    },
     retry: false,
   });
 
