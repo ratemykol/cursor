@@ -56,7 +56,7 @@ export const TraderProfilePage = (): JSX.Element => {
   // Calculate rating statistics
   const totalRatings = Array.isArray(ratings) ? ratings.length : 0;
   const averageRating = totalRatings > 0 
-    ? ratings.reduce((sum: number, rating: any) => sum + rating.overallRating, 0) / totalRatings 
+    ? (ratings as any[]).reduce((sum: number, rating: any) => sum + rating.overallRating, 0) / totalRatings 
     : 0;
 
   // Rating breakdown (1-5 stars)
