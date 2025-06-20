@@ -216,16 +216,35 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    // Custom static file middleware with forced MIME types
-    app.use('/assets', (req, res, next) => {
-      const filePath = req.path;
-      if (filePath.endsWith('.css')) {
+    // Aggressive MIME type override for all static files - must come before serveStatic
+    app.use((req, res, next) => {
+      const originalSend = res.send;
+      const originalSendFile = res.sendFile;
+      const originalSetHeader = res.setHeader;
+      
+      // Override res.setHeader to always force correct MIME types
+      res.setHeader = function(name: string, value: any) {
+        if (name.toLowerCase() === 'content-type') {
+          if (req.url.includes('.css')) {
+            return originalSetHeader.call(this, name, 'text/css; charset=utf-8');
+          } else if (req.url.includes('.js') && !req.url.includes('.json')) {
+            return originalSetHeader.call(this, name, 'application/javascript; charset=utf-8');
+          } else if (req.url.includes('.json')) {
+            return originalSetHeader.call(this, name, 'application/json; charset=utf-8');
+          }
+        }
+        return originalSetHeader.call(this, name, value);
+      };
+      
+      // Pre-emptively set headers for known file types
+      if (req.url.includes('.css')) {
         res.setHeader('Content-Type', 'text/css; charset=utf-8');
         res.setHeader('Cache-Control', 'public, max-age=31536000');
-      } else if (filePath.endsWith('.js')) {
+      } else if (req.url.includes('.js') && !req.url.includes('.json')) {
         res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
         res.setHeader('Cache-Control', 'public, max-age=31536000');
       }
+      
       next();
     });
     
