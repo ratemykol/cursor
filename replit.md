@@ -176,6 +176,7 @@ Changelog:
 - June 20, 2025. Fixed deployment white screen issue by resolving React Hooks order violation in useAdmin hook missing queryFn
 - June 20, 2025. Configured SESSION_SECRET environment variable for secure production deployment
 - June 20, 2025. Disabled Content Security Policy in development mode to resolve asset loading conflicts
+- June 20, 2025. Fixed MIME type configuration for static assets to resolve CSS and JavaScript loading errors in production deployment
 - June 20, 2025. Fixed bio persistence issue by adding bio field to session data during user authentication
 ```
 
