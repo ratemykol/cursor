@@ -67,7 +67,10 @@ export const RatingPage = (): JSX.Element => {
         body: JSON.stringify(ratingData),
         headers: { "Content-Type": "application/json" },
       });
-      if (!response.ok) throw new Error('Failed to submit rating');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit rating');
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -90,6 +93,12 @@ export const RatingPage = (): JSX.Element => {
           variant: "destructive",
         });
         setLocation("/signin");
+      } else if (error.message.includes("Only one review is allowed per user!")) {
+        toast({
+          title: "Review Already Submitted",
+          description: "Only one review is allowed per user!",
+          variant: "destructive",
+        });
       } else {
         toast({
           title: "Error",
