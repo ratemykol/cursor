@@ -241,7 +241,7 @@ export const HomePage = (): JSX.Element => {
           <div className="absolute w-[340px] h-[475px] top-[830px] left-[-209px] bg-[#ab9ff2] rounded-[169.7px/237.8px] rotate-[-76deg] mt-[-1200px] mb-[-1200px]" />
           <div className="absolute w-[150px] h-[223px] top-[907px] left-[94px] bg-black rounded-[75.5px/111.3px] rotate-[15deg] mt-[-1118px] mb-[-1118px]" />
           <div className="absolute w-[114px] h-[198px] top-[720px] left-[458px] bg-[#ffdadc] rounded-[57.2px/99px] rotate-[96deg] mt-[-1151px] mb-[-1151px] ml-[-34px] mr-[-34px]" />
-          <div className="absolute w-[114px] h-[198px] top-[600px] left-[800px] bg-[#ffd13f] rounded-[57.2px/99px] rotate-[15deg] ml-[-34px] mr-[-34px] mt-[-1306px] mb-[-1306px]" />
+          <div className="absolute w-[114px] h-[198px] top-[600px] left-[800px] bg-[#ffd13f] rounded-[57.2px/99px] rotate-[15deg] mt-[-1585px] mb-[-1585px] ml-[-423px] mr-[-423px]" />
           <div className="absolute w-[150px] h-[223px] top-[545px] left-[1620px] bg-[#ff7243] rounded-[75.5px/111.3px] rotate-[15deg] mt-[-1126px] mb-[-1126px] ml-[-276px] mr-[-276px] z-[1]" />
           <div className="absolute w-[340px] h-[475px] top-[814px] left-[1587px] bg-[#2ec08b] rounded-[169.7px/237.8px] rotate-[-76deg] mt-[-992px] mb-[-992px]" />
           <div className="absolute w-[150px] h-[223px] top-[704px] left-[1307px] bg-[#e2dffd] rounded-[75.5px/111.3px] rotate-[-18deg] mt-[-1006px] mb-[-1006px] ml-[-310px] mr-[-310px]" />
