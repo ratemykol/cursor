@@ -47,20 +47,7 @@ if (process.env.NODE_ENV === 'production') {
 // Remove server signatures and identifying headers
 app.disable('x-powered-by');
 
-// Development-specific middleware to completely disable CSP
-if (process.env.NODE_ENV !== 'production') {
-  app.use((req, res, next) => {
-    // Override CSP with permissive policy in development
-    res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;");
-    res.removeHeader('X-Content-Type-Options');
-    res.removeHeader('X-Frame-Options');
-    res.removeHeader('X-XSS-Protection');
-    res.removeHeader('Referrer-Policy');
-    res.removeHeader('X-Powered-By');
-    res.removeHeader('Server');
-    next();
-  });
-}
+// Placeholder for CSP override - will be moved later
 
 app.use((req, res, next) => {
   // Always remove identifying headers
@@ -240,6 +227,15 @@ app.use((req, res, next) => {
 
   next();
 });
+
+// Final CSP override for development - must be last middleware
+if (process.env.NODE_ENV !== 'production') {
+  app.use((req, res, next) => {
+    // Force override any CSP with completely permissive policy
+    res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;");
+    next();
+  });
+}
 
 (async () => {
   const server = await registerRoutes(app);
