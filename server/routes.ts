@@ -7,6 +7,109 @@ import { insertTraderSchema, insertRatingSchema, userRegistrationSchema, userLog
 import { upload } from "./upload";
 import path from "path";
 import express from "express";
+import axios from "axios";
+import * as cheerio from "cheerio";
+
+// Helper function to scrape kolscan.io monthly leaderboard
+async function scrapeKolscanLeaderboard(): Promise<any[]> {
+  try {
+    const response = await axios.get('https://kolscan.io/monthly-leaderboard', {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate',
+        'Connection': 'keep-alive'
+      },
+      timeout: 10000
+    });
+
+    const $ = cheerio.load(response.data);
+    const traders: any[] = [];
+
+    // Parse the leaderboard table - adjust selectors based on actual HTML structure
+    $('.leaderboard-row, .trader-row, tr').each((index, element) => {
+      const $row = $(element);
+      
+      // Extract trader name
+      const name = $row.find('.trader-name, .name, td:nth-child(2), .username').text().trim();
+      
+      // Extract wallet address
+      const walletAddress = $row.find('.wallet-address, .address, .wallet, [data-wallet]').text().trim();
+      
+      // If not found, look for wallet pattern in table cells
+      let foundWalletAddress = walletAddress;
+      if (!foundWalletAddress) {
+        $row.find('td').each((i, el) => {
+          const text = $(el).text().trim();
+          if (text.match(/^[A-Za-z0-9]{32,44}$/)) { // Solana address pattern
+            foundWalletAddress = text;
+            return false; // Break the loop
+          }
+        });
+      }
+      
+      // Extract Twitter link
+      const twitterLink = $row.find('a[href*="twitter.com"], a[href*="x.com"]').attr('href') ||
+                         $row.find('.social-links a, .twitter-link').attr('href');
+      
+      // Extract additional data if available
+      const pnl = $row.find('.pnl, .profit, .returns').text().trim();
+      const rank = $row.find('.rank, .position').text().trim() || (index + 1).toString();
+      
+      if (name && foundWalletAddress) {
+        traders.push({
+          name: name.replace(/^@/, ''), // Remove @ if present
+          walletAddress: foundWalletAddress,
+          twitterUrl: twitterLink || null,
+          pnl: pnl || null,
+          rank: parseInt(rank) || index + 1,
+          specialty: 'KOL Trading', // Default specialty for kolscan traders
+          verified: true, // Mark as verified since they're from leaderboard
+          bio: pnl ? `Top KOL trader with ${pnl} performance` : 'Top KOL trader from monthly leaderboard'
+        });
+      }
+    });
+
+    // If main selector doesn't work, try alternative approaches
+    if (traders.length === 0) {
+      // Try to find any elements with wallet-like patterns
+      $('*').each((index, element) => {
+        const text = $(element).text().trim();
+        const walletMatch = text.match(/[A-Za-z0-9]{32,44}/);
+        
+        if (walletMatch && index < 50) { // Limit to first 50 to avoid noise
+          const $parent = $(element).closest('tr, .row, .item, .trader');
+          const name = $parent.find('*').filter((i, el) => {
+            const elText = $(el).text().trim();
+            return elText.length > 2 && elText.length < 30 && !elText.match(/[0-9]{32,}/);
+          }).first().text().trim();
+          
+          if (name && walletMatch[0]) {
+            traders.push({
+              name: name.replace(/^@/, ''),
+              walletAddress: walletMatch[0],
+              twitterUrl: null,
+              specialty: 'KOL Trading',
+              verified: true,
+              bio: 'Top KOL trader from monthly leaderboard'
+            });
+          }
+        }
+      });
+    }
+
+    // Remove duplicates based on wallet address
+    const uniqueTraders = traders.filter((trader, index, self) => 
+      index === self.findIndex(t => t.walletAddress === trader.walletAddress)
+    );
+
+    return uniqueTraders.slice(0, 20); // Return top 20 traders
+  } catch (error) {
+    console.error('Error scraping kolscan leaderboard:', error);
+    throw new Error('Failed to scrape kolscan leaderboard');
+  }
+}
 
 // Helper function to extract Twitter username from URL
 function extractTwitterUsername(twitterUrl: string): string | null {
@@ -449,6 +552,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Kolscan leaderboard scraping endpoint
+  app.get("/api/admin/kolscan-leaderboard", isAdmin, async (req, res) => {
+    try {
+      const traders = await scrapeKolscanLeaderboard();
+      res.json({
+        success: true,
+        count: traders.length,
+        traders
+      });
+    } catch (error: any) {
+      console.error('Kolscan scraping error:', error);
+      res.status(500).json({ 
+        success: false,
+        error: error.message,
+        message: 'Failed to scrape kolscan leaderboard. The website structure may have changed or be temporarily unavailable.' 
+      });
+    }
+  });
+
+  // Import traders from kolscan leaderboard
+  app.post("/api/admin/import-kolscan-traders", isAdmin, async (req, res) => {
+    try {
+      const traders = await scrapeKolscanLeaderboard();
+      const importedTraders = [];
+      const errors = [];
+
+      for (const traderData of traders) {
+        try {
+          // Check if trader with this wallet address already exists
+          const existingTrader = await storage.getTraderByWallet(traderData.walletAddress);
+          if (existingTrader) {
+            errors.push(`Trader with wallet ${traderData.walletAddress} already exists`);
+            continue;
+          }
+
+          // Auto-fetch Twitter profile image if Twitter URL is provided
+          if (traderData.twitterUrl && !traderData.profileImage) {
+            const username = extractTwitterUsername(traderData.twitterUrl);
+            if (username) {
+              const twitterProfileImage = await fetchTwitterProfileImage(username);
+              if (twitterProfileImage) {
+                traderData.profileImage = twitterProfileImage;
+              }
+            }
+          }
+
+          const newTrader = await storage.createTrader(traderData);
+          importedTraders.push(newTrader);
+        } catch (error: any) {
+          errors.push(`Failed to import ${traderData.name}: ${error.message}`);
+        }
+      }
+
+      res.json({
+        success: true,
+        imported: importedTraders.length,
+        total: traders.length,
+        traders: importedTraders,
+        errors
+      });
+    } catch (error: any) {
+      res.status(500).json({ 
+        success: false,
+        error: error.message 
+      });
     }
   });
 

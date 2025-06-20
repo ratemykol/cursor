@@ -271,6 +271,53 @@ export const AdminPage = (): JSX.Element => {
     },
   });
 
+  // Kolscan import mutations
+  const importKolscanMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch("/api/admin/import-kolscan-traders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) throw new Error('Failed to import kolscan traders');
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Import Successful",
+        description: `Imported ${data.imported} traders from kolscan leaderboard${data.errors.length > 0 ? ` (${data.errors.length} errors)` : ''}`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/traders"] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Import Failed",
+        description: "Failed to import traders from kolscan leaderboard. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const previewKolscanMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch("/api/admin/kolscan-leaderboard");
+      if (!response.ok) throw new Error('Failed to fetch kolscan data');
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Preview Ready",
+        description: `Found ${data.count} traders from kolscan leaderboard`,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Preview Failed",
+        description: "Failed to fetch kolscan leaderboard data. The website may be temporarily unavailable.",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Twitter profile image refresh mutation
   const refreshTwitterImageMutation = useMutation({
     mutationFn: async (traderId: number) => {
