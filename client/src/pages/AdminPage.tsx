@@ -1055,11 +1055,11 @@ export const AdminPage = (): JSX.Element => {
               ))}
               
               {/* Empty state messages */}
-              {reviews.length === 0 ? (
+              {typedReviews.length === 0 ? (
                 <Card className="p-8 text-center">
                   <p className="text-gray-600">No reviews found.</p>
                 </Card>
-              ) : reviews
+              ) : typedReviews
                 .filter((review: any) => 
                   !reviewSearch || 
                   review.reviewerName?.toLowerCase().includes(reviewSearch.toLowerCase())

@@ -275,7 +275,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       .trim()
       .escape(),
     handleValidationErrors
-  ], async (req, res) => {
+  ], async (req: Request, res: Response) => {
     try {
       const { q } = req.query;
       if (q && typeof q === "string") {
