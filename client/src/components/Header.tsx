@@ -31,7 +31,8 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      // Invalidate all queries to ensure fresh data after logout
+      queryClient.invalidateQueries();
       toast({
         title: "Logged out successfully",
         description: "You have been signed out",
