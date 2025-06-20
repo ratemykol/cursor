@@ -12,7 +12,7 @@ const app = express();
 // Trust proxy for rate limiting in Replit environment
 app.set('trust proxy', 1);
 
-// Security middleware
+// Advanced security middleware for identity protection
 app.use(helmet({
   contentSecurityPolicy: process.env.NODE_ENV === 'production' ? {
     directives: {
@@ -26,37 +26,130 @@ app.use(helmet({
       objectSrc: ["'none'"],
       frameSrc: ["'none'"],
     },
-  } : false, // Disable CSP in development for Vite compatibility
+  } : false,
   crossOriginEmbedderPolicy: false,
+  // Hide server information
+  hidePoweredBy: true,
+  // Prevent clickjacking
+  frameguard: { action: 'deny' },
+  // Prevent MIME type sniffing
+  noSniff: true,
+  // Force HTTPS in production
+  hsts: process.env.NODE_ENV === 'production' ? {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  } : false,
+  // Prevent XSS attacks
+  xssFilter: true,
+  // Hide referrer information
+  referrerPolicy: { policy: 'no-referrer' }
 }));
 
-// CORS configuration
+// Remove server signatures and identifying headers
+app.disable('x-powered-by');
+app.use((req, res, next) => {
+  // Remove identifying headers
+  res.removeHeader('X-Powered-By');
+  res.removeHeader('Server');
+  
+  // Add security headers to prevent information leakage
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+  
+  // Hide server timing information
+  res.setHeader('Server-Timing', '');
+  
+  next();
+});
+
+// IP obfuscation and anti-doxxing middleware
+app.use((req, res, next) => {
+  // Remove real IP from logs and headers
+  const originalIP = req.ip;
+  const forwardedFor = req.get('X-Forwarded-For');
+  const realIP = req.get('X-Real-IP');
+  
+  // Override IP with anonymized version for logging
+  Object.defineProperty(req, 'ip', {
+    value: 'xxx.xxx.xxx.xxx',
+    writable: false,
+    configurable: false
+  });
+  
+  // Remove identifying headers that could leak server info
+  delete req.headers['x-forwarded-for'];
+  delete req.headers['x-real-ip'];
+  delete req.headers['x-forwarded-host'];
+  delete req.headers['x-forwarded-proto'];
+  delete req.headers['x-forwarded-port'];
+  delete req.headers['forwarded'];
+  delete req.headers['via'];
+  delete req.headers['x-cluster-client-ip'];
+  delete req.headers['cf-connecting-ip'];
+  delete req.headers['true-client-ip'];
+  delete req.headers['x-original-forwarded-for'];
+  
+  // Store original IP in a secure way if needed for legitimate purposes
+  req._originalIP = originalIP;
+  
+  next();
+});
+
+// Hide server fingerprinting information
+app.use((req, res, next) => {
+  // Prevent server version detection
+  res.setHeader('Server', 'nginx'); // Generic server name
+  
+  // Randomize response timing to prevent timing attacks
+  const delay = Math.floor(Math.random() * 50);
+  setTimeout(() => {
+    next();
+  }, delay);
+});
+
+// Advanced CORS configuration with IP protection
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow same-origin requests and requests without origin (mobile apps, etc.)
-    if (!origin) return callback(null, true);
-    
-    // Allow localhost and replit domains
-    const allowedOrigins = [
-      'http://localhost:5000',
-      'http://127.0.0.1:5000',
-    ];
-    
-    // Add replit domains if available
-    if (process.env.REPLIT_DOMAINS) {
-      const replitDomains = process.env.REPLIT_DOMAINS.split(',');
-      replitDomains.forEach(domain => {
-        allowedOrigins.push(`https://${domain}`);
-      });
-    }
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
+    // In production, be very strict about origins
+    if (process.env.NODE_ENV === 'production') {
+      // Only allow specific domains you control
+      const allowedOrigins = process.env.ALLOWED_ORIGINS ? 
+        process.env.ALLOWED_ORIGINS.split(',') : [];
+      
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Origin not allowed by CORS policy'));
+      }
     } else {
-      callback(new Error('Not allowed by CORS'));
+      // Development mode - allow localhost
+      const allowedOrigins = [
+        'http://localhost:5000',
+        'http://127.0.0.1:5000',
+      ];
+      
+      if (process.env.REPLIT_DOMAINS) {
+        const replitDomains = process.env.REPLIT_DOMAINS.split(',');
+        replitDomains.forEach(domain => {
+          allowedOrigins.push(`https://${domain}`);
+        });
+      }
+      
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Origin not allowed by CORS policy'));
+      }
     }
   },
   credentials: true,
+  // Prevent preflight request information leakage
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
 
 // Rate limiting - disabled in development, enabled in production
@@ -151,12 +244,34 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    res.status(status).json({ message });
-    throw err;
+  // Anti-doxxing error handler - hide all server information
+  app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
+    // Log error internally but don't expose details
+    const timestamp = new Date().toISOString();
+    const errorId = Math.random().toString(36).substring(7);
+    
+    // Internal logging (remove in production or use secure logging service)
+    if (process.env.NODE_ENV === 'development') {
+      console.error(`[${timestamp}] Error ${errorId}:`, err.message);
+    }
+    
+    // Never expose real error details to prevent information leakage
+    const genericMessages = [
+      "Service temporarily unavailable",
+      "Request could not be processed",
+      "An error occurred while processing your request",
+      "Service is currently experiencing issues",
+      "Unable to complete request at this time"
+    ];
+    
+    const randomMessage = genericMessages[Math.floor(Math.random() * genericMessages.length)];
+    
+    // Always return 503 to prevent status code enumeration
+    res.status(503).json({ 
+      error: randomMessage,
+      timestamp: timestamp,
+      reference: errorId
+    });
   });
 
   // importantly only setup vite in development and after
