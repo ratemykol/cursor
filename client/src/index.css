@@ -18,7 +18,7 @@
 }
 
 .animate-scroll {
-  animation: scroll-infinite 31.5s linear infinite;
+  animation: scroll-infinite 15s linear infinite;
 }
 
 .trader-scroll-container {
