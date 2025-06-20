@@ -20,12 +20,12 @@ const handleValidationErrors = (req: Request, res: Response, next: NextFunction)
   next();
 };
 
-// Security rate limiter for file uploads
-const uploadLimiter = rateLimit({
+// Security rate limiter for file uploads - only in production
+const uploadLimiter = process.env.NODE_ENV === 'production' ? rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 10, // 10 uploads per minute
   message: { error: "Too many uploads, please try again later." }
-});
+}) : (req: any, res: any, next: any) => next(); // No-op in development
 
 // Admin middleware to check if user is admin
 const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
