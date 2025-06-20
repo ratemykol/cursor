@@ -8,6 +8,7 @@ import {
   integer,
   serial,
   decimal,
+  unique,
   boolean,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
@@ -71,7 +72,10 @@ export const ratings = pgTable("ratings", {
   notHelpful: integer("not_helpful").default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => ({
+  // Unique constraint: one review per user per trader
+  uniqueUserTrader: unique().on(table.userId, table.traderId),
+}));
 
 // Relations
 export const tradersRelations = relations(traders, ({ many }) => ({

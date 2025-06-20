@@ -52,6 +52,8 @@ export interface IStorage {
     averageProfitability: number;
     fiveStarCount: number;
   }>;
+  getUserRating(userId: string, traderId: number): Promise<Rating | undefined>;
+  getUserRatings(userId: string): Promise<Rating[]>;
 }
 
 export class DatabaseStorage implements IStorage {
