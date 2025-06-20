@@ -181,7 +181,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Honeypot endpoints to detect reconnaissance
   const honeypotPaths = [
-    '/admin', '/wp-admin', '/phpmyadmin', '/cpanel', '/admin.php',
+    '/wp-admin', '/phpmyadmin', '/cpanel', '/admin.php',
     '/.env', '/.git', '/config', '/backup', '/test', '/debug',
     '/robots.txt', '/sitemap.xml', '/.htaccess', '/server-status'
   ];
