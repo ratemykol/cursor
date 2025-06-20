@@ -27,6 +27,7 @@ export const AdminPage = (): JSX.Element => {
   const [specialty, setSpecialty] = useState("");
   const [verified, setVerified] = useState(false);
   const [profileImage, setProfileImage] = useState("");
+  const [twitterUrl, setTwitterUrl] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const { toast } = useToast();
@@ -268,6 +269,7 @@ export const AdminPage = (): JSX.Element => {
     setSpecialty("");
     setVerified(false);
     setProfileImage("");
+    setTwitterUrl("");
   };
 
   const startEdit = (trader: any) => {
@@ -278,6 +280,7 @@ export const AdminPage = (): JSX.Element => {
     setSpecialty(trader.specialty || "");
     setVerified(trader.verified);
     setProfileImage(trader.profileImage || "");
+    setTwitterUrl(trader.twitterUrl || "");
     setView("edit");
   };
 
@@ -340,6 +343,7 @@ export const AdminPage = (): JSX.Element => {
       specialty: specialty.trim() || null,
       verified,
       profileImage: profileImage.trim() || null,
+      twitterUrl: twitterUrl.trim() || null,
     };
 
     if (view === "edit" && editingTrader) {
@@ -805,6 +809,16 @@ export const AdminPage = (): JSX.Element => {
                   onChange={(e) => setBio(e.target.value)}
                   placeholder="Enter trader biography..."
                   rows={4}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="twitterUrl">Twitter URL</Label>
+                <Input
+                  id="twitterUrl"
+                  value={twitterUrl}
+                  onChange={(e) => setTwitterUrl(e.target.value)}
+                  placeholder="https://twitter.com/username"
                 />
               </div>
 
