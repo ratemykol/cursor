@@ -271,6 +271,32 @@ export const AdminPage = (): JSX.Element => {
     },
   });
 
+  // Twitter profile image refresh mutation
+  const refreshTwitterImageMutation = useMutation({
+    mutationFn: async (traderId: number) => {
+      const response = await fetch(`/api/traders/${traderId}/refresh-twitter-image`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) throw new Error('Failed to refresh Twitter image');
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Twitter profile image updated successfully!",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/traders"] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to fetch Twitter profile image. Please check the Twitter URL.",
+        variant: "destructive",
+      });
+    },
+  });
+
   // User management mutations
   const updateUserMutation = useMutation({
     mutationFn: async ({ userId, username }: { userId: string; username: string }) => {
@@ -521,6 +547,19 @@ export const AdminPage = (): JSX.Element => {
                         <Edit size={14} />
                         Edit
                       </Button>
+                      {trader.twitterUrl && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => refreshTwitterImageMutation.mutate(trader.id)}
+                          className="flex items-center gap-2"
+                          disabled={refreshTwitterImageMutation.isPending}
+                          title="Refresh Twitter profile image"
+                        >
+                          <RefreshCw size={14} className={refreshTwitterImageMutation.isPending ? "animate-spin" : ""} />
+                          Refresh
+                        </Button>
+                      )}
                       <Button
                         variant="destructive"
                         size="sm"
