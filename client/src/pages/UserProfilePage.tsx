@@ -137,7 +137,7 @@ export const UserProfilePage = (): JSX.Element => {
   // Update review mutation
   const updateReviewMutation = useMutation({
     mutationFn: async ({ reviewId, reviewData }: { reviewId: number; reviewData: any }) => {
-      const response = await fetch(`/api/ratings/${reviewId}`, {
+      const response = await fetch(`/api/user/reviews/${reviewId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reviewData),
