@@ -70,28 +70,28 @@ export const SearchPage = (): JSX.Element => {
     <div className="bg-gray-50 flex flex-row justify-center w-full min-h-screen">
       <div className="bg-gray-50 min-h-screen relative max-w-[1920px] w-full">
         <Header currentPage="search" />
-      {/* Decorative background elements - scaled for 1920x1080 */}
-      <img
-        className="w-[90px] h-[91px] absolute left-[480px] top-[240px] z-[1]"
-        alt="Star"
-        src="/figmaAssets/star-2.svg"
-      />
-      <div className="absolute w-[32px] h-[42px] top-[300px] left-[670px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] z-[1]" />
-      <div className="absolute w-[88px] h-[117px] top-[360px] left-[620px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] z-[1]" />
-      <div className="absolute w-[110px] h-[85px] top-[216px] left-[1400px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] z-[1]" />
-      <img
-        className="absolute w-[76px] h-[61px] top-[350px] left-[1200px] z-[1]"
-        alt="Polygon"
-        src="/figmaAssets/polygon-1.svg"
-      />
-      <div className="absolute w-[45px] h-[60px] top-[400px] left-[200px] bg-[#ab9ff2] rounded-[22.5px/30px] rotate-[45deg] z-[1]" />
-      <div className="absolute w-[35px] h-[45px] top-[180px] left-[150px] bg-[#ff7243] rounded-[17.5px/22.5px] rotate-[-30deg] z-[1]" />
-      <div className="absolute w-[282px] h-[396px] top-[500px] left-[1150px] bg-[#2ec08b] rounded-[141px/198px] rotate-[-76deg] z-[1] ml-[-1280px] mr-[-1280px]" />
-      <div className="absolute w-[125.7px] h-[185.51px] top-[300px] left-[800px] rounded-[62.85px/92.755px] rotate-[15deg] z-[1] ml-[-864px] mr-[-864px] bg-[#000000] mt-[-31px] mb-[-31px]" />
-      <div className="absolute w-[282px] h-[396px] top-[200px] left-[50px] bg-[#ab9ff2] rounded-[141px/198px] rotate-[-76deg] z-[1] ml-[1200px] mr-[1200px] mt-[441px] mb-[441px]" />
-      <div className="absolute w-[95px] h-[165px] top-[400px] left-[600px] bg-[#ffdadc] rounded-[47.63px/82.54px] rotate-[96deg] z-[1] mt-[97px] mb-[97px] ml-[155px] mr-[155px] pl-[0px] pr-[0px] pt-[0px] pb-[0px]" />
-      <div className="container mx-auto px-16 py-12 relative z-[5]">
-        {/* Search Bar */}
+        {/* Decorative background elements - scaled for 1920x1080 */}
+        <img
+          className="w-[90px] h-[91px] absolute left-[480px] top-[240px] z-[1]"
+          alt="Star"
+          src="/figmaAssets/star-2.svg"
+        />
+        <div className="absolute w-[32px] h-[42px] top-[300px] left-[670px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] z-[1]" />
+        <div className="absolute w-[88px] h-[117px] top-[360px] left-[620px] bg-[#ffd13f] rounded-[36.36px/48.44px] rotate-[15deg] z-[1]" />
+        <div className="absolute w-[110px] h-[85px] top-[216px] left-[1400px] bg-[#4a87f2] rounded-[45.85px/35.6px] rotate-[-15deg] z-[1]" />
+        <img
+          className="absolute w-[76px] h-[61px] top-[350px] left-[1200px] z-[1]"
+          alt="Polygon"
+          src="/figmaAssets/polygon-1.svg"
+        />
+        <div className="absolute w-[45px] h-[60px] top-[400px] left-[200px] bg-[#ab9ff2] rounded-[22.5px/30px] rotate-[45deg] z-[1]" />
+        <div className="absolute w-[35px] h-[45px] top-[180px] left-[150px] bg-[#ff7243] rounded-[17.5px/22.5px] rotate-[-30deg] z-[1]" />
+        <div className="absolute w-[282px] h-[396px] top-[500px] left-[1150px] bg-[#2ec08b] rounded-[141px/198px] rotate-[-76deg] z-[1] ml-[-1280px] mr-[-1280px]" />
+        <div className="absolute w-[125.7px] h-[185.51px] top-[300px] left-[800px] rounded-[62.85px/92.755px] rotate-[15deg] z-[1] ml-[-864px] mr-[-864px] bg-[#000000] mt-[-31px] mb-[-31px]" />
+        <div className="absolute w-[282px] h-[396px] top-[200px] left-[50px] bg-[#ab9ff2] rounded-[141px/198px] rotate-[-76deg] z-[1] ml-[1200px] mr-[1200px] mt-[441px] mb-[441px]" />
+        <div className="absolute w-[95px] h-[165px] top-[400px] left-[600px] bg-[#ffdadc] rounded-[47.63px/82.54px] rotate-[96deg] z-[1] mt-[97px] mb-[97px] ml-[155px] mr-[155px] pl-[0px] pr-[0px] pt-[0px] pb-[0px]" />
+        <div className="container mx-auto px-16 py-12 relative z-[5]">
+          {/* Search Bar */}
         <div className="max-w-4xl mx-auto mb-12">
           <div className="relative">
             <Input
