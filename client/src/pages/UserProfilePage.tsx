@@ -106,20 +106,20 @@ export const UserProfilePage = (): JSX.Element => {
 
   return (
     <div className="bg-white flex flex-row justify-center w-full">
-      <div className="bg-white overflow-hidden w-full max-w-[1440px] relative">
+      <div className="bg-white overflow-hidden w-full max-w-[1920px] relative">
         <Header />
         
-        <div className="flex justify-center items-start min-h-[calc(100vh-200px)] px-20 py-12">
-          <Card className="w-full max-w-2xl">
-            <CardHeader>
-              <div className="flex flex-col items-center gap-4">
-                <Avatar className="w-20 h-20">
+        <div className="flex justify-center items-start min-h-[calc(100vh-200px)] px-32 py-16">
+          <Card className="w-full max-w-4xl">
+            <CardHeader className="pb-8">
+              <div className="flex flex-col items-center gap-6">
+                <Avatar className="w-28 h-28">
                   <AvatarImage src={user?.profileImageUrl} />
-                  <AvatarFallback className="text-2xl">
+                  <AvatarFallback className="text-3xl">
                     {user?.username?.charAt(0).toUpperCase() || user?.firstName?.charAt(0).toUpperCase() || "U"}
                   </AvatarFallback>
                 </Avatar>
-                <CardTitle className="text-2xl text-center text-[#3c315b]">
+                <CardTitle className="text-3xl text-center text-[#3c315b]">
                   My Profile
                 </CardTitle>
               </div>
