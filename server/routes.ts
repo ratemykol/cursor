@@ -60,7 +60,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
   // File upload routes
-  app.post("/api/upload/profile-picture", isAuthenticated, upload.single('profilePicture'), async (req, res) => {
+  app.post("/api/upload/profile-picture", uploadLimiter, isAuthenticated, upload.single('profilePicture'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
@@ -90,7 +90,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Trader profile picture upload
-  app.post("/api/upload/trader-profile-picture", isAdmin, upload.single('profilePicture'), async (req, res) => {
+  app.post("/api/upload/trader-profile-picture", uploadLimiter, isAdmin, upload.single('profilePicture'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
@@ -107,8 +107,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Trader routes
-  app.get("/api/traders", async (req, res) => {
+  // Trader routes with validation
+  app.get("/api/traders", [
+    query('q')
+      .optional()
+      .isLength({ max: 100 })
+      .withMessage('Search query too long')
+      .trim()
+      .escape(),
+    handleValidationErrors
+  ], async (req, res) => {
     try {
       const { q } = req.query;
       if (q && typeof q === "string") {
@@ -151,7 +159,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/traders/:id", async (req, res) => {
+  app.get("/api/traders/:id", [
+    param('id')
+      .isInt({ min: 1 })
+      .withMessage('Trader ID must be a positive integer'),
+    handleValidationErrors
+  ], async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const trader = await storage.getTrader(id);
@@ -227,7 +240,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/traders/:id/ratings", async (req, res) => {
+  app.post("/api/traders/:id/ratings", [
+    param('id')
+      .isInt({ min: 1 })
+      .withMessage('Trader ID must be a positive integer'),
+    body('rating')
+      .isInt({ min: 1, max: 5 })
+      .withMessage('Rating must be between 1 and 5'),
+    body('strategy')
+      .isInt({ min: 1, max: 5 })
+      .withMessage('Strategy rating must be between 1 and 5'),
+    body('communication')
+      .isInt({ min: 1, max: 5 })
+      .withMessage('Communication rating must be between 1 and 5'),
+    body('reliability')
+      .isInt({ min: 1, max: 5 })
+      .withMessage('Reliability rating must be between 1 and 5'),
+    body('profitability')
+      .isInt({ min: 1, max: 5 })
+      .withMessage('Profitability rating must be between 1 and 5'),
+    body('comment')
+      .optional()
+      .isLength({ max: 1000 })
+      .withMessage('Comment must be less than 1000 characters')
+      .trim()
+      .escape(),
+    handleValidationErrors
+  ], async (req, res) => {
     try {
       // Check if user is authenticated
       const user = (req.session as any)?.user;
@@ -318,8 +357,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Authentication routes
-  app.post("/api/auth/register", async (req, res) => {
+  // Authentication routes with validation
+  app.post("/api/auth/register", [
+    body('username')
+      .isLength({ min: 3, max: 30 })
+      .withMessage('Username must be between 3 and 30 characters')
+      .matches(/^[a-zA-Z0-9_]+$/)
+      .withMessage('Username can only contain letters, numbers, and underscores')
+      .trim()
+      .escape(),
+    body('email')
+      .optional({ checkFalsy: true })
+      .isEmail()
+      .withMessage('Please provide a valid email address')
+      .normalizeEmail(),
+    body('password')
+      .isLength({ min: 6, max: 128 })
+      .withMessage('Password must be between 6 and 128 characters'),
+    handleValidationErrors
+  ], async (req, res) => {
     try {
       const userData = userRegistrationSchema.parse(req.body);
       
@@ -350,7 +406,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/auth/login", async (req, res) => {
+  app.post("/api/auth/login", [
+    body('username')
+      .isLength({ min: 3, max: 30 })
+      .withMessage('Username must be between 3 and 30 characters')
+      .trim()
+      .escape(),
+    body('password')
+      .isLength({ min: 1, max: 128 })
+      .withMessage('Password is required'),
+    handleValidationErrors
+  ], async (req, res) => {
     try {
       const credentials = userLoginSchema.parse(req.body);
       const user = await storage.authenticateUser(credentials);
