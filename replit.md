@@ -168,6 +168,8 @@ Changelog:
 - June 20, 2025. Fixed review editing API endpoint issues and validation errors for proper functionality
 - June 20, 2025. Generated 10 realistic reviews for each of the 53 trader profiles using authentic reviewer personas
 - June 20, 2025. Added review count display to admin panel trader list showing total reviews per trader
+- June 20, 2025. Implemented autorefresh functionality that invalidates all queries when users switch between pages for real-time data updates
+- June 20, 2025. Customized duplicate review error message to display "Only one review is allowed per user!" with enhanced frontend error handling
 ```
 
 ## User Preferences

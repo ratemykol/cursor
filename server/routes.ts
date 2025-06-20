@@ -509,7 +509,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const existingRating = await storage.getUserRating(user.id, traderId);
       if (existingRating) {
         return res.status(400).json({ 
-          error: "You have already reviewed this trader. You can only leave one review per trader." 
+          error: "Only one review is allowed per user!" 
         });
       }
       
