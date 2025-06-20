@@ -118,10 +118,10 @@ export const TraderProfilePage = (): JSX.Element => {
               <div className="flex items-start gap-8">
                 {/* Profile Image - Left Side */}
                 <div className="w-28 h-28 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
-                  {trader.profileImage ? (
+                  {(trader as any)?.profileImage ? (
                     <img 
-                      src={trader.profileImage} 
-                      alt={trader.name}
+                      src={(trader as any).profileImage} 
+                      alt={(trader as any).name}
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -135,12 +135,12 @@ export const TraderProfilePage = (): JSX.Element => {
                 <div className="flex-1">
                   {/* Trader Name */}
                   <h1 className="text-3xl font-semibold text-gray-900 mb-2">
-                    {trader.name}
+                    {(trader as any)?.name}
                   </h1>
 
                   {/* Specialty */}
                   <p className="text-gray-600 mb-4 text-lg">
-                    {trader.specialty || 'new pairs terrorist'}
+                    {(trader as any)?.specialty || 'new pairs terrorist'}
                   </p>
 
                   {/* Rating Stars and Count */}
@@ -163,7 +163,7 @@ export const TraderProfilePage = (): JSX.Element => {
                       <span 
                         className="font-mono text-gray-800 cursor-pointer hover:text-[#ab9ff2] transition-colors duration-200 ml-1"
                         onClick={() => {
-                          navigator.clipboard.writeText(trader.walletAddress);
+                          navigator.clipboard.writeText((trader as any)?.walletAddress);
                           toast({
                             title: "Copied to clipboard",
                             description: "Wallet address copied successfully",
@@ -171,15 +171,15 @@ export const TraderProfilePage = (): JSX.Element => {
                         }}
                         title="Click to copy wallet address"
                       >
-                        {trader.walletAddress}
+                        {(trader as any)?.walletAddress}
                       </span>
                     </p>
                   </div>
 
                   {/* Bio */}
-                  {trader.bio && (
+                  {(trader as any)?.bio && (
                     <p className="text-gray-700 mb-4">
-                      {trader.bio}
+                      {(trader as any).bio}
                     </p>
                   )}
 
