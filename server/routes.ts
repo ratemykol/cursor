@@ -579,8 +579,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         reliabilityRating: req.body.reliabilityRating,
         profitabilityRating: req.body.profitabilityRating,
         comment: req.body.comment,
-        tags: req.body.tags || [],
-        updatedAt: new Date()
+        tags: req.body.tags || []
       });
 
       res.json(updatedReview);
