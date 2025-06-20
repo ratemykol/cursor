@@ -141,6 +141,7 @@ Changelog:
 - June 20, 2025. Removed decorative element from hero section to clean up homepage design
 - June 20, 2025. Reduced yellow eclipse decorative element size by 20% for better visual balance
 - June 20, 2025. Removed blue eclipse decorative element from hero section for cleaner design
+- June 20, 2025. Added new blue eclipse element (91.7x71.2px, -15° rotation) to homepage hero section
 ```
 
 ## User Preferences
