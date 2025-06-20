@@ -8,17 +8,21 @@
 }
 
 /* Infinite scroll animation for trader cards */
-@keyframes scroll {
+@keyframes scroll-infinite {
   0% {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-33.33%);
+    transform: translateX(-33.333%);
   }
 }
 
 .animate-scroll {
-  animation: scroll 30s linear infinite;
+  animation: scroll-infinite 45s linear infinite;
+}
+
+.trader-scroll-container {
+  white-space: nowrap;
 }
 
 .animate-scroll.paused {
