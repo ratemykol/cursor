@@ -41,19 +41,8 @@ if (process.env.NODE_ENV === 'production') {
     xssFilter: true,
     referrerPolicy: { policy: 'no-referrer' }
   }));
-} else {
-  // Completely disable security headers in development for Vite
-  app.use(helmet({
-    contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false,
-    hidePoweredBy: false,
-    frameguard: false,
-    noSniff: false,
-    hsts: false,
-    xssFilter: false,
-    referrerPolicy: false
-  }));
 }
+// No helmet in development - let Vite handle everything
 
 // Remove server signatures and identifying headers
 app.disable('x-powered-by');
