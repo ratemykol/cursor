@@ -1,10 +1,31 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
+import rateLimit from "express-rate-limit";
+import { body, validationResult, param, query } from "express-validator";
 import { storage } from "./storage";
 import { insertTraderSchema, insertRatingSchema, userRegistrationSchema, userLoginSchema } from "@shared/schema";
 import { upload } from "./upload";
 import path from "path";
 import express from "express";
+
+// Validation helper middleware
+const handleValidationErrors = (req: Request, res: Response, next: NextFunction) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      error: "Validation failed",
+      details: errors.array()
+    });
+  }
+  next();
+};
+
+// Security rate limiter for file uploads
+const uploadLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // 10 uploads per minute
+  message: { error: "Too many uploads, please try again later." }
+});
 
 // Admin middleware to check if user is admin
 const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
