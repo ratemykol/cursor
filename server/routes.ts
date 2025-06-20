@@ -8,6 +8,57 @@ import { upload } from "./upload";
 import path from "path";
 import express from "express";
 
+// Helper function to extract Twitter username from URL
+function extractTwitterUsername(twitterUrl: string): string | null {
+  if (!twitterUrl) return null;
+  
+  try {
+    // Match various Twitter URL formats
+    const patterns = [
+      /twitter\.com\/([^\/\?]+)/i,
+      /x\.com\/([^\/\?]+)/i
+    ];
+    
+    for (const pattern of patterns) {
+      const match = twitterUrl.match(pattern);
+      if (match && match[1]) {
+        return match[1].replace('@', '');
+      }
+    }
+    
+    // If it's just a username without URL
+    if (twitterUrl.startsWith('@')) {
+      return twitterUrl.substring(1);
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Error extracting Twitter username:', error);
+    return null;
+  }
+}
+
+// Helper function to fetch Twitter profile image
+async function fetchTwitterProfileImage(username: string): Promise<string | null> {
+  try {
+    // Use a public service to get Twitter profile images
+    // This uses the Twitter profile image URL pattern which is publicly accessible
+    const profileImageUrl = `https://unavatar.io/twitter/${username}`;
+    
+    // Verify the image exists by making a HEAD request
+    const response = await fetch(profileImageUrl, { method: 'HEAD' });
+    
+    if (response.ok) {
+      return profileImageUrl;
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Error fetching Twitter profile image:', error);
+    return null;
+  }
+}
+
 // Validation helper middleware
 const handleValidationErrors = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
@@ -291,6 +342,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/traders", isAdmin, async (req, res) => {
     try {
       const validatedData = insertTraderSchema.parse(req.body);
+      
+      // Auto-fetch Twitter profile image if Twitter URL is provided and no profile image is set
+      if (validatedData.twitterUrl && !validatedData.profileImage) {
+        const username = extractTwitterUsername(validatedData.twitterUrl);
+        if (username) {
+          const twitterProfileImage = await fetchTwitterProfileImage(username);
+          if (twitterProfileImage) {
+            validatedData.profileImage = twitterProfileImage;
+          }
+        }
+      }
+      
       const trader = await storage.createTrader(validatedData);
       res.status(201).json(trader);
     } catch (error: any) {
@@ -306,6 +369,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const validatedData = insertTraderSchema.parse(req.body);
+      
+      // Auto-fetch Twitter profile image if Twitter URL is provided and no profile image is set
+      if (validatedData.twitterUrl && !validatedData.profileImage) {
+        const username = extractTwitterUsername(validatedData.twitterUrl);
+        if (username) {
+          const twitterProfileImage = await fetchTwitterProfileImage(username);
+          if (twitterProfileImage) {
+            validatedData.profileImage = twitterProfileImage;
+          }
+        }
+      }
+      
       const trader = await storage.updateTrader(traderId, validatedData);
       
       if (!trader) {
@@ -332,6 +407,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.json({ message: 'Trader deleted successfully' });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/traders/:id/refresh-twitter-image", isAdmin, async (req, res) => {
+    try {
+      const traderId = parseInt(req.params.id);
+      if (isNaN(traderId)) {
+        return res.status(400).json({ message: 'Invalid trader ID' });
+      }
+
+      const trader = await storage.getTrader(traderId);
+      if (!trader) {
+        return res.status(404).json({ message: 'Trader not found' });
+      }
+
+      if (!trader.twitterUrl) {
+        return res.status(400).json({ message: 'No Twitter URL found for this trader' });
+      }
+
+      const username = extractTwitterUsername(trader.twitterUrl);
+      if (!username) {
+        return res.status(400).json({ message: 'Invalid Twitter URL format' });
+      }
+
+      const twitterProfileImage = await fetchTwitterProfileImage(username);
+      if (!twitterProfileImage) {
+        return res.status(404).json({ message: 'Could not fetch Twitter profile image' });
+      }
+
+      const updatedTrader = await storage.updateTrader(traderId, {
+        ...trader,
+        profileImage: twitterProfileImage
+      });
+
+      res.json({ 
+        message: 'Twitter profile image updated successfully',
+        trader: updatedTrader 
+      });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
