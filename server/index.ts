@@ -215,36 +215,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Fix MIME types for static assets - must run BEFORE static file serving
-app.use((req, res, next) => {
-  // Aggressively override Content-Type for CSS and JS files
-  const originalSend = res.send;
-  const originalSendFile = res.sendFile;
-  const originalSetHeader = res.setHeader;
-  
-  // Override setHeader to force correct MIME types
-  res.setHeader = function(name: string, value: any) {
-    if (name.toLowerCase() === 'content-type') {
-      if (req.url.endsWith('.css') || req.url.includes('.css')) {
-        return originalSetHeader.call(this, name, 'text/css; charset=utf-8');
-      } else if (req.url.endsWith('.js') || req.url.includes('.js')) {
-        return originalSetHeader.call(this, name, 'application/javascript; charset=utf-8');
-      }
-    }
-    return originalSetHeader.call(this, name, value);
-  };
-  
-  // Pre-set headers for known asset routes
-  if (req.url.includes('/assets/')) {
-    if (req.url.includes('.css')) {
-      res.setHeader('Content-Type', 'text/css; charset=utf-8');
-    } else if (req.url.includes('.js')) {
-      res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-    }
-  }
-  
-  next();
-});
+// Skip MIME type middleware - will be handled by Vite in development
 
 // Configure CSP for production and development
 if (process.env.NODE_ENV === 'production') {
