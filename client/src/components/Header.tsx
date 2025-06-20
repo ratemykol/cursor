@@ -49,26 +49,26 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
 
   return (
     <>
-      <header className="flex justify-between items-center px-20 pt-8 mt-[37px] mb-[37px]">
-        <div className="flex items-center gap-4">
+      <header className="flex justify-between items-center px-32 pt-10 mt-[44px] mb-[44px]">
+        <div className="flex items-center gap-6">
           <h1 
-            className="font-medium text-[#3c315b] text-[22px] cursor-pointer" 
+            className="font-medium text-[#3c315b] text-[28px] cursor-pointer" 
             onClick={() => setLocation("/")}
           >
             RateMyKOL
           </h1>
           <Button 
-            className="bg-[#ab9ff2] text-[#3c315b] rounded-full transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu"
+            className="bg-[#ab9ff2] text-[#3c315b] rounded-full transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu px-6 py-2 text-base"
             onClick={() => setShowCAOverlay(true)}
           >
             CA
           </Button>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           <Button
             variant="ghost"
-            className={`rounded-full font-medium text-[#3c315b] transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-md ${
+            className={`rounded-full font-medium text-[#3c315b] text-base px-6 py-2 transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-md ${
               currentPage === "home" ? "font-semibold bg-[#f3f1ff] shadow-sm" : ""
             }`}
             onClick={() => setLocation("/")}
@@ -77,7 +77,7 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
           </Button>
           <Button
             variant="ghost"
-            className={`rounded-full font-medium text-[#3c315b] transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-md ${
+            className={`rounded-full font-medium text-[#3c315b] text-base px-6 py-2 transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-md ${
               currentPage === "search" ? "font-semibold bg-[#f3f1ff] shadow-sm" : ""
             }`}
             onClick={() => setLocation("/search")}
@@ -87,7 +87,7 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
           {isAdmin && (
             <Button
               variant="ghost"
-              className={`rounded-full font-medium text-[#3c315b] transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-md ${
+              className={`rounded-full font-medium text-[#3c315b] text-base px-6 py-2 transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-md ${
                 currentPage === "admin" ? "font-semibold bg-[#f3f1ff] shadow-sm" : ""
               }`}
               onClick={() => setLocation("/admin")}
@@ -98,10 +98,10 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="bg-[#ab9ff2] text-[#3c315b] rounded-full transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center gap-2">
-                  <Avatar className="w-6 h-6">
+                <Button className="bg-[#ab9ff2] text-[#3c315b] rounded-full transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu flex items-center gap-3 px-6 py-2 text-base">
+                  <Avatar className="w-8 h-8">
                     <AvatarImage src={user?.profileImageUrl} />
-                    <AvatarFallback className="text-xs">
+                    <AvatarFallback className="text-sm">
                       {user?.username?.charAt(0).toUpperCase() || user?.firstName?.charAt(0).toUpperCase() || "U"}
                     </AvatarFallback>
                   </Avatar>
