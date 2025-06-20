@@ -46,6 +46,22 @@ if (process.env.NODE_ENV === 'production') {
 
 // Remove server signatures and identifying headers
 app.disable('x-powered-by');
+
+// Development-specific middleware to completely disable CSP
+if (process.env.NODE_ENV !== 'production') {
+  app.use((req, res, next) => {
+    // Override CSP with permissive policy in development
+    res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;");
+    res.removeHeader('X-Content-Type-Options');
+    res.removeHeader('X-Frame-Options');
+    res.removeHeader('X-XSS-Protection');
+    res.removeHeader('Referrer-Policy');
+    res.removeHeader('X-Powered-By');
+    res.removeHeader('Server');
+    next();
+  });
+}
+
 app.use((req, res, next) => {
   // Always remove identifying headers
   res.removeHeader('X-Powered-By');
@@ -59,13 +75,6 @@ app.use((req, res, next) => {
     res.setHeader('Referrer-Policy', 'no-referrer');
     res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
     res.setHeader('Server-Timing', '');
-  } else {
-    // Remove all security headers in development
-    res.removeHeader('X-Content-Type-Options');
-    res.removeHeader('X-Frame-Options');
-    res.removeHeader('X-XSS-Protection');
-    res.removeHeader('Referrer-Policy');
-    res.removeHeader('Content-Security-Policy');
   }
   
   next();
