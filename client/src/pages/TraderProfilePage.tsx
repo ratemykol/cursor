@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { Header } from "@/components/Header";
-import { ArrowLeft, Star, Image as ImageIcon, Edit, Trash2 } from "lucide-react";
+import { ArrowLeft, Star, Image as ImageIcon, Edit, Trash2, ExternalLink } from "lucide-react";
 
 export const TraderProfilePage = (): JSX.Element => {
   const { id } = useParams();
@@ -133,10 +133,25 @@ export const TraderProfilePage = (): JSX.Element => {
 
                 {/* Content - Middle */}
                 <div className="flex-1">
-                  {/* Trader Name */}
-                  <h1 className="text-3xl font-semibold text-gray-900 mb-2">
-                    {(trader as any)?.name}
-                  </h1>
+                  {/* Trader Name with Twitter Icon */}
+                  <div className="flex items-center gap-3 mb-2">
+                    <h1 className="text-3xl font-semibold text-gray-900">
+                      {(trader as any)?.name}
+                    </h1>
+                    {(trader as any)?.twitterUrl && (
+                      <button
+                        onClick={() => window.open((trader as any).twitterUrl, '_blank')}
+                        className="w-8 h-8 rounded-full overflow-hidden hover:scale-110 transition-transform duration-200 flex-shrink-0"
+                        title="View Twitter Profile"
+                      >
+                        <img 
+                          src="/twitter-blue.png" 
+                          alt="Twitter"
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    )}
+                  </div>
 
                   {/* Specialty */}
                   <p className="text-gray-600 mb-4 text-lg">
