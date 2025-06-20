@@ -152,16 +152,24 @@ export const UserProfilePage = (): JSX.Element => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="profileImageUrl">Profile Image URL</Label>
+                  <Label htmlFor="profilePicture">Profile Picture (PNG only)</Label>
                   <Input
-                    id="profileImageUrl"
-                    name="profileImageUrl"
-                    type="url"
-                    value={formData.profileImageUrl}
-                    onChange={handleInputChange}
-                    placeholder="https://example.com/your-image.jpg"
+                    id="profilePicture"
+                    name="profilePicture"
+                    type="file"
+                    accept=".png"
+                    onChange={handleFileChange}
                     className="border-2 border-[#9f98b3]"
                   />
+                  {formData.profileImageUrl && (
+                    <div className="mt-2">
+                      <img 
+                        src={formData.profileImageUrl} 
+                        alt="Current profile" 
+                        className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
+                      />
+                    </div>
+                  )}
                 </div>
                 
                 <div className="space-y-2">
