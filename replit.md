@@ -158,8 +158,6 @@ Changelog:
 - June 20, 2025. Added automatic Twitter profile image fetching for trader profiles using Twitter usernames extracted from URLs
 - June 20, 2025. Created dual input system for trader profile images: manual URL input OR automatic Twitter profile image fetching
 - June 20, 2025. Added refresh button in admin panel to manually update Twitter profile images for existing traders
-- June 20, 2025. Implemented kolscan.io leaderboard web scraping to automatically extract trader names, wallet addresses, and Twitter links
-- June 20, 2025. Added one-click import functionality to bulk import top KOL traders from kolscan monthly leaderboard with automatic Twitter profile images
 ```
 
 ## User Preferences
