@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { useLocation } from "wouter";
-import { useEffect } from "react";
 
 export const UserProfilePage = (): JSX.Element => {
   const [, setLocation] = useLocation();
@@ -21,6 +20,42 @@ export const UserProfilePage = (): JSX.Element => {
     email: "",
     bio: "",
     profileImageUrl: "",
+  });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  // File upload mutation
+  const uploadFileMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append('profilePicture', file);
+      
+      const response = await fetch("/api/upload/profile-picture", {
+        method: "POST",
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "File upload failed");
+      }
+      
+      return response.json();
+    },
+    onSuccess: (data) => {
+      setFormData(prev => ({ ...prev, profileImageUrl: data.profileImageUrl }));
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      toast({
+        title: "Profile picture updated",
+        description: "Your profile picture has been uploaded successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Upload failed",
+        description: error.message || "Failed to upload profile picture",
+        variant: "destructive",
+      });
+    },
   });
 
   // Redirect if not authenticated
@@ -80,6 +115,34 @@ export const UserProfilePage = (): JSX.Element => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.includes('png')) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select a PNG file",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select a file smaller than 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setSelectedFile(file);
+      uploadFileMutation.mutate(file);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
