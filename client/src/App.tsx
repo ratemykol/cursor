@@ -1,56 +1,16 @@
-import { Switch, Route, useLocation } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { useEffect, useRef } from "react";
-import NotFound from "@/pages/not-found";
-
-import { HomePage } from "@/pages/HomePage";
-import { SearchPage } from "@/pages/SearchPage";
-import { TraderProfilePage } from "@/pages/TraderProfilePage";
-import { RatingPage } from "@/pages/RatingPage";
-import { AdminPage } from "@/pages/AdminPage";
-import { SignUpPage } from "@/pages/SignUpPage";
-import { SignInPage } from "@/pages/SignInPage";
-import { UserProfilePage } from "@/pages/UserProfilePage";
-
-function Router() {
-  const [location] = useLocation();
-  const previousLocation = useRef(location);
-
-  // Autorefresh: Invalidate all queries when location changes
-  useEffect(() => {
-    if (previousLocation.current !== location) {
-      // Invalidate all cached queries to ensure fresh data on page switches
-      queryClient.invalidateQueries();
-      previousLocation.current = location;
-    }
-  }, [location]);
-
-  return (
-    <Switch>
-      <Route path="/" component={HomePage} />
-      <Route path="/search" component={SearchPage} />
-      <Route path="/trader/:id" component={TraderProfilePage} />
-      <Route path="/trader/:id/rate" component={RatingPage} />
-      <Route path="/admin" component={AdminPage} />
-      <Route path="/signup" component={SignUpPage} />
-      <Route path="/signin" component={SignInPage} />
-      <Route path="/profile" component={UserProfilePage} />
-      <Route component={NotFound} />
-    </Switch>
-  );
-}
-
+// Absolute minimal React component - no external imports
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <div style={{ 
+      padding: "20px", 
+      fontSize: "24px", 
+      color: "black",
+      backgroundColor: "white",
+      minHeight: "100vh"
+    }}>
+      <h1>BASIC REACT TEST</h1>
+      <p>If you see this, React core is working</p>
+    </div>
   );
 }
 
