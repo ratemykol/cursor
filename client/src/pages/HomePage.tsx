@@ -128,11 +128,7 @@ export const HomePage = (): JSX.Element => {
           />
           <div className="absolute w-[32px] h-[42px] top-[173px] left-[670px] bg-[#3c315b] rounded-[13.26px/17.32px] rotate-[96deg] ml-[-26px] mr-[-26px] mt-[-256px] mb-[-256px]" />
           
-          <img
-            className="absolute w-[92px] h-[73px] top-[329px] left-[1520px] mt-[-300px] mb-[-300px]"
-            alt="Polygon"
-            src="/figmaAssets/polygon-1.svg"
-          />
+          
 
           <div className="max-w-4xl mx-auto text-center relative z-[5]">
             <h2 className="font-medium text-[#3c315b] text-[82px] leading-tight">
@@ -339,7 +335,7 @@ export const HomePage = (): JSX.Element => {
                       {/* Rating Section */}
                       <div className="flex items-center justify-between w-full mb-3">
                         <div className="flex items-center gap-2">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          <Star className={`w-4 h-4 ${trader.rank === 6 ? 'fill-green-500 text-green-500' : 'fill-yellow-400 text-yellow-400'}`} />
                           <span className="text-sm font-medium text-black">Rating</span>
                         </div>
                         <span className="text-lg font-bold text-black">
