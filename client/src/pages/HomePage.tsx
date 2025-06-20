@@ -114,8 +114,8 @@ export const HomePage = (): JSX.Element => {
   };
 
   return (
-    <div className="bg-white flex flex-row justify-center w-full">
-      <div className="bg-white overflow-hidden w-full max-w-[1920px] relative">
+    <div className="bg-white flex flex-row justify-center w-full min-h-screen">
+      <div className="bg-white overflow-hidden w-full max-w-[1920px] relative min-h-screen">
         <Header currentPage="home" />
 
         {/* Hero Section */}
