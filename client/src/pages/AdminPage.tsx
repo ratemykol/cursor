@@ -655,8 +655,8 @@ export const AdminPage = (): JSX.Element => {
   return (
     <div className="bg-white w-full min-h-screen">
       <div className="bg-white min-h-screen max-w-[1920px] mx-auto">
-      <Header currentPage="admin" />
-      <div className="container mx-auto px-8 py-8 max-w-2xl">
+        <Header currentPage="admin" />
+        <div className="container mx-auto px-8 py-8 max-w-2xl">
         <Card>
           <CardHeader>
             <div className="flex justify-between items-center">
@@ -779,7 +779,7 @@ export const AdminPage = (): JSX.Element => {
             </form>
           </CardContent>
         </Card>
-      </div>
+        </div>
       </div>
     </div>
   );
