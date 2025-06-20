@@ -228,11 +228,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Final CSP override for development - must be last middleware
+// Completely disable CSP in development
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, res, next) => {
-    // Force override any CSP with completely permissive policy
-    res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;");
+    // Remove any CSP headers completely
+    res.removeHeader('Content-Security-Policy');
+    res.removeHeader('Content-Security-Policy-Report-Only');
     next();
   });
 }
