@@ -20,6 +20,7 @@ export const AdminPage = (): JSX.Element => {
   const [view, setView] = useState<"list" | "create" | "edit" | "reviews">("list");
   const [editingTrader, setEditingTrader] = useState<any>(null);
   const [editingReview, setEditingReview] = useState<any>(null);
+  const [reviewSearch, setReviewSearch] = useState("");
   
   const [name, setName] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
@@ -533,11 +534,33 @@ export const AdminPage = (): JSX.Element => {
             <h1 className="text-2xl font-bold">Admin Panel - Manage Reviews</h1>
           </div>
 
+          {/* Review Search */}
+          <div className="mb-6">
+            <div className="max-w-md">
+              <Label htmlFor="reviewSearch" className="block text-sm font-medium text-gray-700 mb-2">
+                Search Reviews by Username
+              </Label>
+              <Input
+                id="reviewSearch"
+                type="text"
+                placeholder="Enter username to search..."
+                value={reviewSearch}
+                onChange={(e) => setReviewSearch(e.target.value)}
+                className="w-full"
+              />
+            </div>
+          </div>
+
           {reviewsLoading ? (
             <div className="text-center py-8">Loading reviews...</div>
           ) : (
             <div className="space-y-4">
-              {reviews.map((review: any) => (
+              {reviews
+                .filter((review: any) => 
+                  !reviewSearch || 
+                  review.reviewerName?.toLowerCase().includes(reviewSearch.toLowerCase())
+                )
+                .map((review: any) => (
                 <Card key={review.id} className="border border-gray-200">
                   <CardContent className="p-6">
                     {editingReview?.id === review.id ? (
@@ -719,9 +742,25 @@ export const AdminPage = (): JSX.Element => {
                 </Card>
               ))}
               
-              {reviews.length === 0 && (
+              {/* Empty state messages */}
+              {reviews.length === 0 ? (
                 <Card className="p-8 text-center">
                   <p className="text-gray-600">No reviews found.</p>
+                </Card>
+              ) : reviews
+                .filter((review: any) => 
+                  !reviewSearch || 
+                  review.reviewerName?.toLowerCase().includes(reviewSearch.toLowerCase())
+                ).length === 0 && reviewSearch && (
+                <Card className="p-8 text-center">
+                  <p className="text-gray-600">No reviews found matching "{reviewSearch}".</p>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setReviewSearch("")}
+                    className="mt-4"
+                  >
+                    Clear Search
+                  </Button>
                 </Card>
               )}
             </div>
