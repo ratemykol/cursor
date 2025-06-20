@@ -212,12 +212,21 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     });
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
+  // Setup static file serving with proper MIME types for production
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
+    // Add MIME type middleware before static serving
+    app.use((req, res, next) => {
+      if (req.url.endsWith('.css')) {
+        res.setHeader('Content-Type', 'text/css; charset=utf-8');
+      } else if (req.url.endsWith('.js')) {
+        res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+      } else if (req.url.endsWith('.json')) {
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      }
+      next();
+    });
     serveStatic(app);
   }
 
