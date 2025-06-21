@@ -764,6 +764,140 @@ export class DatabaseStorage implements IStorage {
       }
     };
   }
+
+  // Trader badge system operations
+  async getTraderBadges(traderId: number): Promise<TraderBadge[]> {
+    const result = await db.execute(
+      sql`SELECT * FROM trader_badges WHERE trader_id = ${traderId} ORDER BY earned_at DESC`
+    );
+    return result.rows as TraderBadge[];
+  }
+
+  async awardTraderBadge(traderId: number, badgeType: string, badgeLevel: number = 1, metadata: any = null): Promise<TraderBadge> {
+    try {
+      const result = await db.execute(
+        sql`INSERT INTO trader_badges (trader_id, badge_type, badge_level, metadata) 
+            VALUES (${traderId}, ${badgeType}, ${badgeLevel}, ${JSON.stringify(metadata)}) 
+            RETURNING *`
+      );
+      return result.rows[0] as TraderBadge;
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('duplicate key')) {
+        const existingResult = await db.execute(
+          sql`SELECT * FROM trader_badges 
+              WHERE trader_id = ${traderId} AND badge_type = ${badgeType} AND badge_level = ${badgeLevel}
+              LIMIT 1`
+        );
+        return existingResult.rows[0] as TraderBadge;
+      }
+      throw error;
+    }
+  }
+
+  async checkAndAwardTraderBadges(traderId: number): Promise<TraderBadge[]> {
+    const newBadges: TraderBadge[] = [];
+    
+    // Get trader's rating stats
+    const stats = await this.getRatingStats(traderId);
+    const traderRatings = await this.getTraderRatings(traderId);
+    
+    // Get trader's existing badges
+    const existingBadges = await this.getTraderBadges(traderId);
+    const badgeTypes = existingBadges.map(b => `${b.badgeType}_${b.badgeLevel}`);
+    
+    // Rising Star Badge (for new traders with good ratings)
+    if (stats.totalRatings >= 5 && stats.averageRating >= 4.5 && !badgeTypes.includes('rising_star_1')) {
+      const badge = await this.awardTraderBadge(traderId, 'rising_star', 1, { 
+        avgRating: stats.averageRating, 
+        totalRatings: stats.totalRatings 
+      });
+      newBadges.push(badge);
+    }
+
+    // Top Performer Badges (Bronze: 4.0+, Silver: 4.5+, Gold: 4.8+)
+    if (stats.totalRatings >= 10) {
+      if (stats.averageRating >= 4.0 && !badgeTypes.includes('top_performer_1')) {
+        const badge = await this.awardTraderBadge(traderId, 'top_performer', 1, { avgRating: stats.averageRating });
+        newBadges.push(badge);
+      }
+      if (stats.averageRating >= 4.5 && !badgeTypes.includes('top_performer_2')) {
+        const badge = await this.awardTraderBadge(traderId, 'top_performer', 2, { avgRating: stats.averageRating });
+        newBadges.push(badge);
+      }
+      if (stats.averageRating >= 4.8 && !badgeTypes.includes('top_performer_3')) {
+        const badge = await this.awardTraderBadge(traderId, 'top_performer', 3, { avgRating: stats.averageRating });
+        newBadges.push(badge);
+      }
+    }
+
+    // Community Favorite Badge (lots of reviews)
+    if (stats.totalRatings >= 25 && !badgeTypes.includes('community_favorite_1')) {
+      const badge = await this.awardTraderBadge(traderId, 'community_favorite', 1, { totalRatings: stats.totalRatings });
+      newBadges.push(badge);
+    }
+    if (stats.totalRatings >= 50 && !badgeTypes.includes('community_favorite_2')) {
+      const badge = await this.awardTraderBadge(traderId, 'community_favorite', 2, { totalRatings: stats.totalRatings });
+      newBadges.push(badge);
+    }
+    if (stats.totalRatings >= 100 && !badgeTypes.includes('community_favorite_3')) {
+      const badge = await this.awardTraderBadge(traderId, 'community_favorite', 3, { totalRatings: stats.totalRatings });
+      newBadges.push(badge);
+    }
+
+    // Consistent Gains Badge (high profitability rating)
+    if (stats.totalRatings >= 10 && stats.averageProfitability >= 4.5 && !badgeTypes.includes('consistent_gains_1')) {
+      const badge = await this.awardTraderBadge(traderId, 'consistent_gains', 1, { 
+        avgProfitability: stats.averageProfitability 
+      });
+      newBadges.push(badge);
+    }
+
+    // Diamond Hands Badge (high five-star count)
+    if (stats.fiveStarCount >= 20 && !badgeTypes.includes('diamond_hands_1')) {
+      const badge = await this.awardTraderBadge(traderId, 'diamond_hands', 1, { fiveStarCount: stats.fiveStarCount });
+      newBadges.push(badge);
+    }
+
+    // Veteran Trader Badge (been around long enough with consistent performance)
+    if (stats.totalRatings >= 30 && stats.averageRating >= 4.0 && !badgeTypes.includes('veteran_trader_1')) {
+      const badge = await this.awardTraderBadge(traderId, 'veteran_trader', 1, { 
+        totalRatings: stats.totalRatings,
+        avgRating: stats.averageRating
+      });
+      newBadges.push(badge);
+    }
+
+    return newBadges;
+  }
+
+  async getTraderBadgeProgress(traderId: number): Promise<any> {
+    const stats = await this.getRatingStats(traderId);
+    const badges = await this.getTraderBadges(traderId);
+    
+    return {
+      averageRating: stats.averageRating,
+      totalRatings: stats.totalRatings,
+      fiveStarCount: stats.fiveStarCount,
+      averageProfitability: stats.averageProfitability,
+      badges: badges,
+      progress: {
+        risingStar: stats.totalRatings >= 5 && stats.averageRating >= 4.5,
+        topPerformer: {
+          bronze: stats.totalRatings >= 10 && stats.averageRating >= 4.0,
+          silver: stats.totalRatings >= 10 && stats.averageRating >= 4.5,
+          gold: stats.totalRatings >= 10 && stats.averageRating >= 4.8
+        },
+        communityFavorite: {
+          bronze: stats.totalRatings >= 25,
+          silver: stats.totalRatings >= 50,
+          gold: stats.totalRatings >= 100
+        },
+        consistentGains: stats.totalRatings >= 10 && stats.averageProfitability >= 4.5,
+        diamondHands: stats.fiveStarCount >= 20,
+        veteranTrader: stats.totalRatings >= 30 && stats.averageRating >= 4.0
+      }
+    };
+  }
 }
 
 export const storage = new DatabaseStorage();
