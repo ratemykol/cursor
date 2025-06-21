@@ -90,6 +90,9 @@ export const RatingPage = (): JSX.Element => {
       queryClient.invalidateQueries({ queryKey: ['/api/user/reviews'] });
       queryClient.invalidateQueries({ queryKey: [`/api/badges/user/${user?.id}`] });
       queryClient.invalidateQueries({ queryKey: [`/api/badges/progress/${user?.id}`] });
+      // Invalidate trader badge queries
+      queryClient.invalidateQueries({ queryKey: [`/api/trader-badges/${id}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/trader-badges/progress/${id}`] });
       
       toast({
         title: "Success",

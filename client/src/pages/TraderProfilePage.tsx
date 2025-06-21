@@ -289,6 +289,12 @@ export const TraderProfilePage = (): JSX.Element => {
             </CardContent>
           </Card>
 
+          {/* Trader Badges Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <TraderBadges traderId={parseInt(id || '0')} />
+            <TraderBadgeProgress traderId={parseInt(id || '0')} />
+          </div>
+
           {/* Recent Reviews */}
           <Card className="border border-gray-200 shadow-sm">
             <CardHeader>
