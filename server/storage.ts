@@ -820,8 +820,8 @@ export class DatabaseStorage implements IStorage {
     const existingBadges = await this.getTraderBadges(traderId);
     const badgeTypes = existingBadges.map(b => `${b.badgeType}_${b.badgeLevel}`);
     
-    // Rising Star Badge (for new traders with good ratings)
-    if (stats.totalRatings >= 5 && stats.averageRating >= 4.5 && !badgeTypes.includes('rising_star_1')) {
+    // Rising Star Badge (15+ reviews with 4.0+ avg rating)
+    if (stats.totalRatings >= 15 && stats.averageRating >= 4.0 && !badgeTypes.includes('rising_star_1')) {
       const badge = await this.awardTraderBadge(traderId, 'rising_star', 1, { 
         avgRating: stats.averageRating, 
         totalRatings: stats.totalRatings 
@@ -829,20 +829,21 @@ export class DatabaseStorage implements IStorage {
       newBadges.push(badge);
     }
 
-    // Top Performer Badges (Bronze: 4.0+, Silver: 4.5+, Gold: 4.8+)
-    if (stats.totalRatings >= 10) {
-      if (stats.averageRating >= 4.0 && !badgeTypes.includes('top_performer_1')) {
-        const badge = await this.awardTraderBadge(traderId, 'top_performer', 1, { avgRating: stats.averageRating });
-        newBadges.push(badge);
-      }
-      if (stats.averageRating >= 4.5 && !badgeTypes.includes('top_performer_2')) {
-        const badge = await this.awardTraderBadge(traderId, 'top_performer', 2, { avgRating: stats.averageRating });
-        newBadges.push(badge);
-      }
-      if (stats.averageRating >= 4.8 && !badgeTypes.includes('top_performer_3')) {
-        const badge = await this.awardTraderBadge(traderId, 'top_performer', 3, { avgRating: stats.averageRating });
-        newBadges.push(badge);
-      }
+    // Top Performer Badges
+    // Bronze: 15+ reviews with 4.0+ avg rating
+    if (stats.totalRatings >= 15 && stats.averageRating >= 4.0 && !badgeTypes.includes('top_performer_1')) {
+      const badge = await this.awardTraderBadge(traderId, 'top_performer', 1, { avgRating: stats.averageRating });
+      newBadges.push(badge);
+    }
+    // Silver: 25+ reviews with 4.0+ avg rating
+    if (stats.totalRatings >= 25 && stats.averageRating >= 4.0 && !badgeTypes.includes('top_performer_2')) {
+      const badge = await this.awardTraderBadge(traderId, 'top_performer', 2, { avgRating: stats.averageRating });
+      newBadges.push(badge);
+    }
+    // Gold: 40+ reviews with 4.0+ avg rating
+    if (stats.totalRatings >= 40 && stats.averageRating >= 4.0 && !badgeTypes.includes('top_performer_3')) {
+      const badge = await this.awardTraderBadge(traderId, 'top_performer', 3, { avgRating: stats.averageRating });
+      newBadges.push(badge);
     }
 
     // Community Favorite Badge (lots of reviews)
