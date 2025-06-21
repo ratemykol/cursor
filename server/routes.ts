@@ -809,16 +809,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get badge rarity statistics
-  app.get('/api/badge-rarity-stats', async (req, res) => {
-    try {
-      const stats = await storage.getBadgeRarityStats();
-      res.json(stats);
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
-  });
-
   const httpServer = createServer(app);
   return httpServer;
 }

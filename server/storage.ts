@@ -79,7 +79,6 @@ export interface IStorage {
   awardTraderBadge(traderId: number, badgeType: string, badgeLevel?: number, metadata?: any): Promise<TraderBadge>;
   checkAndAwardTraderBadges(traderId: number): Promise<TraderBadge[]>;
   getTraderBadgeProgress(traderId: number): Promise<any>;
-  getBadgeRarityStats(): Promise<{ [badgeType: string]: { count: number; percentage: number; rarity: string } }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -779,18 +778,14 @@ export class DatabaseStorage implements IStorage {
     
     for (const badge of badges) {
       const existingBadge = badgeMap.get(badge.badgeType);
-      const badgeLevel = badge.badgeLevel ?? 0;
-      const existingLevel = existingBadge?.badgeLevel ?? 0;
-      if (!existingBadge || badgeLevel > existingLevel) {
+      if (!existingBadge || badge.badgeLevel > existingBadge.badgeLevel) {
         badgeMap.set(badge.badgeType, badge);
       }
     }
     
-    return Array.from(badgeMap.values()).sort((a, b) => {
-      const dateA = a.earnedAt ? new Date(a.earnedAt).getTime() : 0;
-      const dateB = b.earnedAt ? new Date(b.earnedAt).getTime() : 0;
-      return dateB - dateA;
-    });
+    return Array.from(badgeMap.values()).sort((a, b) => 
+      new Date(b.earnedAt).getTime() - new Date(a.earnedAt).getTime()
+    );
   }
 
   async awardTraderBadge(traderId: number, badgeType: string, badgeLevel: number = 1, metadata: any = null): Promise<TraderBadge> {
@@ -917,44 +912,6 @@ export class DatabaseStorage implements IStorage {
         veteranTrader: stats.totalRatings >= 30 && stats.averageRating >= 4.0
       }
     };
-  }
-
-  async getBadgeRarityStats(): Promise<{ [badgeType: string]: { count: number; percentage: number; rarity: string } }> {
-    // Get total number of traders
-    const totalTraders = await db.execute(sql`SELECT COUNT(DISTINCT id) as count FROM traders`);
-    const traderCount = totalTraders.rows[0]?.count as number || 1;
-
-    // Get badge statistics - count unique traders per badge type
-    const badgeStats = await db.execute(sql`
-      SELECT 
-        badge_type, 
-        COUNT(DISTINCT trader_id) as unique_holders
-      FROM trader_badges 
-      GROUP BY badge_type
-    `);
-
-    const stats: { [badgeType: string]: { count: number; percentage: number; rarity: string } } = {};
-
-    for (const row of badgeStats.rows) {
-      const badgeType = row.badge_type as string;
-      const count = row.unique_holders as number;
-      const percentage = (count / traderCount) * 100;
-      
-      // Determine rarity based on percentage
-      let rarity = 'Common';
-      if (percentage <= 1) rarity = 'Legendary';
-      else if (percentage <= 5) rarity = 'Epic';
-      else if (percentage <= 15) rarity = 'Rare';
-      else if (percentage <= 35) rarity = 'Uncommon';
-
-      stats[badgeType] = {
-        count,
-        percentage: Math.round(percentage * 10) / 10,
-        rarity
-      };
-    }
-
-    return stats;
   }
 }
 
