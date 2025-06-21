@@ -181,6 +181,9 @@ Changelog:
 - June 21, 2025. Reverted advanced security middleware and anti-doxxing measures from commit d61f092 while preserving all subsequent changes
 - June 21, 2025. Implemented review helpfulness voting system with database schema, API endpoints, and frontend voting buttons
 - June 21, 2025. Added purple hover effects to voting buttons matching site theme color (#AB9FF2)
+- June 21, 2025. Implemented case-insensitive username uniqueness with database constraints and application-level validation
+- June 21, 2025. Updated username validation error message to "Username taken please" for improved user experience
+- June 21, 2025. Enhanced username validation to allow dots and hyphens while maintaining security requirements
 ```
 
 ## User Preferences

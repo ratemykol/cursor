@@ -592,10 +592,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     body('username')
       .isLength({ min: 3, max: 30 })
       .withMessage('Username must be between 3 and 30 characters')
-      .matches(/^[a-zA-Z0-9_]+$/)
-      .withMessage('Username can only contain letters, numbers, and underscores')
-      .trim()
-      .escape(),
+      .matches(/^[a-zA-Z0-9_.-]+$/)
+      .withMessage('Username can only contain letters, numbers, underscores, dots, and hyphens')
+      .trim(),
     body('email')
       .optional({ checkFalsy: true })
       .isEmail()
@@ -608,21 +607,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   ], async (req, res) => {
     try {
       const userData = userRegistrationSchema.parse(req.body);
-      
-      // Check if username already exists
-      const existingUser = await storage.getUserByUsername(userData.username);
-      if (existingUser) {
-        return res.status(400).json({ error: "Username already exists" });
-      }
-      
-      // Check if email already exists (only if email is provided)
-      if (userData.email && userData.email.trim() !== "") {
-        const existingEmail = await storage.getUserByEmail(userData.email);
-        if (existingEmail) {
-          return res.status(400).json({ error: "Email already exists" });
-        }
-      }
-      
       const user = await storage.registerUser(userData);
       
       // Remove password hash from response
