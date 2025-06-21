@@ -18,6 +18,8 @@ export const SignUpPage = (): JSX.Element => {
     email: "",
     password: "",
   });
+  
+  const [passwordError, setPasswordError] = useState<string>("");
 
   const registerMutation = useMutation({
     mutationFn: async (userData: UserRegistration) => {
@@ -53,10 +55,26 @@ export const SignUpPage = (): JSX.Element => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Validate password length
+    if (name === "password") {
+      if (value.length > 0 && value.length < 6) {
+        setPasswordError("Password must be greater than 6 characters");
+      } else {
+        setPasswordError("");
+      }
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check password length before submitting
+    if (formData.password.length < 6) {
+      setPasswordError("Password must be greater than 6 characters");
+      return;
+    }
+    
     registerMutation.mutate(formData);
   };
 
@@ -111,6 +129,9 @@ export const SignUpPage = (): JSX.Element => {
                     required
                     className="border-2 border-[#9f98b3]"
                   />
+                  {passwordError && (
+                    <p className="text-red-500 text-sm">{passwordError}</p>
+                  )}
                 </div>
                 
 
