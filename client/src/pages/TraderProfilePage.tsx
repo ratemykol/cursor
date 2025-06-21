@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { Header } from "@/components/Header";
-import { TraderBadges, TraderBadgeProgress } from "@/components/TraderBadgeSystem";
+import { TraderBadges } from "@/components/TraderBadgeSystem";
 import { ArrowLeft, Star, Image as ImageIcon, Edit, Trash2, ExternalLink, ThumbsUp, ThumbsDown } from "lucide-react";
 
 export const TraderProfilePage = (): JSX.Element => {
@@ -292,9 +292,8 @@ export const TraderProfilePage = (): JSX.Element => {
           </Card>
 
           {/* Trader Badges Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div className="mb-6">
             <TraderBadges traderId={parseInt(id || '0')} traderName={(trader as any)?.name || 'Trader'} />
-            <TraderBadgeProgress traderId={parseInt(id || '0')} />
           </div>
 
           {/* Recent Reviews */}
