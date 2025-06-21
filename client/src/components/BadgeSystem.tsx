@@ -161,7 +161,8 @@ export const UserBadges: React.FC<{ userId: string }> = ({ userId }) => {
     );
   }
 
-  if (!badges.length) {
+  if (!badges || badges.length === 0) {
+    console.log('No badges found, showing empty state');
     return (
       <div className="text-center py-12">
         <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-full p-8 w-24 h-24 mx-auto mb-6">
@@ -179,6 +180,8 @@ export const UserBadges: React.FC<{ userId: string }> = ({ userId }) => {
       </div>
     );
   }
+
+  console.log('Rendering', badges.length, 'achievement cards');
 
   return (
     <div className="space-y-8">
