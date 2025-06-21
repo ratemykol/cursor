@@ -141,165 +141,54 @@ const levelNames = {
 };
 
 export const UserBadges: React.FC<{ userId: string }> = ({ userId }) => {
-  const { data: badges = [], isLoading, error } = useQuery<UserBadge[]>({
+  const { data: badges = [], isLoading } = useQuery<UserBadge[]>({
     queryKey: [`/api/badges/user/${userId}`],
     enabled: !!userId
   });
 
-  console.log('UserBadges - userId:', userId, 'badges:', badges, 'isLoading:', isLoading, 'error:', error);
-
   if (isLoading) {
+    return <div className="animate-pulse bg-gray-200 h-20 rounded-lg"></div>;
+  }
+
+  if (!badges.length) {
     return (
-      <div className="space-y-4">
-        <div className="h-6 bg-gray-200 rounded w-48 animate-pulse"></div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-40 bg-gray-200 rounded-xl animate-pulse"></div>
-          ))}
-        </div>
+      <div className="text-center py-4 text-gray-500">
+        <Award className="mx-auto h-8 w-8 mb-2 opacity-50" />
+        <p>No badges earned yet</p>
       </div>
     );
   }
-
-  if (!badges || badges.length === 0) {
-    console.log('No badges found, showing empty state');
-    return (
-      <div className="text-center py-12">
-        <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-full p-8 w-24 h-24 mx-auto mb-6">
-          <Award className="h-8 w-8 text-gray-400 mx-auto" />
-        </div>
-        <h3 className="text-xl font-bold text-gray-700 mb-3">No Achievements Yet</h3>
-        <p className="text-gray-500 mb-6 max-w-md mx-auto">
-          Start your journey by writing detailed reviews and engaging with the community to unlock your first badges!
-        </p>
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-sm mx-auto">
-          <p className="text-sm text-blue-700 font-medium">
-            Write your first review to earn the "First Review" badge
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  console.log('Rendering', badges.length, 'achievement cards');
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold flex items-center gap-3">
-          <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-3 rounded-xl shadow-lg">
-            <Trophy className="h-7 w-7 text-white" />
-          </div>
-          Achievement Gallery
-        </h2>
-        <div className="bg-gradient-to-r from-purple-100 to-blue-100 px-4 py-2 rounded-full border border-purple-200">
-          <span className="text-sm font-bold text-purple-700">{badges.length} Achievements Unlocked</span>
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {badges.map((badge) => {
-          const config = badgeConfig[badge.badgeType as keyof typeof badgeConfig];
-          if (!config) return null;
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      {badges.map((badge) => {
+        const config = badgeConfig[badge.badgeType as keyof typeof badgeConfig];
+        if (!config) return null;
 
-          const Icon = config.icon;
-          const levelColor = levelColors[badge.badgeLevel as keyof typeof levelColors];
-          const levelName = levelNames[badge.badgeLevel as keyof typeof levelNames];
+        const Icon = config.icon;
+        const levelColor = levelColors[badge.badgeLevel as keyof typeof levelColors];
+        const levelName = levelNames[badge.badgeLevel as keyof typeof levelNames];
 
-          return (
-            <div
-              key={badge.id}
-              className="group relative bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden"
-            >
-              {/* Decorative Background Pattern */}
-              <div className="absolute top-0 right-0 w-32 h-32 opacity-5">
-                <div className="w-full h-full bg-gradient-to-br from-current to-transparent rounded-full transform rotate-45 translate-x-16 -translate-y-16"></div>
+        return (
+          <div
+            key={badge.id}
+            className={`relative p-3 border-2 rounded-lg ${levelColor} transition-all duration-200 hover:scale-105`}
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className={`p-2 rounded-full ${config.color} mb-2`}>
+                <Icon className={`h-4 w-4 ${config.iconColor}`} />
               </div>
-
-              {/* Achievement Card Header */}
-              <div className="flex items-start gap-4 mb-4 relative z-10">
-                <div className={`relative p-4 rounded-2xl ${config.color} group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                  <Icon className={`h-8 w-8 ${config.iconColor}`} />
-                  {badge.badgeLevel > 1 && (
-                    <div className="absolute -top-2 -right-2 bg-white border-2 border-gray-200 rounded-full w-8 h-8 flex items-center justify-center shadow-md">
-                      <span className="text-sm font-bold text-gray-700">{badge.badgeLevel}</span>
-                    </div>
-                  )}
-                </div>
-                
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-xl text-gray-900 mb-2">{config.name}</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed mb-3">{config.description}</p>
-                  
-                  {/* Badge Tier Indicator */}
-                  <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold border-2 ${levelColor}`}>
-                    <div className="w-2 h-2 rounded-full bg-current opacity-60"></div>
-                    {badge.badgeLevel === 1 && badge.badgeType === 'first_review' && 'Milestone Achievement'}
-                    {badge.badgeLevel === 1 && badge.badgeType === 'detailed_reviewer' && 'Quality Badge'}
-                    {badge.badgeLevel === 1 && badge.badgeType === 'early_adopter' && 'Exclusive Badge'}
-                    {badge.badgeLevel === 1 && !['first_review', 'detailed_reviewer', 'early_adopter'].includes(badge.badgeType) && 'Bronze Tier'}
-                    {badge.badgeLevel === 2 && 'Silver Tier'}
-                    {badge.badgeLevel === 3 && 'Gold Tier'}
-                  </div>
-                </div>
-              </div>
-
-              {/* Achievement Details */}
-              <div className="space-y-4 relative z-10">
-                <div className="flex items-center justify-between text-sm bg-gray-50 rounded-lg p-3">
-                  <span className="text-gray-500 font-medium">Earned on</span>
-                  <span className="font-bold text-gray-800">
-                    {new Date(badge.earnedAt).toLocaleDateString('en-US', {
-                      month: 'long',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </span>
-                </div>
-
-                {badge.metadata && (
-                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-100">
-                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Achievement Stats</div>
-                    <div className="space-y-1">
-                      {badge.metadata.reviewCount && (
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600">Reviews Written</span>
-                          <span className="font-bold text-lg text-blue-600">{badge.metadata.reviewCount}</span>
-                        </div>
-                      )}
-                      {badge.metadata.helpfulVotes && (
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600">Helpful Votes</span>
-                          <span className="font-bold text-lg text-green-600">{badge.metadata.helpfulVotes}</span>
-                        </div>
-                      )}
-                      {badge.metadata.detailedCount && (
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600">Detailed Reviews</span>
-                          <span className="font-bold text-lg text-purple-600">{badge.metadata.detailedCount}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* Achievement Rarity Indicator */}
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <Star className="h-3 w-3" />
-                  <span>
-                    {badge.badgeLevel === 3 ? 'Rare Achievement' : 
-                     badge.badgeLevel === 2 ? 'Uncommon Achievement' : 
-                     'Common Achievement'}
-                  </span>
-                </div>
-              </div>
-
-              {/* Hover Effect Shine */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-10 transform -skew-x-12 transition-all duration-700 group-hover:translate-x-full"></div>
+              <h4 className="font-semibold text-xs mb-1">{config.name}</h4>
+              {badge.badgeLevel > 1 && (
+                <Badge variant="outline" className="text-xs mb-1">
+                  {levelName}
+                </Badge>
+              )}
+              <p className="text-xs text-gray-600 leading-tight">{config.description}</p>
             </div>
-          );
-        })}
-      </div>
+          </div>
+        );
+      })}
     </div>
   );
 };
