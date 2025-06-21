@@ -209,7 +209,7 @@ export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {badges.map((badge) => {
             const config = traderBadgeConfig[badge.badgeType as keyof typeof traderBadgeConfig];
             if (!config) return null;
@@ -218,26 +218,24 @@ export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
             const level = levelLabels[badge.badgeLevel as keyof typeof levelLabels];
 
             return (
-              <div key={badge.id} className="flex items-center gap-3 p-3 rounded-lg border bg-white">
-                <div className={`p-2 rounded-full ${config.color}`}>
-                  <IconComponent className={`h-4 w-4 ${config.iconColor}`} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      {config.name}
-                    </p>
+              <div key={badge.id} className="relative">
+                <div className="bg-blue-500 rounded-2xl p-4 text-white shadow-lg hover:shadow-xl transition-shadow duration-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <IconComponent className="h-5 w-5 text-white" />
+                      <span className="font-semibold text-sm">{config.name}</span>
+                    </div>
                     {badge.badgeLevel > 1 && (
-                      <Badge variant="secondary" className="text-xs">
-                        {level}
-                      </Badge>
+                      <div className="bg-white bg-opacity-20 rounded-full px-2 py-1">
+                        <span className="text-xs font-medium text-white">{level}</span>
+                      </div>
                     )}
                   </div>
-                  <p className="text-xs text-gray-500 truncate">
+                  <p className="text-xs text-blue-100 mb-1">
                     {config.description}
                   </p>
-                  <p className="text-xs text-gray-400">
-                    Earned {new Date(badge.earnedAt).toLocaleDateString()}
+                  <p className="text-xs text-blue-200">
+                    {new Date(badge.earnedAt).toLocaleDateString()}
                   </p>
                 </div>
               </div>
@@ -394,25 +392,25 @@ export const TraderBadgeNotification: React.FC<{ badges: TraderBadge[] }> = ({ b
         return (
           <div
             key={badge.id}
-            className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm animate-in slide-in-from-right-5"
+            className="bg-blue-500 border border-blue-600 rounded-2xl shadow-lg p-4 max-w-sm animate-in slide-in-from-right-5"
           >
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-full ${config.color}`}>
-                <IconComponent className={`h-4 w-4 ${config.iconColor}`} />
+              <div className="p-2 rounded-full bg-white bg-opacity-20">
+                <IconComponent className="h-4 w-4 text-white" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm font-medium text-white">
                     New Achievement!
                   </p>
                   {badge.badgeLevel > 1 && (
-                    <Badge variant="secondary" className="text-xs">
-                      {level}
-                    </Badge>
+                    <div className="bg-white bg-opacity-20 rounded-full px-2 py-1">
+                      <span className="text-xs font-medium text-white">{level}</span>
+                    </div>
                   )}
                 </div>
-                <p className="text-sm text-gray-600">{config.name}</p>
-                <p className="text-xs text-gray-500">{config.description}</p>
+                <p className="text-sm text-blue-100">{config.name}</p>
+                <p className="text-xs text-blue-200">{config.description}</p>
               </div>
             </div>
           </div>
