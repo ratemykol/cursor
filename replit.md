@@ -204,6 +204,10 @@ Changelog:
 - June 21, 2025. Repositioned share buttons to bottom-right corner of achievement cards and removed Facebook option, keeping only Twitter and LinkedIn
 - June 21, 2025. Simplified sharing to Twitter-only option and changed from new window to new tab opening behavior
 - June 21, 2025. Added automatic dropdown closing when cursor leaves badge area for improved user experience
+- June 21, 2025. Removed public trader registration and implemented admin-only trader account creation system
+- June 21, 2025. Updated signup form to only allow regular user registration with simplified fields
+- June 21, 2025. Added "Trader Accounts" tab in admin panel for creating login credentials for existing trader profiles
+- June 21, 2025. Implemented secure trader account creation system where only admins can assign login credentials to trader profiles
 ```
 
 ## User Preferences
