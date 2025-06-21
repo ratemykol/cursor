@@ -291,7 +291,7 @@ export const TraderProfilePage = (): JSX.Element => {
 
           {/* Trader Badges Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <TraderBadges traderId={parseInt(id || '0')} />
+            <TraderBadges traderId={parseInt(id || '0')} traderName={(trader as any)?.name || 'Trader'} />
             <TraderBadgeProgress traderId={parseInt(id || '0')} />
           </div>
 
