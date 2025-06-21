@@ -178,21 +178,6 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async updateUserUsername(userId: string, username: string): Promise<User> {
-    // Check if username already exists (case-insensitive), excluding current user
-    const existingUser = await this.checkUsernameExists(username, userId);
-    if (existingUser) {
-      throw new Error("Username Taken!");
-    }
-
-    const [user] = await db
-      .update(users)
-      .set({ username, updatedAt: new Date() })
-      .where(eq(users.id, userId))
-      .returning();
-    return user;
-  }
-
   async createTraderUser(userData: UserRegistration, traderData: InsertTrader): Promise<{ user: User; trader: Trader }> {
     return await db.transaction(async (tx) => {
       // Check if username already exists (case-insensitive)

@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
@@ -13,17 +15,30 @@ import type { UserRegistration } from "@shared/schema";
 export const SignUpPage = (): JSX.Element => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [formData, setFormData] = useState<UserRegistration>({
+  const [userType, setUserType] = useState<"user" | "trader">("user");
+  const [formData, setFormData] = useState<UserRegistration & {
+    name?: string;
+    walletAddress?: string;
+    bio?: string;
+    twitterUrl?: string;
+  }>({
     username: "",
     email: "",
     password: "",
+    userType: "user",
   });
   
   const [passwordError, setPasswordError] = useState<string>("");
 
   const registerMutation = useMutation({
-    mutationFn: async (userData: UserRegistration) => {
-      const response = await fetch("/api/auth/register", {
+    mutationFn: async (userData: UserRegistration & {
+      name?: string;
+      walletAddress?: string;
+      bio?: string;
+      twitterUrl?: string;
+    }) => {
+      const endpoint = userData.userType === "trader" ? "/api/auth/register-trader" : "/api/auth/register";
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
