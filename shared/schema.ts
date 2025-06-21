@@ -89,6 +89,25 @@ export const reviewVotes = pgTable("review_votes", {
   uniqueUserRating: unique().on(table.userId, table.ratingId),
 }));
 
+// User badges table for gamification
+export const userBadges = pgTable("user_badges", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  badgeType: varchar("badge_type", { 
+    enum: [
+      "first_review", "helpful_reviewer", "prolific_reviewer", "expert_reviewer", 
+      "trusted_reviewer", "detailed_reviewer", "early_adopter", "community_builder",
+      "top_contributor", "veteran_reviewer", "quality_reviewer"
+    ] 
+  }).notNull(),
+  badgeLevel: integer("badge_level").default(1), // Bronze=1, Silver=2, Gold=3
+  earnedAt: timestamp("earned_at").defaultNow(),
+  metadata: jsonb("metadata"), // Store additional data like count thresholds
+}, (table) => ({
+  // Unique constraint: one badge type per user per level
+  uniqueUserBadgeLevel: unique().on(table.userId, table.badgeType, table.badgeLevel),
+}));
+
 // Relations
 export const tradersRelations = relations(traders, ({ many }) => ({
   ratings: many(ratings),
@@ -120,6 +139,14 @@ export const reviewVotesRelations = relations(reviewVotes, ({ one }) => ({
 export const usersRelations = relations(users, ({ many }) => ({
   ratings: many(ratings),
   reviewVotes: many(reviewVotes),
+  badges: many(userBadges),
+}));
+
+export const userBadgesRelations = relations(userBadges, ({ one }) => ({
+  user: one(users, {
+    fields: [userBadges.userId],
+    references: [users.id],
+  }),
 }));
 
 // Insert schemas
@@ -135,6 +162,11 @@ export const insertRatingSchema = createInsertSchema(ratings).omit({
   updatedAt: true,
   helpful: true,
   notHelpful: true,
+});
+
+export const insertUserBadgeSchema = createInsertSchema(userBadges).omit({
+  id: true,
+  earnedAt: true,
 });
 
 // Authentication schemas
@@ -158,5 +190,7 @@ export type Rating = typeof ratings.$inferSelect;
 export type InsertRating = z.infer<typeof insertRatingSchema>;
 export type ReviewVote = typeof reviewVotes.$inferSelect;
 export type InsertReviewVote = typeof reviewVotes.$inferInsert;
+export type UserBadge = typeof userBadges.$inferSelect;
+export type InsertUserBadge = z.infer<typeof insertUserBadgeSchema>;
 export type UserRegistration = z.infer<typeof userRegistrationSchema>;
 export type UserLogin = z.infer<typeof userLoginSchema>;
