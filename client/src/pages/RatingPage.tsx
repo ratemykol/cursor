@@ -307,6 +307,9 @@ export const RatingPage = (): JSX.Element => {
               </form>
             </CardContent>
           </Card>
+          
+          {/* Badge Notifications */}
+          <BadgeNotification badges={newBadges} />
         </div>
       </div>
     </div>
