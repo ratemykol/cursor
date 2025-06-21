@@ -273,8 +273,13 @@ app.use((req, res, next) => {
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
   if (app.get("env") === "development") {
-    const { setupVite } = await import("./vite");
-    await setupVite(app, server);
+    try {
+      const { setupVite } = await import("./vite");
+      await setupVite(app, server);
+    } catch (error) {
+      console.log("Vite not available, falling back to static serving");
+      serveStatic(app);
+    }
   } else {
     serveStatic(app);
   }
