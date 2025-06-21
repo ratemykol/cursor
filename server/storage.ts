@@ -4,6 +4,7 @@ import {
   ratings,
   reviewVotes,
   userBadges,
+  traderBadges,
   type User,
   type UpsertUser,
   type Trader,
@@ -12,6 +13,8 @@ import {
   type InsertRating,
   type UserBadge,
   type InsertUserBadge,
+  type TraderBadge,
+  type InsertTraderBadge,
   type UserRegistration,
   type UserLogin,
 } from "@shared/schema";
@@ -70,6 +73,12 @@ export interface IStorage {
   awardBadge(userId: string, badgeType: string, badgeLevel?: number, metadata?: any): Promise<UserBadge>;
   checkAndAwardBadges(userId: string): Promise<UserBadge[]>;
   getBadgeProgress(userId: string): Promise<any>;
+  
+  // Trader badge operations
+  getTraderBadges(traderId: number): Promise<TraderBadge[]>;
+  awardTraderBadge(traderId: number, badgeType: string, badgeLevel?: number, metadata?: any): Promise<TraderBadge>;
+  checkAndAwardTraderBadges(traderId: number): Promise<TraderBadge[]>;
+  getTraderBadgeProgress(traderId: number): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
