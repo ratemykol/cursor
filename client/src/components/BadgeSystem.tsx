@@ -141,10 +141,12 @@ const levelNames = {
 };
 
 export const UserBadges: React.FC<{ userId: string }> = ({ userId }) => {
-  const { data: badges = [], isLoading } = useQuery<UserBadge[]>({
+  const { data: badges = [], isLoading, error } = useQuery<UserBadge[]>({
     queryKey: [`/api/badges/user/${userId}`],
     enabled: !!userId
   });
+
+  console.log('UserBadges - userId:', userId, 'badges:', badges, 'isLoading:', isLoading, 'error:', error);
 
   if (isLoading) {
     return (
