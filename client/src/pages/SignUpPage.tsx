@@ -90,7 +90,27 @@ export const SignUpPage = (): JSX.Element => {
       return;
     }
     
-    registerMutation.mutate(formData);
+    // Validate trader-specific fields
+    if (userType === "trader") {
+      if (!formData.name?.trim()) {
+        toast({
+          title: "Error",
+          description: "Trader name is required",
+          variant: "destructive",
+        });
+        return;
+      }
+      if (!formData.walletAddress?.trim()) {
+        toast({
+          title: "Error", 
+          description: "Wallet address is required",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    
+    registerMutation.mutate({ ...formData, userType });
   };
 
   return (
@@ -107,6 +127,20 @@ export const SignUpPage = (): JSX.Element => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-3">
+                  <Label>Account Type</Label>
+                  <RadioGroup value={userType} onValueChange={(value) => setUserType(value as "user" | "trader")}>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="user" id="user" />
+                      <Label htmlFor="user">Regular User (Rate and review traders)</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="trader" id="trader" />
+                      <Label htmlFor="trader">Trader (Manage your own trader profile)</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="username">Username</Label>
                   <Input
@@ -149,8 +183,64 @@ export const SignUpPage = (): JSX.Element => {
                   )}
                 </div>
                 
+                {userType === "trader" && (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Trader Name *</Label>
+                      <Input
+                        id="name"
+                        name="name"
+                        type="text"
+                        value={formData.name || ""}
+                        onChange={handleInputChange}
+                        required
+                        className="border-2 border-[#9f98b3]"
+                        placeholder="Your trading name"
+                      />
+                    </div>
 
-                
+                    <div className="space-y-2">
+                      <Label htmlFor="walletAddress">Wallet Address *</Label>
+                      <Input
+                        id="walletAddress"
+                        name="walletAddress"
+                        type="text"
+                        value={formData.walletAddress || ""}
+                        onChange={handleInputChange}
+                        required
+                        className="border-2 border-[#9f98b3]"
+                        placeholder="Your wallet address"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="bio">Bio (Optional)</Label>
+                      <Textarea
+                        id="bio"
+                        name="bio"
+                        value={formData.bio || ""}
+                        onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
+                        className="border-2 border-[#9f98b3]"
+                        placeholder="Tell people about your trading style and experience"
+                        rows={3}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="twitterUrl">Twitter URL (Optional)</Label>
+                      <Input
+                        id="twitterUrl"
+                        name="twitterUrl"
+                        type="url"
+                        value={formData.twitterUrl || ""}
+                        onChange={handleInputChange}
+                        className="border-2 border-[#9f98b3]"
+                        placeholder="https://twitter.com/yourusername"
+                      />
+                    </div>
+                  </>
+                )}
+
                 <Button
                   type="submit"
                   disabled={registerMutation.isPending}
