@@ -99,7 +99,7 @@ export class DatabaseStorage implements IStorage {
     // Check if username already exists (case-insensitive)
     const existingUsername = await this.checkUsernameExists(userData.username);
     if (existingUsername) {
-      throw new Error("Username taken please");
+      throw new Error("Username Taken!");
     }
 
     // Check if email already exists (if email is provided)
@@ -426,7 +426,7 @@ export class DatabaseStorage implements IStorage {
       // Check if username is already taken by another user (case-insensitive)
       const usernameExists = await this.checkUsernameExists(username, userId);
       if (usernameExists) {
-        throw new Error("Username taken please");
+        throw new Error("Username Taken!");
       }
 
       const [updatedUser] = await db
