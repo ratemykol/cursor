@@ -44,7 +44,6 @@ interface BadgeProgress {
       gold: boolean;
     };
     detailedReviewer: boolean;
-    qualityReviewer: boolean;
   };
 }
 
@@ -77,13 +76,7 @@ const badgeConfig = {
     color: 'bg-orange-100 text-orange-800',
     iconColor: 'text-orange-600'
   },
-  quality_reviewer: {
-    name: 'Quality Reviewer',
-    description: 'Balanced and fair reviews',
-    icon: CheckCircle,
-    color: 'bg-teal-100 text-teal-800',
-    iconColor: 'text-teal-600'
-  },
+
   early_adopter: {
     name: 'Early Adopter',
     description: 'Joined the platform early',
@@ -261,13 +254,6 @@ export const BadgeProgress: React.FC<{ userId: string }> = ({ userId }) => {
       current: progress.detailedReviews,
       target: 5,
       description: 'Write 5 detailed reviews (80+ characters)'
-    },
-    {
-      label: 'Quality Reviewer',
-      completed: progress.progress.qualityReviewer,
-      current: parseFloat(progress.avgRating),
-      target: 3.5,
-      description: 'Maintain balanced review ratings (3-4 stars)'
     }
   ];
 
