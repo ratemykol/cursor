@@ -3,42 +3,26 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 import { Header } from "@/components/Header";
 import type { UserRegistration } from "@shared/schema";
 
 export const SignUpPage = (): JSX.Element => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [userType, setUserType] = useState<"user" | "trader">("user");
-  const [formData, setFormData] = useState<UserRegistration & {
-    name?: string;
-    walletAddress?: string;
-    bio?: string;
-    twitterUrl?: string;
-  }>({
+  const [formData, setFormData] = useState<UserRegistration>({
     username: "",
     email: "",
     password: "",
-    userType: "user",
   });
   
   const [passwordError, setPasswordError] = useState<string>("");
 
   const registerMutation = useMutation({
-    mutationFn: async (userData: UserRegistration & {
-      name?: string;
-      walletAddress?: string;
-      bio?: string;
-      twitterUrl?: string;
-    }) => {
-      const endpoint = userData.userType === "trader" ? "/api/auth/register-trader" : "/api/auth/register";
-      const response = await fetch(endpoint, {
+    mutationFn: async (userData: UserRegistration) => {
+      const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
@@ -90,27 +74,7 @@ export const SignUpPage = (): JSX.Element => {
       return;
     }
     
-    // Validate trader-specific fields
-    if (userType === "trader") {
-      if (!formData.name?.trim()) {
-        toast({
-          title: "Error",
-          description: "Trader name is required",
-          variant: "destructive",
-        });
-        return;
-      }
-      if (!formData.walletAddress?.trim()) {
-        toast({
-          title: "Error", 
-          description: "Wallet address is required",
-          variant: "destructive",
-        });
-        return;
-      }
-    }
-    
-    registerMutation.mutate({ ...formData, userType });
+    registerMutation.mutate(formData);
   };
 
   return (
@@ -127,19 +91,7 @@ export const SignUpPage = (): JSX.Element => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-3">
-                  <Label>Account Type</Label>
-                  <RadioGroup value={userType} onValueChange={(value) => setUserType(value as "user" | "trader")}>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="user" id="user" />
-                      <Label htmlFor="user">Regular User (Rate and review traders)</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="trader" id="trader" />
-                      <Label htmlFor="trader">Trader (Manage your own trader profile)</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
+
 
                 <div className="space-y-2">
                   <Label htmlFor="username">Username</Label>
@@ -183,63 +135,7 @@ export const SignUpPage = (): JSX.Element => {
                   )}
                 </div>
                 
-                {userType === "trader" && (
-                  <>
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Trader Name *</Label>
-                      <Input
-                        id="name"
-                        name="name"
-                        type="text"
-                        value={formData.name || ""}
-                        onChange={handleInputChange}
-                        required
-                        className="border-2 border-[#9f98b3]"
-                        placeholder="Your trading name"
-                      />
-                    </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="walletAddress">Wallet Address *</Label>
-                      <Input
-                        id="walletAddress"
-                        name="walletAddress"
-                        type="text"
-                        value={formData.walletAddress || ""}
-                        onChange={handleInputChange}
-                        required
-                        className="border-2 border-[#9f98b3]"
-                        placeholder="Your wallet address"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="bio">Bio (Optional)</Label>
-                      <Textarea
-                        id="bio"
-                        name="bio"
-                        value={formData.bio || ""}
-                        onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                        className="border-2 border-[#9f98b3]"
-                        placeholder="Tell people about your trading style and experience"
-                        rows={3}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="twitterUrl">Twitter URL (Optional)</Label>
-                      <Input
-                        id="twitterUrl"
-                        name="twitterUrl"
-                        type="url"
-                        value={formData.twitterUrl || ""}
-                        onChange={handleInputChange}
-                        className="border-2 border-[#9f98b3]"
-                        placeholder="https://twitter.com/yourusername"
-                      />
-                    </div>
-                  </>
-                )}
 
                 <Button
                   type="submit"
