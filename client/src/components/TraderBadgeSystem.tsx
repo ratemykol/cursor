@@ -55,11 +55,11 @@ interface TraderBadgeProgress {
 const getBadgeStyles = (badgeType: string, badgeLevel: number) => {
   const styles = {
     rising_star: {
-      gradient: 'from-yellow-400 to-orange-500',
-      hoverGradient: 'hover:from-yellow-300 hover:to-orange-400',
-      glow: 'from-yellow-300 to-orange-400',
-      shadow: 'shadow-yellow-300/20',
-      border: 'border-yellow-300/30'
+      gradient: 'from-purple-500 to-pink-600',
+      hoverGradient: 'hover:from-purple-400 hover:to-pink-500',
+      glow: 'from-purple-400 to-pink-500',
+      shadow: 'shadow-purple-400/20',
+      border: 'border-purple-400/30'
     },
     top_performer: {
       gradient: badgeLevel === 1 ? 'from-amber-600 to-amber-700' : // Bronze
