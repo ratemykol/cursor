@@ -293,7 +293,7 @@ export class DatabaseStorage implements IStorage {
       await db.delete(ratings).where(eq(ratings.traderId, id));
       
       // Delete all trader badges associated with this trader
-      await db.delete(traderBadges).where(eq(traderBadges.traderId, id));
+      await db.execute(sql`DELETE FROM trader_badges WHERE trader_id = ${id}`);
       
       // Finally delete the trader
       const deletedTraders = await db.delete(traders).where(eq(traders.id, id)).returning();
