@@ -15,6 +15,7 @@ import { Header } from "@/components/Header";
 import { Edit, Plus, Save, X, Upload, Image, Trash2, RefreshCw } from "lucide-react";
 
 export const AdminPage = (): JSX.Element => {
+  // ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
   const { isAuthenticated } = useAuth();
   const { isAdmin, isLoading: adminLoading } = useAdmin();
   const [view, setView] = useState<"list" | "create" | "edit" | "reviews" | "users">("list");
@@ -36,6 +37,26 @@ export const AdminPage = (): JSX.Element => {
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Fetch all traders
+  const { data: traders = [], isLoading } = useQuery({
+    queryKey: ["/api/traders"],
+  });
+
+  // Fetch all reviews for admin management
+  const { data: reviews = [], isLoading: reviewsLoading } = useQuery({
+    queryKey: ["/api/admin/ratings"],
+  });
+
+  // Fetch all users for admin management
+  const { data: users = [], isLoading: usersLoading } = useQuery({
+    queryKey: ["/api/admin/users"],
+  });
+
+  // Type the data arrays to avoid unknown type errors
+  const typedTraders = traders as any[];
+  const typedReviews = reviews as any[];
+  const typedUsers = users as any[];
 
   // File upload mutation for trader profile pictures
   const uploadFileMutation = useMutation({
@@ -123,25 +144,7 @@ export const AdminPage = (): JSX.Element => {
     );
   }
 
-  // Fetch all traders
-  const { data: traders = [], isLoading } = useQuery({
-    queryKey: ["/api/traders"],
-  });
 
-  // Fetch all reviews for admin management
-  const { data: reviews = [], isLoading: reviewsLoading } = useQuery({
-    queryKey: ["/api/admin/ratings"],
-  });
-
-  // Fetch all users for admin management
-  const { data: users = [], isLoading: usersLoading } = useQuery({
-    queryKey: ["/api/admin/users"],
-  });
-
-  // Type the data arrays to avoid unknown type errors
-  const typedTraders = traders as any[];
-  const typedReviews = reviews as any[];
-  const typedUsers = users as any[];
 
   const createMutation = useMutation({
     mutationFn: async (traderData: any) => {
