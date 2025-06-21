@@ -190,7 +190,7 @@ const TraderShareDropdown: React.FC<{ traderName: string; badgeName: string; lev
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="absolute bottom-2 right-2 p-1.5 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 opacity-0 group-hover:opacity-100"
+        className="p-1.5 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 opacity-0 group-hover:opacity-100"
       >
         <Share2 className="h-3 w-3 text-gray-700" />
       </button>
@@ -201,7 +201,7 @@ const TraderShareDropdown: React.FC<{ traderName: string; badgeName: string; lev
             className="fixed inset-0 z-10" 
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute bottom-10 right-0 z-20 bg-white rounded-lg shadow-lg border p-2 min-w-[130px]">
+          <div className="absolute bottom-10 right-0 z-30 bg-white rounded-lg shadow-lg border p-2 min-w-[130px]">
             <div className="space-y-1">
               <button
                 onClick={() => {
@@ -406,14 +406,18 @@ export const TraderBadges: React.FC<{ traderId: number; traderName?: string }> =
                   MozOsxFontSmoothing: 'grayscale',
                   transform: 'translateZ(0)'
                 }}>
-                  {/* Share dropdown */}
-                  <TraderShareDropdown 
-                    traderName={traderName} 
-                    badgeName={config.name} 
-                    level={badge.badgeLevel > 1 ? level : ''} 
-                  />
                   {/* Shimmer effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transform -translate-x-full group-hover:translate-x-full transition-all duration-700 ease-in-out w-full h-full"></div>
+                  
+                  {/* Share dropdown - positioned absolutely within the card */}
+                  <div className="absolute bottom-2 right-2 z-20">
+                    <TraderShareDropdown 
+                      traderName={traderName} 
+                      badgeName={config.name} 
+                      level={badge.badgeLevel > 1 ? level : ''} 
+                    />
+                  </div>
+                  
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <IconComponent className="h-5 w-5 text-white transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
