@@ -144,10 +144,55 @@ const levelLabels = {
   3: 'Gold'
 };
 
+const getRarityColors = (rarity: string) => {
+  switch (rarity) {
+    case 'Legendary':
+      return {
+        gradient: 'from-amber-400 to-orange-500',
+        border: 'border-amber-400',
+        text: 'text-amber-100',
+        glow: 'from-amber-300 to-orange-400'
+      };
+    case 'Epic':
+      return {
+        gradient: 'from-purple-500 to-purple-600',
+        border: 'border-purple-400',
+        text: 'text-purple-100',
+        glow: 'from-purple-400 to-purple-500'
+      };
+    case 'Rare':
+      return {
+        gradient: 'from-blue-500 to-blue-600',
+        border: 'border-blue-400',
+        text: 'text-blue-100',
+        glow: 'from-blue-400 to-blue-500'
+      };
+    case 'Uncommon':
+      return {
+        gradient: 'from-green-500 to-green-600',
+        border: 'border-green-400',
+        text: 'text-green-100',
+        glow: 'from-green-400 to-green-500'
+      };
+    default: // Common
+      return {
+        gradient: 'from-gray-500 to-gray-600',
+        border: 'border-gray-400',
+        text: 'text-gray-100',
+        glow: 'from-gray-400 to-gray-500'
+      };
+  }
+};
+
 export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
   const { data: badges = [], isLoading, error } = useQuery<TraderBadge[]>({
     queryKey: [`/api/trader-badges/${traderId}`],
     enabled: !!traderId
+  });
+
+  const { data: rarityStats = {} } = useQuery<{ [badgeType: string]: { count: number; percentage: number; rarity: string } }>({
+    queryKey: ['/api/badge-rarity-stats'],
+    staleTime: 5 * 60 * 1000 // Cache for 5 minutes
   });
 
   console.log('TraderBadges - traderId:', traderId, 'badges:', badges, 'isLoading:', isLoading, 'error:', error);
@@ -221,12 +266,14 @@ export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
 
             const IconComponent = config.icon;
             const level = levelLabels[badge.badgeLevel as keyof typeof levelLabels];
+            const rarity = rarityStats[badge.badgeType]?.rarity || 'Common';
+            const rarityColors = getRarityColors(rarity);
 
             return (
               <div key={badge.id} className="relative group">
-                {/* Glow effect on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-500 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-md transform scale-110"></div>
-                <div className="relative bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-4 text-white shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:from-blue-400 hover:to-blue-500 cursor-pointer overflow-hidden" style={{ 
+                {/* Glow effect on hover with rarity colors */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${rarityColors.glow} rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-md transform scale-110`}></div>
+                <div className={`relative bg-gradient-to-br ${rarityColors.gradient} rounded-2xl p-4 text-white shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl cursor-pointer overflow-hidden border-2 ${rarityColors.border}`} style={{ 
                   willChange: 'transform', 
                   backfaceVisibility: 'hidden',
                   WebkitFontSmoothing: 'antialiased',
@@ -240,18 +287,30 @@ export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
                       <IconComponent className="h-5 w-5 text-white transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
                       <span className="font-semibold text-sm transition-colors duration-300">{config.name}</span>
                     </div>
-                    {badge.badgeLevel > 1 && (
-                      <div className="bg-white bg-opacity-20 rounded-full px-2 py-1 transform transition-all duration-300 group-hover:bg-opacity-30 group-hover:scale-110">
-                        <span className="text-xs font-medium text-white">{level}</span>
+                    <div className="flex items-center gap-2">
+                      {badge.badgeLevel > 1 && (
+                        <div className="bg-white bg-opacity-20 rounded-full px-2 py-1 transform transition-all duration-300 group-hover:bg-opacity-30 group-hover:scale-110">
+                          <span className="text-xs font-medium text-white">{level}</span>
+                        </div>
+                      )}
+                      <div className="bg-white bg-opacity-30 rounded-full px-2 py-1">
+                        <span className="text-xs font-bold text-white">{rarity}</span>
                       </div>
-                    )}
+                    </div>
                   </div>
-                  <p className="text-xs text-blue-100 mb-1 transition-colors duration-300 group-hover:text-white">
+                  <p className="text-xs text-white text-opacity-90 mb-1 transition-colors duration-300 group-hover:text-white">
                     {config.description}
                   </p>
-                  <p className="text-xs text-blue-200 transition-colors duration-300 group-hover:text-blue-100">
-                    {new Date(badge.earnedAt).toLocaleDateString()}
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs text-white text-opacity-80 transition-colors duration-300 group-hover:text-white">
+                      {new Date(badge.earnedAt).toLocaleDateString()}
+                    </p>
+                    {rarityStats[badge.badgeType] && (
+                      <p className="text-xs text-white text-opacity-80 transition-colors duration-300 group-hover:text-white">
+                        {rarityStats[badge.badgeType].percentage}% of traders
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             );
