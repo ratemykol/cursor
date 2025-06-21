@@ -201,7 +201,7 @@ const TraderShareDropdown: React.FC<{ traderName: string; badgeName: string; lev
             className="fixed inset-0 z-10" 
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute bottom-10 right-0 z-30 bg-white rounded-lg shadow-lg border p-2 min-w-[120px]">
+          <div className="absolute top-12 left-1/2 transform -translate-x-1/2 z-30 bg-white rounded-lg shadow-lg border p-2 min-w-[120px]">
             <div className="space-y-1">
               <button
                 onClick={() => {
@@ -399,8 +399,8 @@ export const TraderBadges: React.FC<{ traderId: number; traderName?: string }> =
                   {/* Shimmer effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transform -translate-x-full group-hover:translate-x-full transition-all duration-700 ease-in-out w-full h-full"></div>
                   
-                  {/* Share dropdown - positioned absolutely within the card */}
-                  <div className="absolute bottom-2 right-2 z-20">
+                  {/* Share dropdown - centered in the card */}
+                  <div className="absolute inset-0 flex items-center justify-center z-20">
                     <TraderShareDropdown 
                       traderName={traderName} 
                       badgeName={config.name} 
