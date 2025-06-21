@@ -15,7 +15,11 @@ import {
   Zap,
   Crown,
   Trophy,
-  CheckCircle
+  CheckCircle,
+  Share2,
+  Twitter,
+  Facebook,
+  Linkedin
 } from 'lucide-react';
 
 interface TraderBadge {
@@ -153,6 +157,90 @@ const getBadgeStyles = (badgeType: string, badgeLevel: number) => {
   return styles[badgeType as keyof typeof styles] || styles.rising_star;
 };
 
+// Social media sharing utility functions for trader badges
+const shareTraderBadgeAchievement = (traderName: string, badgeName: string, level: string, platform: string) => {
+  const levelText = level ? ` ${level}` : '';
+  const text = `🏆 ${traderName} just earned the${levelText} ${badgeName} badge on RateMyKOL! Check out this top crypto trader. #RateMyKOL #CryptoTrading #TopTrader`;
+  const url = window.location.href;
+  
+  let shareUrl = '';
+  
+  switch (platform) {
+    case 'twitter':
+      shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+      break;
+    case 'facebook':
+      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
+      break;
+    case 'linkedin':
+      shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&summary=${encodeURIComponent(text)}`;
+      break;
+  }
+  
+  if (shareUrl) {
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+  }
+};
+
+// Share dropdown component for trader badges
+const TraderShareDropdown: React.FC<{ traderName: string; badgeName: string; level: string }> = ({ traderName, badgeName, level }) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="absolute top-1 right-1 p-1 rounded-full bg-white/80 hover:bg-white shadow-sm transition-all duration-200 opacity-0 group-hover:opacity-100"
+      >
+        <Share2 className="h-3 w-3 text-gray-600" />
+      </button>
+      
+      {isOpen && (
+        <>
+          <div 
+            className="fixed inset-0 z-10" 
+            onClick={() => setIsOpen(false)}
+          />
+          <div className="absolute top-8 right-0 z-20 bg-white rounded-lg shadow-lg border p-2 min-w-[140px]">
+            <div className="space-y-1">
+              <button
+                onClick={() => {
+                  shareTraderBadgeAchievement(traderName, badgeName, level, 'twitter');
+                  setIsOpen(false);
+                }}
+                className="flex items-center gap-2 w-full px-2 py-1 text-xs hover:bg-blue-50 rounded transition-colors"
+              >
+                <Twitter className="h-3 w-3 text-blue-500" />
+                Share on Twitter
+              </button>
+              <button
+                onClick={() => {
+                  shareTraderBadgeAchievement(traderName, badgeName, level, 'facebook');
+                  setIsOpen(false);
+                }}
+                className="flex items-center gap-2 w-full px-2 py-1 text-xs hover:bg-blue-50 rounded transition-colors"
+              >
+                <Facebook className="h-3 w-3 text-blue-600" />
+                Share on Facebook
+              </button>
+              <button
+                onClick={() => {
+                  shareTraderBadgeAchievement(traderName, badgeName, level, 'linkedin');
+                  setIsOpen(false);
+                }}
+                className="flex items-center gap-2 w-full px-2 py-1 text-xs hover:bg-blue-50 rounded transition-colors"
+              >
+                <Linkedin className="h-3 w-3 text-blue-700" />
+                Share on LinkedIn
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
 const traderBadgeConfig = {
   rising_star: {
     name: 'Rising Star',
@@ -238,7 +326,7 @@ const levelLabels = {
   3: 'Gold'
 };
 
-export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
+export const TraderBadges: React.FC<{ traderId: number; traderName?: string }> = ({ traderId, traderName = "Trader" }) => {
   const { data: badges = [], isLoading, error } = useQuery<TraderBadge[]>({
     queryKey: [`/api/trader-badges/${traderId}`],
     enabled: !!traderId
@@ -328,6 +416,12 @@ export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
                   MozOsxFontSmoothing: 'grayscale',
                   transform: 'translateZ(0)'
                 }}>
+                  {/* Share dropdown */}
+                  <TraderShareDropdown 
+                    traderName={traderName} 
+                    badgeName={config.name} 
+                    level={badge.badgeLevel > 1 ? level : ''} 
+                  />
                   {/* Shimmer effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transform -translate-x-full group-hover:translate-x-full transition-all duration-700 ease-in-out w-full h-full"></div>
                   <div className="flex items-center justify-between mb-2">
