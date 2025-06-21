@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { useLocation, Link } from "wouter";
 import { Star, Edit, Trash2, ExternalLink, X } from "lucide-react";
+import { UserBadges, BadgeProgress } from "@/components/BadgeSystem";
 
 export const UserProfilePage = (): JSX.Element => {
   const [, setLocation] = useLocation();
@@ -299,9 +300,10 @@ export const UserProfilePage = (): JSX.Element => {
             </CardHeader>
             <CardContent>
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="profile">Profile Settings</TabsTrigger>
                   <TabsTrigger value="reviews">My Reviews ({typedUserReviews.length})</TabsTrigger>
+                  <TabsTrigger value="badges">Badges & Progress</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="profile" className="mt-6">

@@ -628,24 +628,34 @@ export class DatabaseStorage implements IStorage {
 
   // Badge system operations
   async getUserBadges(userId: string): Promise<UserBadge[]> {
-    return await db
-      .select()
-      .from(userBadges)
-      .where(eq(userBadges.userId, userId))
-      .orderBy(desc(userBadges.earnedAt));
+    const result = await db.execute(
+      sql`SELECT * FROM user_badges WHERE user_id = ${userId} ORDER BY earned_at DESC`
+    );
+    return result.rows as UserBadge[];
   }
 
   async awardBadge(userId: string, badgeType: string, badgeLevel: number = 1, metadata: any = null): Promise<UserBadge> {
-    const [badge] = await db
-      .insert(userBadges)
-      .values({
-        userId: userId,
-        badgeType: badgeType,
-        badgeLevel: badgeLevel,
-        metadata: metadata
-      })
-      .returning();
-    return badge;
+    try {
+      // Use raw SQL to avoid Drizzle field name issues
+      const result = await db.execute(
+        sql`INSERT INTO user_badges (user_id, badge_type, badge_level, metadata) 
+            VALUES (${userId}, ${badgeType}, ${badgeLevel}, ${JSON.stringify(metadata)}) 
+            RETURNING *`
+      );
+      return result.rows[0] as UserBadge;
+    } catch (error) {
+      // Handle duplicate badge error (already exists)
+      if (error instanceof Error && error.message.includes('duplicate key')) {
+        // Return existing badge
+        const existingResult = await db.execute(
+          sql`SELECT * FROM user_badges 
+              WHERE user_id = ${userId} AND badge_type = ${badgeType} AND badge_level = ${badgeLevel}
+              LIMIT 1`
+        );
+        return existingResult.rows[0] as UserBadge;
+      }
+      throw error;
+    }
   }
 
   async checkAndAwardBadges(userId: string): Promise<UserBadge[]> {
