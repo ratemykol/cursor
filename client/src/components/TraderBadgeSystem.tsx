@@ -183,14 +183,12 @@ const shareTraderBadgeAchievement = (traderName: string, badgeName: string, leve
 };
 
 // Share dropdown component for trader badges
-const TraderShareDropdown: React.FC<{ traderName: string; badgeName: string; level: string }> = ({ traderName, badgeName, level }) => {
-  const [isOpen, setIsOpen] = React.useState(false);
-
+const TraderShareDropdown: React.FC<{ traderName: string; badgeName: string; level: string; isOpen: boolean; onToggle: (open: boolean) => void }> = ({ traderName, badgeName, level, isOpen, onToggle }) => {
   return (
     <div 
       className="relative"
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
+      onMouseEnter={() => onToggle(true)}
+      onMouseLeave={() => onToggle(false)}
     >
       <button
         className="p-1.5 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 opacity-0 group-hover:opacity-100 flex items-center justify-center"
@@ -303,6 +301,7 @@ const levelLabels = {
 };
 
 export const TraderBadges: React.FC<{ traderId: number; traderName?: string }> = ({ traderId, traderName = "Trader" }) => {
+  const [openShareId, setOpenShareId] = React.useState<number | null>(null);
   const { data: badges = [], isLoading, error } = useQuery<TraderBadge[]>({
     queryKey: [`/api/trader-badges/${traderId}`],
     enabled: !!traderId
@@ -382,7 +381,12 @@ export const TraderBadges: React.FC<{ traderId: number; traderName?: string }> =
             const badgeStyles = getBadgeStyles(badge.badgeType, badge.badgeLevel);
 
             return (
-              <div key={badge.id} className="relative group">
+              <div 
+                key={badge.id} 
+                className="relative group"
+                onMouseEnter={() => setOpenShareId(badge.id)}
+                onMouseLeave={() => setOpenShareId(null)}
+              >
                 {/* Glow effect on hover */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${badgeStyles.glow} rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-md transform scale-110`}></div>
                 <div className={`relative bg-gradient-to-br ${badgeStyles.gradient} ${badgeStyles.hoverGradient} rounded-2xl p-4 text-white shadow-lg ${badgeStyles.shadow} transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl cursor-pointer overflow-hidden border ${badgeStyles.border}`} style={{ 
@@ -400,7 +404,9 @@ export const TraderBadges: React.FC<{ traderId: number; traderName?: string }> =
                     <TraderShareDropdown 
                       traderName={traderName} 
                       badgeName={config.name} 
-                      level={badge.badgeLevel > 1 ? level : ''} 
+                      level={badge.badgeLevel > 1 ? level : ''}
+                      isOpen={openShareId === badge.id}
+                      onToggle={(open) => setOpenShareId(open ? badge.id : null)}
                     />
                   </div>
                   
