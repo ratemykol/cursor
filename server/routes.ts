@@ -809,6 +809,136 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Trader user profile management routes
+  app.post("/api/auth/register-trader", [
+    body('username')
+      .isLength({ min: 3, max: 50 })
+      .withMessage('Username must be between 3 and 50 characters')
+      .matches(/^[a-zA-Z0-9._-]+$/)
+      .withMessage('Username can only contain letters, numbers, dots, hyphens, and underscores'),
+    body('email')
+      .optional({ checkFalsy: true })
+      .isEmail()
+      .withMessage('Invalid email address'),
+    body('password')
+      .isLength({ min: 6 })
+      .withMessage('Password must be at least 6 characters'),
+    body('name')
+      .isLength({ min: 1, max: 100 })
+      .withMessage('Trader name is required'),
+    body('walletAddress')
+      .isLength({ min: 1, max: 255 })
+      .withMessage('Wallet address is required'),
+    handleValidationErrors
+  ], async (req: Request, res: Response) => {
+    try {
+      const userData = {
+        username: req.body.username,
+        email: req.body.email || "",
+        password: req.body.password,
+        userType: "trader" as const
+      };
+
+      const traderData = {
+        name: req.body.name,
+        walletAddress: req.body.walletAddress,
+        bio: req.body.bio || "",
+        twitterUrl: req.body.twitterUrl || "",
+        profileImageUrl: req.body.profileImageUrl || ""
+      };
+
+      const { user, trader } = await storage.createTraderUser(userData, traderData);
+      
+      // Store user session
+      (req.session as any).user = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        bio: user.bio,
+        role: user.role,
+        userType: user.userType,
+        traderId: user.traderId
+      };
+
+      res.json({
+        message: "Trader account created successfully",
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          userType: user.userType,
+          traderId: user.traderId
+        },
+        trader: {
+          id: trader.id,
+          name: trader.name,
+          walletAddress: trader.walletAddress
+        }
+      });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  // Get trader profile for authenticated trader user
+  app.get("/api/user/trader-profile", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const user = (req.session as any)?.user;
+      if (user.userType !== "trader") {
+        return res.status(403).json({ error: "Access denied. Only trader accounts can access trader profiles." });
+      }
+      
+      const traderProfile = await storage.getUserTraderProfile(user.id);
+      if (!traderProfile) {
+        return res.status(404).json({ error: "Trader profile not found" });
+      }
+      
+      res.json(traderProfile);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Update trader profile for authenticated trader user
+  app.put("/api/user/trader-profile", isAuthenticated, [
+    body('name')
+      .optional()
+      .isLength({ min: 1, max: 100 })
+      .withMessage('Trader name must be between 1 and 100 characters'),
+    body('walletAddress')
+      .optional()
+      .isLength({ min: 1, max: 255 })
+      .withMessage('Wallet address must be between 1 and 255 characters'),
+    body('bio')
+      .optional()
+      .isLength({ max: 500 })
+      .withMessage('Bio must be less than 500 characters'),
+    body('twitterUrl')
+      .optional()
+      .isLength({ max: 255 })
+      .withMessage('Twitter URL must be less than 255 characters'),
+    handleValidationErrors
+  ], async (req: Request, res: Response) => {
+    try {
+      const user = (req.session as any)?.user;
+      if (user.userType !== "trader") {
+        return res.status(403).json({ error: "Access denied. Only trader accounts can edit trader profiles." });
+      }
+      
+      const updatedTrader = await storage.updateUserTraderProfile(user.id, req.body);
+      if (!updatedTrader) {
+        return res.status(404).json({ error: "Trader profile not found" });
+      }
+      
+      res.json({
+        message: "Trader profile updated successfully",
+        trader: updatedTrader
+      });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
