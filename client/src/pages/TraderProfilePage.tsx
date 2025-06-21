@@ -205,10 +205,10 @@ export const TraderProfilePage = (): JSX.Element => {
 
                   {/* Wallet Address */}
                   <div className="mb-4">
-                    <p className="text-sm text-gray-600 mb-1">
+                    <p className="text-sm text-black mb-1">
                       Wallet: 
                       <span 
-                        className="font-mono text-gray-800 cursor-pointer hover:text-[#ab9ff2] transition-colors duration-200 ml-1"
+                        className="font-mono text-black cursor-pointer hover:text-[#ab9ff2] transition-colors duration-200 ml-1"
                         onClick={() => {
                           navigator.clipboard.writeText((trader as any)?.walletAddress);
                           toast({
