@@ -198,6 +198,7 @@ Changelog:
 - June 21, 2025. Created comprehensive badge showcase across multiple trader profiles demonstrating all badge types
 - June 21, 2025. Populated trader reviews to demonstrate Silver Top Performer, Community Favorite, Diamond Hands, and Veteran Trader badges with unique styling
 - June 21, 2025. Updated Rising Star badge color scheme from yellow-orange to purple-pink gradient for enhanced visual distinction
+- June 21, 2025. Modified homepage trader scroll animation to center rank 1 trader card on page load using viewport-based positioning
 ```
 
 ## User Preferences
