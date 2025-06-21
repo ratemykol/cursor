@@ -625,6 +625,134 @@ export class DatabaseStorage implements IStorage {
     }
     return { helpful: 0, notHelpful: 0 };
   }
+
+  // Badge system operations
+  async getUserBadges(userId: string): Promise<UserBadge[]> {
+    return await db
+      .select()
+      .from(userBadges)
+      .where(eq(userBadges.userId, userId))
+      .orderBy(desc(userBadges.earnedAt));
+  }
+
+  async awardBadge(userId: string, badgeType: string, badgeLevel: number = 1, metadata: any = null): Promise<UserBadge> {
+    const [badge] = await db
+      .insert(userBadges)
+      .values({
+        userId: userId,
+        badgeType: badgeType,
+        badgeLevel: badgeLevel,
+        metadata: metadata
+      })
+      .returning();
+    return badge;
+  }
+
+  async checkAndAwardBadges(userId: string): Promise<UserBadge[]> {
+    const newBadges: UserBadge[] = [];
+    
+    // Get user's rating count and stats
+    const userRatings = await this.getUserRatings(userId);
+    const reviewCount = userRatings.length;
+    
+    // Get user's existing badges
+    const existingBadges = await this.getUserBadges(userId);
+    const badgeTypes = existingBadges.map(b => `${b.badgeType}_${b.badgeLevel}`);
+    
+    // First Review Badge
+    if (reviewCount >= 1 && !badgeTypes.includes('first_review_1')) {
+      const badge = await this.awardBadge(userId, 'first_review', 1);
+      newBadges.push(badge);
+    }
+    
+    // Prolific Reviewer Badges (Bronze: 5, Silver: 15, Gold: 30)
+    if (reviewCount >= 5 && !badgeTypes.includes('prolific_reviewer_1')) {
+      const badge = await this.awardBadge(userId, 'prolific_reviewer', 1, { reviewCount });
+      newBadges.push(badge);
+    }
+    if (reviewCount >= 15 && !badgeTypes.includes('prolific_reviewer_2')) {
+      const badge = await this.awardBadge(userId, 'prolific_reviewer', 2, { reviewCount });
+      newBadges.push(badge);
+    }
+    if (reviewCount >= 30 && !badgeTypes.includes('prolific_reviewer_3')) {
+      const badge = await this.awardBadge(userId, 'prolific_reviewer', 3, { reviewCount });
+      newBadges.push(badge);
+    }
+    
+    // Detailed Reviewer Badge (for reviews with comments over 100 chars)
+    const detailedReviews = userRatings.filter(r => r.comment && r.comment.length > 100);
+    if (detailedReviews.length >= 3 && !badgeTypes.includes('detailed_reviewer_1')) {
+      const badge = await this.awardBadge(userId, 'detailed_reviewer', 1, { detailedCount: detailedReviews.length });
+      newBadges.push(badge);
+    }
+    
+    // Helpful Reviewer Badge (based on helpful votes received)
+    const helpfulVotes = userRatings.reduce((sum, r) => sum + (r.helpful || 0), 0);
+    if (helpfulVotes >= 10 && !badgeTypes.includes('helpful_reviewer_1')) {
+      const badge = await this.awardBadge(userId, 'helpful_reviewer', 1, { helpfulVotes });
+      newBadges.push(badge);
+    }
+    if (helpfulVotes >= 25 && !badgeTypes.includes('helpful_reviewer_2')) {
+      const badge = await this.awardBadge(userId, 'helpful_reviewer', 2, { helpfulVotes });
+      newBadges.push(badge);
+    }
+    if (helpfulVotes >= 50 && !badgeTypes.includes('helpful_reviewer_3')) {
+      const badge = await this.awardBadge(userId, 'helpful_reviewer', 3, { helpfulVotes });
+      newBadges.push(badge);
+    }
+    
+    // Quality Reviewer Badge (average rating given is between 3-4, showing balanced reviews)
+    if (reviewCount >= 5) {
+      const avgRating = userRatings.reduce((sum, r) => sum + r.overallRating, 0) / reviewCount;
+      if (avgRating >= 3 && avgRating <= 4 && !badgeTypes.includes('quality_reviewer_1')) {
+        const badge = await this.awardBadge(userId, 'quality_reviewer', 1, { avgRating: avgRating.toFixed(2) });
+        newBadges.push(badge);
+      }
+    }
+    
+    // Early Adopter Badge (for users who joined early)
+    const user = await this.getUser(userId);
+    if (user && user.createdAt) {
+      const joinDate = new Date(user.createdAt);
+      const cutoffDate = new Date('2025-06-21'); // Platform launch date
+      if (joinDate <= cutoffDate && !badgeTypes.includes('early_adopter_1')) {
+        const badge = await this.awardBadge(userId, 'early_adopter', 1);
+        newBadges.push(badge);
+      }
+    }
+    
+    return newBadges;
+  }
+
+  async getBadgeProgress(userId: string): Promise<any> {
+    const userRatings = await this.getUserRatings(userId);
+    const reviewCount = userRatings.length;
+    const helpfulVotes = userRatings.reduce((sum, r) => sum + (r.helpful || 0), 0);
+    const detailedReviews = userRatings.filter(r => r.comment && r.comment.length > 100).length;
+    const avgRating = reviewCount > 0 ? userRatings.reduce((sum, r) => sum + r.overallRating, 0) / reviewCount : 0;
+    
+    return {
+      reviewCount,
+      helpfulVotes,
+      detailedReviews,
+      avgRating: avgRating.toFixed(2),
+      progress: {
+        firstReview: reviewCount >= 1,
+        prolificReviewer: {
+          bronze: reviewCount >= 5,
+          silver: reviewCount >= 15,
+          gold: reviewCount >= 30
+        },
+        helpfulReviewer: {
+          bronze: helpfulVotes >= 10,
+          silver: helpfulVotes >= 25,
+          gold: helpfulVotes >= 50
+        },
+        detailedReviewer: detailedReviews >= 3,
+        qualityReviewer: reviewCount >= 5 && avgRating >= 3 && avgRating <= 4
+      }
+    };
+  }
 }
 
 export const storage = new DatabaseStorage();
