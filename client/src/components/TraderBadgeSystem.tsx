@@ -20,10 +20,10 @@ import {
 
 interface TraderBadge {
   id: number;
-  traderId: number;
-  badgeType: string;
-  badgeLevel: number;
-  earnedAt: string;
+  trader_id: number;
+  badge_type: string;
+  badge_level: number;
+  earned_at: string;
   metadata?: any;
 }
 
@@ -151,6 +151,7 @@ export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
   });
 
   console.log('TraderBadges - traderId:', traderId, 'badges:', badges, 'isLoading:', isLoading, 'error:', error);
+  console.log('Rendering', badges.length, 'achievement cards');
 
   if (isLoading) {
     return (
@@ -212,7 +213,11 @@ export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {badges.map((badge) => {
             const config = traderBadgeConfig[badge.badgeType as keyof typeof traderBadgeConfig];
-            if (!config) return null;
+            console.log('Badge mapping:', badge.badgeType, 'config found:', !!config);
+            if (!config) {
+              console.log('No config found for badge type:', badge.badgeType);
+              return null;
+            }
 
             const IconComponent = config.icon;
             const level = levelLabels[badge.badgeLevel as keyof typeof levelLabels];
