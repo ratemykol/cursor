@@ -190,7 +190,7 @@ const TraderShareDropdown: React.FC<{ traderName: string; badgeName: string; lev
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-1.5 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 opacity-0 group-hover:opacity-100"
+        className="p-1.5 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 opacity-0 group-hover:opacity-100 flex items-center justify-center"
       >
         <Share2 className="h-3 w-3 text-gray-700" />
       </button>
