@@ -18,6 +18,10 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
   const { isAdmin } = useAdmin();
+  
+  // Debug logging
+  console.log('Header user object:', user);
+  console.log('User type:', user?.userType);
   const queryClient = useQueryClient();
 
   const logoutMutation = useMutation({
