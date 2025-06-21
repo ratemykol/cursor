@@ -33,6 +33,9 @@ export interface IStorage {
   updateUserProfile(userId: string, profileData: Partial<User>): Promise<User>;
   getAllUsers(): Promise<User[]>;
   updateUserUsername(userId: string, username: string): Promise<User>;
+  createTraderUser(userData: UserRegistration, traderData: InsertTrader): Promise<{ user: User; trader: Trader }>;
+  getUserTraderProfile(userId: string): Promise<Trader | undefined>;
+  updateUserTraderProfile(userId: string, traderData: Partial<InsertTrader>): Promise<Trader | undefined>;
   
   // Trader operations
   getTrader(id: number): Promise<Trader | undefined>;
@@ -143,6 +146,7 @@ export class DatabaseStorage implements IStorage {
         email: userData.email && userData.email.trim() !== "" ? userData.email : null,
         passwordHash,
         authType: "local",
+        userType: userData.userType || "user",
       })
       .returning();
     return user;
@@ -172,6 +176,86 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, userId))
       .returning();
     return user;
+  }
+
+  async updateUserUsername(userId: string, username: string): Promise<User> {
+    // Check if username already exists (case-insensitive), excluding current user
+    const existingUser = await this.checkUsernameExists(username, userId);
+    if (existingUser) {
+      throw new Error("Username Taken!");
+    }
+
+    const [user] = await db
+      .update(users)
+      .set({ username, updatedAt: new Date() })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async createTraderUser(userData: UserRegistration, traderData: InsertTrader): Promise<{ user: User; trader: Trader }> {
+    return await db.transaction(async (tx) => {
+      // Check if username already exists (case-insensitive)
+      const existingUsername = await this.checkUsernameExists(userData.username);
+      if (existingUsername) {
+        throw new Error("Username Taken!");
+      }
+
+      // Check if email already exists (if email is provided)
+      if (userData.email && userData.email.trim() !== "") {
+        const existingEmail = await this.getUserByEmail(userData.email);
+        if (existingEmail) {
+          throw new Error("Email already exists");
+        }
+      }
+
+      // Hash the password
+      const saltRounds = 10;
+      const passwordHash = await bcrypt.hash(userData.password, saltRounds);
+      
+      // Generate a unique ID for local users
+      const userId = `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Create the trader profile first
+      const [trader] = await tx
+        .insert(traders)
+        .values(traderData)
+        .returning();
+
+      // Create the user with trader type and link to trader profile
+      const [user] = await tx
+        .insert(users)
+        .values({
+          id: userId,
+          username: userData.username,
+          email: userData.email && userData.email.trim() !== "" ? userData.email : null,
+          passwordHash,
+          authType: "local",
+          userType: "trader",
+          traderId: trader.id,
+        })
+        .returning();
+
+      return { user, trader };
+    });
+  }
+
+  async getUserTraderProfile(userId: string): Promise<Trader | undefined> {
+    const user = await this.getUser(userId);
+    if (!user || user.userType !== "trader" || !user.traderId) {
+      return undefined;
+    }
+    
+    return await this.getTrader(user.traderId);
+  }
+
+  async updateUserTraderProfile(userId: string, traderData: Partial<InsertTrader>): Promise<Trader | undefined> {
+    const user = await this.getUser(userId);
+    if (!user || user.userType !== "trader" || !user.traderId) {
+      throw new Error("User is not a trader or has no trader profile");
+    }
+    
+    return await this.updateTrader(user.traderId, traderData as InsertTrader);
   }
 
   // Trader operations
@@ -634,6 +718,8 @@ export class DatabaseStorage implements IStorage {
     }
     return { helpful: 0, notHelpful: 0 };
   }
+
+
 
   // Badge system operations
   async getUserBadges(userId: string): Promise<UserBadge[]> {
