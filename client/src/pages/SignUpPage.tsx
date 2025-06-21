@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import { Header } from "@/components/Header";
 import type { UserRegistration } from "@shared/schema";
 
@@ -91,8 +92,6 @@ export const SignUpPage = (): JSX.Element => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-
-
                 <div className="space-y-2">
                   <Label htmlFor="username">Username</Label>
                   <Input
@@ -136,7 +135,7 @@ export const SignUpPage = (): JSX.Element => {
                 </div>
                 
 
-
+                
                 <Button
                   type="submit"
                   disabled={registerMutation.isPending}

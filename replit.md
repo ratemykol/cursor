@@ -204,15 +204,6 @@ Changelog:
 - June 21, 2025. Repositioned share buttons to bottom-right corner of achievement cards and removed Facebook option, keeping only Twitter and LinkedIn
 - June 21, 2025. Simplified sharing to Twitter-only option and changed from new window to new tab opening behavior
 - June 21, 2025. Added automatic dropdown closing when cursor leaves badge area for improved user experience
-- June 21, 2025. Removed public trader registration and implemented admin-only trader account creation system
-- June 21, 2025. Updated signup form to only allow regular user registration with simplified fields
-- June 21, 2025. Added "Trader Accounts" tab in admin panel for creating login credentials for existing trader profiles
-- June 21, 2025. Implemented secure trader account creation system where only admins can assign login credentials to trader profiles
-- June 21, 2025. Added username change functionality for trader profiles with validation and uniqueness checks
-- June 21, 2025. Implemented backend API to handle trader username updates with proper session management
-- June 21, 2025. Updated trader profile management form to include username field with client-side validation
-- June 21, 2025. Fixed trader profile authentication by ensuring userType and traderId are properly stored in login sessions
-- June 21, 2025. Verified trader profile management functionality works correctly for all trader accounts
 ```
 
 ## User Preferences
