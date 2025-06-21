@@ -145,16 +145,46 @@ const levelLabels = {
 };
 
 export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
-  const { data: badges = [], isLoading } = useQuery<TraderBadge[]>({
+  const { data: badges = [], isLoading, error } = useQuery<TraderBadge[]>({
     queryKey: [`/api/trader-badges/${traderId}`],
     enabled: !!traderId
   });
 
+  console.log('TraderBadges - traderId:', traderId, 'badges:', badges, 'isLoading:', isLoading, 'error:', error);
+
   if (isLoading) {
-    return <div className="animate-pulse">Loading badges...</div>;
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Award className="h-5 w-5" />
+            Trader Achievements
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="animate-pulse">Loading badges...</div>
+        </CardContent>
+      </Card>
+    );
   }
 
-  if (!badges.length) {
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Award className="h-5 w-5" />
+            Trader Achievements
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-red-500 text-sm">Error loading badges</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!badges || badges.length === 0) {
     return (
       <Card>
         <CardHeader>
