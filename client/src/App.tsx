@@ -39,6 +39,7 @@ function Router() {
       <Route path="/signup" component={SignUpPage} />
       <Route path="/signin" component={SignInPage} />
       <Route path="/profile" component={UserProfilePage} />
+      <Route path="/manage-trader-profile" component={TraderProfileManagementPage} />
       <Route component={NotFound} />
     </Switch>
   );

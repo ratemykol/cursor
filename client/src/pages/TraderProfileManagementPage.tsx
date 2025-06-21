@@ -37,23 +37,32 @@ export const TraderProfileManagementPage = (): JSX.Element => {
 
   // Update form data when trader profile loads
   React.useEffect(() => {
-    if (traderProfile) {
+    if (traderProfile && typeof traderProfile === 'object') {
       setFormData({
-        name: traderProfile.name || "",
-        walletAddress: traderProfile.walletAddress || "",
-        bio: traderProfile.bio || "",
-        twitterUrl: traderProfile.twitterUrl || "",
-        profileImageUrl: traderProfile.profileImageUrl || ""
+        name: (traderProfile as any).name || "",
+        walletAddress: (traderProfile as any).walletAddress || "",
+        bio: (traderProfile as any).bio || "",
+        twitterUrl: (traderProfile as any).twitterUrl || "",
+        profileImageUrl: (traderProfile as any).profileImageUrl || ""
       });
     }
   }, [traderProfile]);
 
   const updateProfileMutation = useMutation({
     mutationFn: async (updatedData: typeof formData) => {
-      return await apiRequest("/api/user/trader-profile", {
+      const response = await fetch("/api/user/trader-profile", {
         method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(updatedData),
       });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to update profile");
+      }
+      
+      return response.json();
     },
     onSuccess: () => {
       toast({
