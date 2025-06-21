@@ -180,7 +180,7 @@ export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {badges.map((badge: TraderBadge) => {
+          {badges.map((badge) => {
             const config = traderBadgeConfig[badge.badgeType as keyof typeof traderBadgeConfig];
             if (!config) return null;
 
@@ -220,7 +220,7 @@ export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
 };
 
 export const TraderBadgeProgress: React.FC<{ traderId: number }> = ({ traderId }) => {
-  const { data: progress, isLoading } = useQuery({
+  const { data: progress, isLoading } = useQuery<TraderBadgeProgress>({
     queryKey: [`/api/trader-badges/progress/${traderId}`],
     enabled: !!traderId
   });
