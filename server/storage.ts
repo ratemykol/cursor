@@ -689,9 +689,9 @@ export class DatabaseStorage implements IStorage {
       newBadges.push(badge);
     }
     
-    // Detailed Reviewer Badge (for reviews with comments over 100 chars)
-    const detailedReviews = userRatings.filter(r => r.comment && r.comment.length > 100);
-    if (detailedReviews.length >= 3 && !badgeTypes.includes('detailed_reviewer_1')) {
+    // Detailed Reviewer Badge (for reviews with comments over 80 chars)
+    const detailedReviews = userRatings.filter(r => r.comment && r.comment.length > 80);
+    if (detailedReviews.length >= 5 && !badgeTypes.includes('detailed_reviewer_1')) {
       const badge = await this.awardBadge(userId, 'detailed_reviewer', 1, { detailedCount: detailedReviews.length });
       newBadges.push(badge);
     }
@@ -738,7 +738,7 @@ export class DatabaseStorage implements IStorage {
     const userRatings = await this.getUserRatings(userId);
     const reviewCount = userRatings.length;
     const helpfulVotes = userRatings.reduce((sum, r) => sum + (r.helpful || 0), 0);
-    const detailedReviews = userRatings.filter(r => r.comment && r.comment.length > 100).length;
+    const detailedReviews = userRatings.filter(r => r.comment && r.comment.length > 80).length;
     const avgRating = reviewCount > 0 ? userRatings.reduce((sum, r) => sum + r.overallRating, 0) / reviewCount : 0;
     
     return {
@@ -758,7 +758,7 @@ export class DatabaseStorage implements IStorage {
           silver: helpfulVotes >= 25,
           gold: helpfulVotes >= 50
         },
-        detailedReviewer: detailedReviews >= 3,
+        detailedReviewer: detailedReviews >= 5,
         qualityReviewer: reviewCount >= 5 && avgRating >= 3 && avgRating <= 4
       }
     };
