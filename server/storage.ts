@@ -311,10 +311,28 @@ export class DatabaseStorage implements IStorage {
     return newRating;
   }
 
-  async getTraderRatings(traderId: number): Promise<Rating[]> {
+  async getTraderRatings(traderId: number): Promise<any[]> {
     return await db
-      .select()
+      .select({
+        id: ratings.id,
+        traderId: ratings.traderId,
+        userId: ratings.userId,
+        reviewerName: ratings.reviewerName,
+        overallRating: ratings.overallRating,
+        strategyRating: ratings.strategyRating,
+        communicationRating: ratings.communicationRating,
+        reliabilityRating: ratings.reliabilityRating,
+        profitabilityRating: ratings.profitabilityRating,
+        comment: ratings.comment,
+        tags: ratings.tags,
+        helpful: ratings.helpful,
+        notHelpful: ratings.notHelpful,
+        createdAt: ratings.createdAt,
+        updatedAt: ratings.updatedAt,
+        userProfileImage: users.profileImageUrl,
+      })
       .from(ratings)
+      .leftJoin(users, eq(ratings.userId, users.id))
       .where(eq(ratings.traderId, traderId))
       .orderBy(desc(ratings.createdAt));
   }
