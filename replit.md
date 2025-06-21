@@ -203,6 +203,7 @@ Changelog:
 - June 21, 2025. Added hover-activated share buttons to both user badges and trader badges with customized share messages and proper URL encoding
 - June 21, 2025. Repositioned share buttons to bottom-right corner of achievement cards and removed Facebook option, keeping only Twitter and LinkedIn
 - June 21, 2025. Simplified sharing to Twitter-only option and changed from new window to new tab opening behavior
+- June 21, 2025. Enhanced share button interaction to show Twitter dropdown on hover instead of requiring click for improved user experience
 ```
 
 ## User Preferences

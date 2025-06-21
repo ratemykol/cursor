@@ -166,35 +166,31 @@ const ShareDropdown: React.FC<{ badgeName: string; level: string }> = ({ badgeNa
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
-    <div className="relative">
+    <div 
+      className="relative"
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+    >
       <button
-        onClick={() => setIsOpen(!isOpen)}
         className="absolute bottom-2 right-2 p-1.5 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 opacity-0 group-hover:opacity-100 flex items-center justify-center"
       >
         <Share2 className="h-3 w-3 text-gray-700" />
       </button>
       
       {isOpen && (
-        <>
-          <div 
-            className="fixed inset-0 z-10" 
-            onClick={() => setIsOpen(false)}
-          />
-          <div className="absolute bottom-10 right-0 z-20 bg-white rounded-lg shadow-lg border p-2 min-w-[120px]">
-            <div className="space-y-1">
-              <button
-                onClick={() => {
-                  shareBadgeAchievement(badgeName, level, 'twitter');
-                  setIsOpen(false);
-                }}
-                className="flex items-center gap-2 w-full px-2 py-1 text-xs hover:bg-blue-50 rounded transition-colors"
-              >
-                <Twitter className="h-3 w-3 text-blue-500" />
-                Share on Twitter
-              </button>
-            </div>
+        <div className="absolute bottom-10 right-0 z-20 bg-white rounded-lg shadow-lg border p-2 min-w-[120px]">
+          <div className="space-y-1">
+            <button
+              onClick={() => {
+                shareBadgeAchievement(badgeName, level, 'twitter');
+              }}
+              className="flex items-center gap-2 w-full px-2 py-1 text-xs hover:bg-blue-50 rounded transition-colors"
+            >
+              <Twitter className="h-3 w-3 text-blue-500" />
+              Share on Twitter
+            </button>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
