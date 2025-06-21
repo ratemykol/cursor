@@ -99,7 +99,7 @@ export class DatabaseStorage implements IStorage {
     // Check if username already exists (case-insensitive)
     const existingUsername = await this.checkUsernameExists(userData.username);
     if (existingUsername) {
-      throw new Error("Username already exists");
+      throw new Error("Username taken please");
     }
 
     // Check if email already exists (if email is provided)
@@ -423,10 +423,10 @@ export class DatabaseStorage implements IStorage {
 
   async updateUserUsername(userId: string, username: string): Promise<User> {
     try {
-      // Check if username is already taken by another user
-      const existingUser = await db.select().from(users).where(eq(users.username, username));
-      if (existingUser.length > 0 && existingUser[0].id !== userId) {
-        throw new Error("Username is already taken");
+      // Check if username is already taken by another user (case-insensitive)
+      const usernameExists = await this.checkUsernameExists(username, userId);
+      if (usernameExists) {
+        throw new Error("Username taken please");
       }
 
       const [updatedUser] = await db
@@ -485,17 +485,24 @@ export class DatabaseStorage implements IStorage {
   }
 
   async checkUsernameExists(username: string, excludeUserId?: string): Promise<boolean> {
-    let query = db
-      .select({ id: users.id })
-      .from(users)
-      .where(sql`LOWER(${users.username}) = LOWER(${username})`);
-    
     if (excludeUserId) {
-      query = query.where(sql`${users.id} != ${excludeUserId}`);
+      const result = await db
+        .select({ id: users.id })
+        .from(users)
+        .where(and(
+          sql`LOWER(${users.username}) = LOWER(${username})`,
+          sql`${users.id} != ${excludeUserId}`
+        ))
+        .limit(1);
+      return result.length > 0;
+    } else {
+      const result = await db
+        .select({ id: users.id })
+        .from(users)
+        .where(sql`LOWER(${users.username}) = LOWER(${username})`)
+        .limit(1);
+      return result.length > 0;
     }
-    
-    const result = await query.limit(1);
-    return result.length > 0;
   }
 
   // Review vote operations
