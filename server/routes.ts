@@ -3,8 +3,10 @@ import { createServer, type Server } from "http";
 import rateLimit from "express-rate-limit";
 import { body, validationResult, param, query } from "express-validator";
 import { storage } from "./storage";
-import { insertTraderSchema, insertRatingSchema, userRegistrationSchema, userLoginSchema } from "@shared/schema";
+import { insertTraderSchema, insertRatingSchema, userRegistrationSchema, userLoginSchema, users } from "@shared/schema";
 import { upload } from "./upload";
+import { db } from "./db";
+import bcrypt from "bcryptjs";
 import path from "path";
 import express from "express";
 
@@ -809,70 +811,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Trader user profile management routes
-  app.post("/api/auth/register-trader", [
+  // Admin-only trader account creation route
+  app.post("/api/auth/register-trader", isAdmin, [
     body('username')
       .isLength({ min: 3, max: 50 })
       .withMessage('Username must be between 3 and 50 characters')
       .matches(/^[a-zA-Z0-9._-]+$/)
       .withMessage('Username can only contain letters, numbers, dots, hyphens, and underscores'),
-    body('email')
-      .optional({ checkFalsy: true })
-      .isEmail()
-      .withMessage('Invalid email address'),
     body('password')
       .isLength({ min: 6 })
       .withMessage('Password must be at least 6 characters'),
-    body('name')
-      .isLength({ min: 1, max: 100 })
-      .withMessage('Trader name is required'),
-    body('walletAddress')
-      .isLength({ min: 1, max: 255 })
-      .withMessage('Wallet address is required'),
+    body('traderId')
+      .isInt({ min: 1 })
+      .withMessage('Valid trader ID is required'),
     handleValidationErrors
   ], async (req: Request, res: Response) => {
     try {
-      const userData = {
-        username: req.body.username,
-        email: req.body.email || "",
-        password: req.body.password,
-        userType: "trader" as const
-      };
+      // Verify the trader exists
+      const trader = await storage.getTrader(req.body.traderId);
+      if (!trader) {
+        return res.status(404).json({ error: "Trader not found" });
+      }
 
-      const traderData = {
-        name: req.body.name,
-        walletAddress: req.body.walletAddress,
-        bio: req.body.bio || "",
-        twitterUrl: req.body.twitterUrl || "",
-        profileImageUrl: req.body.profileImageUrl || ""
-      };
+      // Check if username already exists
+      const existingUser = await storage.getUserByUsername(req.body.username);
+      if (existingUser) {
+        return res.status(400).json({ error: "Username already exists" });
+      }
 
-      const { user, trader } = await storage.createTraderUser(userData, traderData);
+      // Create trader user account
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      const userId = `trader_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
-      // Store user session
-      (req.session as any).user = {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        bio: user.bio,
-        role: user.role,
-        userType: user.userType,
-        traderId: user.traderId
-      };
+      const [user] = await db
+        .insert(users)
+        .values({
+          id: userId,
+          username: req.body.username,
+          email: "",
+          passwordHash: hashedPassword,
+          authType: "local",
+          userType: "trader",
+          role: "user",
+          traderId: req.body.traderId,
+        })
+        .returning();
 
       res.json({
         message: "Trader account created successfully",
         user: {
           id: user.id,
           username: user.username,
-          email: user.email,
           userType: user.userType,
           traderId: user.traderId
-        },
-        trader: {
-          id: trader.id,
-          name: trader.name,
-          walletAddress: trader.walletAddress
         }
       });
     } catch (error: any) {
