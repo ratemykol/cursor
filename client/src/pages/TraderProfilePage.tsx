@@ -198,7 +198,7 @@ export const TraderProfilePage = (): JSX.Element => {
                     <span className="text-gray-900 font-medium ml-1">
                       {averageRating.toFixed(1)}
                     </span>
-                    <span className="text-gray-500">
+                    <span className="text-black">
                       {totalRatings} review{totalRatings !== 1 ? 's' : ''}
                     </span>
                   </div>
