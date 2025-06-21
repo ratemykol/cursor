@@ -659,6 +659,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         profileImageUrl: user.profileImageUrl,
         authType: user.authType,
         role: user.role,
+        userType: user.userType,
+        traderId: user.traderId,
       };
       
       // Remove password hash from response
@@ -875,8 +877,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/user/trader-profile", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const user = (req.session as any)?.user;
-      console.log("Trader profile access - user session:", user);
-      console.log("User type:", user?.userType, "Expected: trader");
       
       if (user.userType !== "trader") {
         return res.status(403).json({ error: "Access denied. Only trader accounts can access trader profiles." });
