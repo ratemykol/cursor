@@ -185,9 +185,25 @@ const shareTraderBadgeAchievement = (traderName: string, badgeName: string, leve
 // Share dropdown component for trader badges
 const TraderShareDropdown: React.FC<{ traderName: string; badgeName: string; level: string }> = ({ traderName, badgeName, level }) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const handleCloseDropdown = () => {
+      setIsOpen(false);
+    };
+
+    if (dropdownRef.current) {
+      dropdownRef.current.addEventListener('closeDropdown', handleCloseDropdown);
+      return () => {
+        if (dropdownRef.current) {
+          dropdownRef.current.removeEventListener('closeDropdown', handleCloseDropdown);
+        }
+      };
+    }
+  }, []);
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef} data-trader-dropdown>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="p-1.5 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 opacity-0 group-hover:opacity-100 flex items-center justify-center"
@@ -386,7 +402,18 @@ export const TraderBadges: React.FC<{ traderId: number; traderName?: string }> =
             const badgeStyles = getBadgeStyles(badge.badgeType, badge.badgeLevel);
 
             return (
-              <div key={badge.id} className="relative group">
+              <div 
+                key={badge.id} 
+                className="relative group"
+                onMouseLeave={() => {
+                  // Close any open share dropdown when mouse leaves the badge
+                  const dropdowns = document.querySelectorAll('[data-trader-dropdown]');
+                  dropdowns.forEach(dropdown => {
+                    const closeEvent = new CustomEvent('closeDropdown');
+                    dropdown.dispatchEvent(closeEvent);
+                  });
+                }}
+              >
                 {/* Glow effect on hover */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${badgeStyles.glow} rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-md transform scale-110`}></div>
                 <div className={`relative bg-gradient-to-br ${badgeStyles.gradient} ${badgeStyles.hoverGradient} rounded-2xl p-4 text-white shadow-lg ${badgeStyles.shadow} transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl cursor-pointer overflow-hidden border ${badgeStyles.border}`} style={{ 

@@ -164,9 +164,25 @@ const shareBadgeAchievement = (badgeName: string, level: string, platform: strin
 // Share dropdown component
 const ShareDropdown: React.FC<{ badgeName: string; level: string }> = ({ badgeName, level }) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const handleCloseDropdown = () => {
+      setIsOpen(false);
+    };
+
+    if (dropdownRef.current) {
+      dropdownRef.current.addEventListener('closeDropdown', handleCloseDropdown);
+      return () => {
+        if (dropdownRef.current) {
+          dropdownRef.current.removeEventListener('closeDropdown', handleCloseDropdown);
+        }
+      };
+    }
+  }, []);
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef} data-user-dropdown>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="absolute bottom-2 right-2 p-1.5 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 opacity-0 group-hover:opacity-100 flex items-center justify-center"
@@ -233,6 +249,14 @@ export const UserBadges: React.FC<{ userId: string }> = ({ userId }) => {
           <div
             key={badge.id}
             className={`group relative p-3 border-2 rounded-lg ${levelColor} transition-all duration-200 hover:scale-105`}
+            onMouseLeave={() => {
+              // Close any open share dropdown when mouse leaves the badge
+              const dropdowns = document.querySelectorAll('[data-user-dropdown]');
+              dropdowns.forEach(dropdown => {
+                const closeEvent = new CustomEvent('closeDropdown');
+                dropdown.dispatchEvent(closeEvent);
+              });
+            }}
           >
             <ShareDropdown 
               badgeName={config.name} 
