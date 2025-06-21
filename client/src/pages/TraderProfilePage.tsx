@@ -434,6 +434,37 @@ export const TraderProfilePage = (): JSX.Element => {
                                   </div>
                                 )}
                               </div>
+
+                              {/* Helpfulness voting */}
+                              {isAuthenticated && (
+                                <div className="mt-4 pt-3 border-t border-gray-100">
+                                  <div className="flex items-center gap-4">
+                                    <span className="text-sm text-gray-600">Was this review helpful?</span>
+                                    <div className="flex items-center gap-2">
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => voteMutation.mutate({ reviewId: rating.id, voteType: 'helpful' })}
+                                        disabled={voteMutation.isPending}
+                                        className="flex items-center gap-1 text-gray-600 hover:text-green-600 hover:bg-green-50"
+                                      >
+                                        <ThumbsUp size={16} />
+                                        <span>{rating.helpful || 0}</span>
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => voteMutation.mutate({ reviewId: rating.id, voteType: 'not_helpful' })}
+                                        disabled={voteMutation.isPending}
+                                        className="flex items-center gap-1 text-gray-600 hover:text-red-600 hover:bg-red-50"
+                                      >
+                                        <ThumbsDown size={16} />
+                                        <span>{rating.notHelpful || 0}</span>
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
                         </div>
                       </div>
                     </div>
