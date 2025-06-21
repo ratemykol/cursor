@@ -187,7 +187,7 @@ export const TraderProfilePage = (): JSX.Element => {
 
                   {/* Specialty */}
                   {(trader as any)?.specialty && (
-                    <p className="text-gray-600 mb-4 text-lg">
+                    <p className="text-black mb-4 text-lg">
                       {(trader as any).specialty}
                     </p>
                   )}
@@ -227,7 +227,7 @@ export const TraderProfilePage = (): JSX.Element => {
 
                   {/* Bio */}
                   {(trader as any)?.bio && (
-                    <p className="text-gray-700 mb-4">
+                    <p className="text-black mb-4">
                       {(trader as any).bio}
                     </p>
                   )}
