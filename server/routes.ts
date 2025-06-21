@@ -776,6 +776,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Trader badge system routes
+  app.get('/api/trader-badges/:traderId', async (req, res) => {
+    try {
+      const traderId = parseInt(req.params.traderId);
+      const badges = await storage.getTraderBadges(traderId);
+      res.json(badges);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get('/api/trader-badges/progress/:traderId', async (req, res) => {
+    try {
+      const traderId = parseInt(req.params.traderId);
+      const progress = await storage.getTraderBadgeProgress(traderId);
+      res.json(progress);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post('/api/trader-badges/check/:traderId', async (req, res) => {
+    try {
+      const traderId = parseInt(req.params.traderId);
+      const newBadges = await storage.checkAndAwardTraderBadges(traderId);
+      res.json(newBadges);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

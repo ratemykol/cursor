@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { Header } from "@/components/Header";
+import { TraderBadges, TraderBadgeProgress } from "@/components/TraderBadgeSystem";
 import { ArrowLeft, Star, Image as ImageIcon, Edit, Trash2, ExternalLink, ThumbsUp, ThumbsDown } from "lucide-react";
 
 export const TraderProfilePage = (): JSX.Element => {
