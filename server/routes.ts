@@ -71,12 +71,12 @@ const handleValidationErrors = (req: Request, res: Response, next: NextFunction)
   next();
 };
 
-// Security rate limiter for file uploads - only in production
-const uploadLimiter = process.env.NODE_ENV === 'production' ? rateLimit({
+// Rate limiter for file uploads
+const uploadLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 10, // 10 uploads per minute
+  max: 50, // 50 uploads per minute
   message: { error: "Too many uploads, please try again later." }
-}) : (req: any, res: any, next: any) => next(); // No-op in development
+});
 
 // Admin middleware to check if user is admin
 const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
@@ -107,116 +107,8 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Anti-reconnaissance middleware - only in production
-  if (process.env.NODE_ENV === 'production') {
-    app.use((req, res, next) => {
-      const suspiciousPatterns = [
-        /\.env/i,
-        /\.git/i,
-        /admin/i,
-        /phpmyadmin/i,
-        /wp-admin/i,
-        /cpanel/i,
-        /\.well-known/i,
-        /sitemap\.xml/i,
-        /robots\.txt/i,
-        /\.htaccess/i,
-        /server-status/i,
-        /server-info/i,
-        /config/i,
-        /backup/i,
-        /test/i,
-        /debug/i
-      ];
-      
-      const path = req.path.toLowerCase();
-      const isSuspicious = suspiciousPatterns.some(pattern => pattern.test(path));
-      
-      if (isSuspicious && !path.startsWith('/api/')) {
-        console.warn(`[SECURITY] Blocked reconnaissance attempt: ${path} from ${req.ip}`);
-        return res.status(404).json({ error: 'Not found' });
-      }
-      
-      // Block requests with suspicious user agents
-      const userAgent = req.get('User-Agent') || '';
-      const suspiciousAgents = [
-        /nmap/i,
-        /masscan/i,
-        /zmap/i,
-        /nikto/i,
-        /sqlmap/i,
-        /gobuster/i,
-        /dirb/i,
-        /dirbuster/i,
-        /wpscan/i,
-        /nuclei/i,
-        /subfinder/i,
-        /httprobe/i,
-        /scanner/i,
-        /bot/i
-      ];
-      
-      if (suspiciousAgents.some(pattern => pattern.test(userAgent))) {
-        console.warn(`[SECURITY] Blocked suspicious user agent: ${userAgent} from ${req.ip}`);
-        return res.status(404).json({ error: 'Not found' });
-      }
-      
-      next();
-    });
-  }
-
-  // Serve uploaded files statically with security headers
-  app.use('/uploads', (req, res, next) => {
-    // Prevent directory traversal
-    if (req.path.includes('..') || req.path.includes('~')) {
-      return res.status(404).json({ error: 'Not found' });
-    }
-    
-    // Add security headers for file serving
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('Content-Disposition', 'inline');
-    
-    next();
-  }, express.static(path.join(process.cwd(), 'uploads')));
-
-  // Honeypot endpoints to detect reconnaissance
-  const honeypotPaths = [
-    '/wp-admin', '/phpmyadmin', '/cpanel', '/admin.php',
-    '/.env', '/.git', '/config', '/backup', '/test', '/debug',
-    '/robots.txt', '/sitemap.xml', '/.htaccess', '/server-status'
-  ];
-
-  honeypotPaths.forEach(path => {
-    app.all(path, (req, res) => {
-      // Log the attempt (in production, consider sending alerts)
-      const timestamp = new Date().toISOString();
-      const userAgent = req.get('User-Agent') || 'Unknown';
-      
-      if (process.env.NODE_ENV === 'development') {
-        console.warn(`[${timestamp}] Honeypot triggered: ${path} - UA: ${userAgent}`);
-      }
-      
-      // Return misleading response to waste attacker time
-      setTimeout(() => {
-        res.status(404).send('<!DOCTYPE html><html><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL was not found on this server.</p></body></html>');
-      }, Math.random() * 3000 + 1000); // Random delay 1-4 seconds
-    });
-  });
-
-  // Fake admin panel to distract attackers
-  app.get('/login', (req, res) => {
-    res.status(200).send(`
-      <!DOCTYPE html>
-      <html>
-      <head><title>Admin Login</title></head>
-      <body>
-        <h2>System Maintenance</h2>
-        <p>This service is temporarily unavailable for scheduled maintenance.</p>
-        <p>Please try again later.</p>
-      </body>
-      </html>
-    `);
-  });
+  // Serve uploaded files statically
+  app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
   // File upload routes
   app.post("/api/upload/profile-picture", uploadLimiter, isAuthenticated, upload.single('profilePicture'), async (req, res) => {

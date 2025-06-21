@@ -178,6 +178,7 @@ Changelog:
 - June 20, 2025. Implemented multi-stage Docker build separating build dependencies from production runtime for clean Render deployment
 - June 20, 2025. Fixed rate limiting validation error causing white screen by reordering middleware and adding skip conditions for obfuscated IPs
 - June 20, 2025. Completed production deployment preparation with all security features intact and database connectivity configured
+- June 21, 2025. Reverted advanced security middleware and anti-doxxing measures from commit d61f092 while preserving all subsequent changes
 ```
 
 ## User Preferences

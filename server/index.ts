@@ -12,197 +12,61 @@ const app = express();
 // Trust proxy for rate limiting in Replit environment
 app.set('trust proxy', 1);
 
-// Advanced security middleware for identity protection
-if (process.env.NODE_ENV === 'production') {
-  // Full security in production
-  app.use(helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-        scriptSrc: ["'self'", "'unsafe-eval'"],
-        imgSrc: ["'self'", "data:", "https:", "blob:"],
-        fontSrc: ["'self'", "https://fonts.gstatic.com"],
-        connectSrc: ["'self'", "wss:", "ws:"],
-        mediaSrc: ["'self'"],
-        objectSrc: ["'none'"],
-        frameSrc: ["'none'"],
-      },
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      scriptSrc: ["'self'", "'unsafe-eval'"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      connectSrc: ["'self'", "wss:", "ws:"],
+      mediaSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      frameSrc: ["'none'"],
     },
-    crossOriginEmbedderPolicy: false,
-    hidePoweredBy: true,
-    frameguard: { action: 'deny' },
-    noSniff: true,
-    hsts: {
-      maxAge: 31536000,
-      includeSubDomains: true,
-      preload: true
-    },
-    xssFilter: true,
-    referrerPolicy: { policy: 'no-referrer' }
-  }));
-} else {
-  // Minimal security in development to allow Vite
-  app.use(helmet({
-    contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false,
-    hidePoweredBy: true,
-    frameguard: false,
-    noSniff: true,
-    hsts: false,
-    xssFilter: false,
-    referrerPolicy: false
-  }));
-}
+  } : false, // Disable CSP in development for Vite compatibility
+  crossOriginEmbedderPolicy: false,
+}))
 
-// Remove server signatures and identifying headers
-app.disable('x-powered-by');
-app.use((req, res, next) => {
-  // Always remove identifying headers
-  res.removeHeader('X-Powered-By');
-  res.removeHeader('Server');
-  
-  // Only add restrictive security headers in production
-  if (process.env.NODE_ENV === 'production') {
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'DENY');
-    res.setHeader('X-XSS-Protection', '1; mode=block');
-    res.setHeader('Referrer-Policy', 'no-referrer');
-    res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
-    res.setHeader('Server-Timing', '');
-  }
-  
-  next();
+app.use(cors({ origin: true, credentials: true }));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // limit each IP to 1000 requests per windowMs
+  skip: (req) => {
+    // Skip rate limiting for localhost in development
+    return process.env.NODE_ENV === 'development' && req.ip === '127.0.0.1';
+  },
+  message: {
+    error: "Too many requests from this IP, please try again later."
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
-// IP obfuscation and anti-doxxing middleware - only in production
-if (process.env.NODE_ENV === 'production') {
-  app.use((req, res, next) => {
-    // Remove real IP from logs and headers
-    const originalIP = req.ip;
-    
-    // Override IP with anonymized version for logging
-    Object.defineProperty(req, 'ip', {
-      value: 'xxx.xxx.xxx.xxx',
-      writable: false,
-      configurable: false
-    });
-    
-    // Remove identifying headers that could leak server info
-    delete req.headers['x-forwarded-for'];
-    delete req.headers['x-real-ip'];
-    delete req.headers['x-forwarded-host'];
-    delete req.headers['x-forwarded-proto'];
-    delete req.headers['x-forwarded-port'];
-    delete req.headers['forwarded'];
-    delete req.headers['via'];
-    delete req.headers['x-cluster-client-ip'];
-    delete req.headers['cf-connecting-ip'];
-    delete req.headers['true-client-ip'];
-    delete req.headers['x-original-forwarded-for'];
-    
-    next();
-  });
-}
-
-// Hide server fingerprinting information
-app.use((req, res, next) => {
-  // Only apply server obfuscation in production
-  if (process.env.NODE_ENV === 'production') {
-    res.setHeader('Server', 'nginx');
-    
-    // Randomize response timing to prevent timing attacks
-    const delay = Math.floor(Math.random() * 50);
-    setTimeout(() => {
-      next();
-    }, delay);
-  } else {
-    // Skip delays and obfuscation in development
-    next();
-  }
-});
-
-// CORS configuration - permissive in development, strict in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(cors({
-    origin: function (origin, callback) {
-      const allowedOrigins = process.env.ALLOWED_ORIGINS ? 
-        process.env.ALLOWED_ORIGINS.split(',') : [];
-      
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Origin not allowed by CORS policy'));
-      }
-    },
-    credentials: true,
-    preflightContinue: false,
-    optionsSuccessStatus: 204
-  }));
-} else {
-  // Very permissive CORS for development
-  app.use(cors({
-    origin: true,
-    credentials: true
-  }));
-}
-
-// Rate limiting - disabled in development, enabled in production
-if (process.env.NODE_ENV === 'production') {
-  const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per windowMs
-    message: {
-      error: "Too many requests from this IP, please try again later."
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-  });
-
-  app.use(limiter);
-
-  // Stricter rate limiting for auth endpoints
-  const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // Limit each IP to 5 auth requests per windowMs
-    message: {
-      error: "Too many authentication attempts, please try again later."
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-  });
-
-  app.use('/api/auth', authLimiter);
-}
+app.use(limiter);
 
 // Body parsing with size limits
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// Secure session configuration
 const pgStore = connectPg(session);
-if (!process.env.SESSION_SECRET && process.env.NODE_ENV === 'production') {
-  throw new Error("SESSION_SECRET environment variable is required in production");
-}
-
-const sessionSecret = process.env.SESSION_SECRET || 'development-session-secret-change-in-production';
-
 app.use(session({
   store: new pgStore({
     conString: process.env.DATABASE_URL,
     createTableIfMissing: false,
     tableName: 'sessions',
   }),
-  secret: sessionSecret as string,
-  name: 'sessionId', // Don't use default session name
+  secret: process.env.SESSION_SECRET || 'change-this-secret-in-production',
   resave: false,
   saveUninitialized: false,
-  rolling: true, // Reset expiration on activity
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
-    httpOnly: true, // Prevent XSS
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours instead of 1 week
-    sameSite: 'strict', // CSRF protection
+    secure: false, // Set to true in production with HTTPS
+    httpOnly: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
   },
 }));
 
@@ -239,34 +103,10 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  // Anti-doxxing error handler - hide all server information
   app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
-    // Log error internally but don't expose details
-    const timestamp = new Date().toISOString();
-    const errorId = Math.random().toString(36).substring(7);
-    
-    // Internal logging (remove in production or use secure logging service)
-    if (process.env.NODE_ENV === 'development') {
-      console.error(`[${timestamp}] Error ${errorId}:`, err.message);
-    }
-    
-    // Never expose real error details to prevent information leakage
-    const genericMessages = [
-      "Service temporarily unavailable",
-      "Request could not be processed",
-      "An error occurred while processing your request",
-      "Service is currently experiencing issues",
-      "Unable to complete request at this time"
-    ];
-    
-    const randomMessage = genericMessages[Math.floor(Math.random() * genericMessages.length)];
-    
-    // Always return 503 to prevent status code enumeration
-    res.status(503).json({ 
-      error: randomMessage,
-      timestamp: timestamp,
-      reference: errorId
-    });
+    const message = err.message || "Internal Server Error";
+    console.error(message);
+    res.status(500).send("Something broke!");
   });
 
   // importantly only setup vite in development and after
