@@ -286,10 +286,16 @@ export class DatabaseStorage implements IStorage {
 
   async deleteTrader(id: number): Promise<boolean> {
     try {
-      // First delete all ratings associated with this trader
+      // First delete all review votes associated with ratings for this trader
+      await db.execute(sql`DELETE FROM review_votes WHERE rating_id IN (SELECT id FROM ratings WHERE trader_id = ${id})`);
+      
+      // Then delete all ratings associated with this trader
       await db.delete(ratings).where(eq(ratings.traderId, id));
       
-      // Then delete the trader
+      // Delete all trader badges associated with this trader
+      await db.delete(traderBadges).where(eq(traderBadges.traderId, id));
+      
+      // Finally delete the trader
       const deletedTraders = await db.delete(traders).where(eq(traders.id, id)).returning();
       
       return deletedTraders.length > 0;

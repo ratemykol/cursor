@@ -208,6 +208,7 @@ Changelog:
 - June 21, 2025. Updated specialty and bio text colors to black for better readability and consistency
 - June 21, 2025. Removed "Crypto Expert" fallback text from homepage trader cards for cleaner profile display
 - June 21, 2025. Removed achievement progress tracking section from trader profiles for simplified badge display
+- June 21, 2025. Fixed trader deletion functionality in admin panel by properly handling foreign key constraints for review votes, ratings, and trader badges
 ```
 
 ## User Preferences
