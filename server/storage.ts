@@ -777,30 +777,20 @@ export class DatabaseStorage implements IStorage {
 
   async awardTraderBadge(traderId: number, badgeType: string, badgeLevel: number = 1, metadata: any = null): Promise<TraderBadge> {
     try {
-      const [badge] = await db
-        .insert(traderBadges)
-        .values({
-          traderId,
-          badgeType,
-          badgeLevel,
-          metadata
-        })
-        .returning();
-      return badge;
+      const result = await db.execute(
+        sql`INSERT INTO trader_badges (trader_id, badge_type, badge_level, metadata) 
+            VALUES (${traderId}, ${badgeType}, ${badgeLevel}, ${JSON.stringify(metadata)}) 
+            RETURNING *`
+      );
+      return result.rows[0] as TraderBadge;
     } catch (error) {
       if (error instanceof Error && error.message.includes('duplicate key')) {
-        const [existingBadge] = await db
-          .select()
-          .from(traderBadges)
-          .where(
-            and(
-              eq(traderBadges.traderId, traderId),
-              eq(traderBadges.badgeType, badgeType),
-              eq(traderBadges.badgeLevel, badgeLevel)
-            )
-          )
-          .limit(1);
-        return existingBadge;
+        const existingResult = await db.execute(
+          sql`SELECT * FROM trader_badges 
+              WHERE trader_id = ${traderId} AND badge_type = ${badgeType} AND badge_level = ${badgeLevel}
+              LIMIT 1`
+        );
+        return existingResult.rows[0] as TraderBadge;
       }
       throw error;
     }

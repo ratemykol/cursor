@@ -212,15 +212,15 @@ export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {badges.map((badge) => {
-            const config = traderBadgeConfig[badge.badgeType as keyof typeof traderBadgeConfig];
-            console.log('Badge mapping:', badge.badgeType, 'config found:', !!config);
+            const config = traderBadgeConfig[badge.badge_type as keyof typeof traderBadgeConfig];
+            console.log('Badge mapping:', badge.badge_type, 'config found:', !!config);
             if (!config) {
-              console.log('No config found for badge type:', badge.badgeType);
+              console.log('No config found for badge type:', badge.badge_type);
               return null;
             }
 
             const IconComponent = config.icon;
-            const level = levelLabels[badge.badgeLevel as keyof typeof levelLabels];
+            const level = levelLabels[badge.badge_level as keyof typeof levelLabels];
 
             return (
               <div key={badge.id} className="relative">
@@ -230,7 +230,7 @@ export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
                       <IconComponent className="h-5 w-5 text-white" />
                       <span className="font-semibold text-sm">{config.name}</span>
                     </div>
-                    {badge.badgeLevel > 1 && (
+                    {badge.badge_level > 1 && (
                       <div className="bg-white bg-opacity-20 rounded-full px-2 py-1">
                         <span className="text-xs font-medium text-white">{level}</span>
                       </div>
@@ -240,7 +240,7 @@ export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
                     {config.description}
                   </p>
                   <p className="text-xs text-blue-200">
-                    {new Date(badge.earnedAt).toLocaleDateString()}
+                    {new Date(badge.earned_at).toLocaleDateString()}
                   </p>
                 </div>
               </div>
@@ -388,11 +388,11 @@ export const TraderBadgeNotification: React.FC<{ badges: TraderBadge[] }> = ({ b
   return (
     <div className="fixed top-4 right-4 z-50 space-y-2">
       {badges.map((badge) => {
-        const config = traderBadgeConfig[badge.badgeType as keyof typeof traderBadgeConfig];
+        const config = traderBadgeConfig[badge.badge_type as keyof typeof traderBadgeConfig];
         if (!config) return null;
 
         const IconComponent = config.icon;
-        const level = levelLabels[badge.badgeLevel as keyof typeof levelLabels];
+        const level = levelLabels[badge.badge_level as keyof typeof levelLabels];
 
         return (
           <div
@@ -408,7 +408,7 @@ export const TraderBadgeNotification: React.FC<{ badges: TraderBadge[] }> = ({ b
                   <p className="text-sm font-medium text-white">
                     New Achievement!
                   </p>
-                  {badge.badgeLevel > 1 && (
+                  {badge.badge_level > 1 && (
                     <div className="bg-white bg-opacity-20 rounded-full px-2 py-1">
                       <span className="text-xs font-medium text-white">{level}</span>
                     </div>
