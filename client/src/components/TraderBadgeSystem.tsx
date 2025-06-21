@@ -178,7 +178,7 @@ const shareTraderBadgeAchievement = (traderName: string, badgeName: string, leve
   }
   
   if (shareUrl) {
-    window.open(shareUrl, '_blank', 'width=600,height=400');
+    window.open(shareUrl, '_blank');
   }
 };
 
@@ -201,7 +201,7 @@ const TraderShareDropdown: React.FC<{ traderName: string; badgeName: string; lev
             className="fixed inset-0 z-10" 
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute bottom-10 right-0 z-30 bg-white rounded-lg shadow-lg border p-2 min-w-[130px]">
+          <div className="absolute bottom-10 right-0 z-30 bg-white rounded-lg shadow-lg border p-2 min-w-[120px]">
             <div className="space-y-1">
               <button
                 onClick={() => {
@@ -212,16 +212,6 @@ const TraderShareDropdown: React.FC<{ traderName: string; badgeName: string; lev
               >
                 <Twitter className="h-3 w-3 text-blue-500" />
                 Share on Twitter
-              </button>
-              <button
-                onClick={() => {
-                  shareTraderBadgeAchievement(traderName, badgeName, level, 'linkedin');
-                  setIsOpen(false);
-                }}
-                className="flex items-center gap-2 w-full px-2 py-1 text-xs hover:bg-blue-50 rounded transition-colors"
-              >
-                <Linkedin className="h-3 w-3 text-blue-700" />
-                Share on LinkedIn
               </button>
             </div>
           </div>
