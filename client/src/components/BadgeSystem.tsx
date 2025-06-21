@@ -169,9 +169,9 @@ const ShareDropdown: React.FC<{ badgeName: string; level: string }> = ({ badgeNa
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="absolute top-1 right-1 p-1 rounded-full bg-white/80 hover:bg-white shadow-sm transition-all duration-200 opacity-0 group-hover:opacity-100"
+        className="absolute bottom-2 right-2 p-1.5 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 opacity-0 group-hover:opacity-100"
       >
-        <Share2 className="h-3 w-3 text-gray-600" />
+        <Share2 className="h-3 w-3 text-gray-700" />
       </button>
       
       {isOpen && (
@@ -180,7 +180,7 @@ const ShareDropdown: React.FC<{ badgeName: string; level: string }> = ({ badgeNa
             className="fixed inset-0 z-10" 
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute top-8 right-0 z-20 bg-white rounded-lg shadow-lg border p-2 min-w-[140px]">
+          <div className="absolute bottom-10 right-0 z-20 bg-white rounded-lg shadow-lg border p-2 min-w-[130px]">
             <div className="space-y-1">
               <button
                 onClick={() => {
@@ -191,16 +191,6 @@ const ShareDropdown: React.FC<{ badgeName: string; level: string }> = ({ badgeNa
               >
                 <Twitter className="h-3 w-3 text-blue-500" />
                 Share on Twitter
-              </button>
-              <button
-                onClick={() => {
-                  shareBadgeAchievement(badgeName, level, 'facebook');
-                  setIsOpen(false);
-                }}
-                className="flex items-center gap-2 w-full px-2 py-1 text-xs hover:bg-blue-50 rounded transition-colors"
-              >
-                <Facebook className="h-3 w-3 text-blue-600" />
-                Share on Facebook
               </button>
               <button
                 onClick={() => {
