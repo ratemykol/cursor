@@ -224,15 +224,15 @@ export const BadgeProgress: React.FC<{ userId: string }> = ({ userId }) => {
       label: 'Prolific Reviewer (Silver)',
       completed: progress.progress.prolificReviewer.silver,
       current: progress.reviewCount,
-      target: 50,
-      description: 'Write 50 reviews'
+      target: 15,
+      description: 'Write 15 reviews'
     },
     {
       label: 'Prolific Reviewer (Gold)',
       completed: progress.progress.prolificReviewer.gold,
       current: progress.reviewCount,
-      target: 100,
-      description: 'Write 100 reviews'
+      target: 30,
+      description: 'Write 30 reviews'
     },
     {
       label: 'Helpful Reviewer (Bronze)',
