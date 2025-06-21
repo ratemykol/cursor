@@ -157,7 +157,7 @@ const shareBadgeAchievement = (badgeName: string, level: string, platform: strin
   }
   
   if (shareUrl) {
-    window.open(shareUrl, '_blank', 'width=600,height=400');
+    window.open(shareUrl, '_blank');
   }
 };
 
@@ -180,7 +180,7 @@ const ShareDropdown: React.FC<{ badgeName: string; level: string }> = ({ badgeNa
             className="fixed inset-0 z-10" 
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute bottom-10 right-0 z-20 bg-white rounded-lg shadow-lg border p-2 min-w-[130px]">
+          <div className="absolute bottom-10 right-0 z-20 bg-white rounded-lg shadow-lg border p-2 min-w-[120px]">
             <div className="space-y-1">
               <button
                 onClick={() => {
@@ -191,16 +191,6 @@ const ShareDropdown: React.FC<{ badgeName: string; level: string }> = ({ badgeNa
               >
                 <Twitter className="h-3 w-3 text-blue-500" />
                 Share on Twitter
-              </button>
-              <button
-                onClick={() => {
-                  shareBadgeAchievement(badgeName, level, 'linkedin');
-                  setIsOpen(false);
-                }}
-                className="flex items-center gap-2 w-full px-2 py-1 text-xs hover:bg-blue-50 rounded transition-colors"
-              >
-                <Linkedin className="h-3 w-3 text-blue-700" />
-                Share on LinkedIn
               </button>
             </div>
           </div>
