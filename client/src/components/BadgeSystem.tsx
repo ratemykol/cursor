@@ -162,14 +162,12 @@ const shareBadgeAchievement = (badgeName: string, level: string, platform: strin
 };
 
 // Share dropdown component
-const ShareDropdown: React.FC<{ badgeName: string; level: string }> = ({ badgeName, level }) => {
-  const [isOpen, setIsOpen] = React.useState(false);
-
+const ShareDropdown: React.FC<{ badgeName: string; level: string; isOpen: boolean; onToggle: (open: boolean) => void }> = ({ badgeName, level, isOpen, onToggle }) => {
   return (
     <div 
       className="relative"
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
+      onMouseEnter={() => onToggle(true)}
+      onMouseLeave={() => onToggle(false)}
     >
       <button
         className="absolute bottom-2 right-2 p-1.5 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 opacity-0 group-hover:opacity-100 flex items-center justify-center"
@@ -197,6 +195,7 @@ const ShareDropdown: React.FC<{ badgeName: string; level: string }> = ({ badgeNa
 };
 
 export const UserBadges: React.FC<{ userId: string }> = ({ userId }) => {
+  const [openShareId, setOpenShareId] = React.useState<number | null>(null);
   const { data: badges = [], isLoading } = useQuery<UserBadge[]>({
     queryKey: [`/api/badges/user/${userId}`],
     enabled: !!userId
@@ -229,10 +228,14 @@ export const UserBadges: React.FC<{ userId: string }> = ({ userId }) => {
           <div
             key={badge.id}
             className={`group relative p-3 border-2 rounded-lg ${levelColor} transition-all duration-200 hover:scale-105`}
+            onMouseEnter={() => setOpenShareId(badge.id)}
+            onMouseLeave={() => setOpenShareId(null)}
           >
             <ShareDropdown 
               badgeName={config.name} 
-              level={badge.badgeLevel > 1 ? levelName : ''} 
+              level={badge.badgeLevel > 1 ? levelName : ''}
+              isOpen={openShareId === badge.id}
+              onToggle={(open) => setOpenShareId(open ? badge.id : null)}
             />
             <div className="flex flex-col items-center text-center">
               <div className={`p-2 rounded-full ${config.color} mb-2`}>
