@@ -77,12 +77,24 @@ export const ratings = pgTable("ratings", {
   uniqueUserTrader: unique().on(table.userId, table.traderId),
 }));
 
+// Review votes table to track helpfulness votes
+export const reviewVotes = pgTable("review_votes", {
+  id: serial("id").primaryKey(),
+  ratingId: integer("rating_id").notNull().references(() => ratings.id, { onDelete: 'cascade' }),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  voteType: varchar("vote_type", { enum: ["helpful", "not_helpful"] }).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => ({
+  // Unique constraint: one vote per user per review
+  uniqueUserRating: unique().on(table.userId, table.ratingId),
+}));
+
 // Relations
 export const tradersRelations = relations(traders, ({ many }) => ({
   ratings: many(ratings),
 }));
 
-export const ratingsRelations = relations(ratings, ({ one }) => ({
+export const ratingsRelations = relations(ratings, ({ one, many }) => ({
   trader: one(traders, {
     fields: [ratings.traderId],
     references: [traders.id],
@@ -91,10 +103,23 @@ export const ratingsRelations = relations(ratings, ({ one }) => ({
     fields: [ratings.userId],
     references: [users.id],
   }),
+  votes: many(reviewVotes),
+}));
+
+export const reviewVotesRelations = relations(reviewVotes, ({ one }) => ({
+  rating: one(ratings, {
+    fields: [reviewVotes.ratingId],
+    references: [ratings.id],
+  }),
+  user: one(users, {
+    fields: [reviewVotes.userId],
+    references: [users.id],
+  }),
 }));
 
 export const usersRelations = relations(users, ({ many }) => ({
   ratings: many(ratings),
+  reviewVotes: many(reviewVotes),
 }));
 
 // Insert schemas
@@ -131,5 +156,7 @@ export type Trader = typeof traders.$inferSelect;
 export type InsertTrader = z.infer<typeof insertTraderSchema>;
 export type Rating = typeof ratings.$inferSelect;
 export type InsertRating = z.infer<typeof insertRatingSchema>;
+export type ReviewVote = typeof reviewVotes.$inferSelect;
+export type InsertReviewVote = typeof reviewVotes.$inferInsert;
 export type UserRegistration = z.infer<typeof userRegistrationSchema>;
 export type UserLogin = z.infer<typeof userLoginSchema>;

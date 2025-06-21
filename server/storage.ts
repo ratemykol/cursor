@@ -54,6 +54,11 @@ export interface IStorage {
   }>;
   getUserRating(userId: string, traderId: number): Promise<Rating | undefined>;
   getUserRatings(userId: string): Promise<Rating[]>;
+  
+  // Review vote operations
+  voteOnReview(ratingId: number, userId: string, voteType: 'helpful' | 'not_helpful'): Promise<void>;
+  getUserVoteOnReview(ratingId: number, userId: string): Promise<string | null>;
+  getReviewVoteStats(ratingId: number): Promise<{ helpful: number; notHelpful: number }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -475,6 +480,112 @@ export class DatabaseStorage implements IStorage {
       .leftJoin(traders, eq(ratings.traderId, traders.id))
       .where(eq(ratings.userId, userId))
       .orderBy(desc(ratings.createdAt));
+  }
+
+  // Review vote operations
+  async voteOnReview(ratingId: number, userId: string, voteType: 'helpful' | 'not_helpful'): Promise<void> {
+    await db.transaction(async (tx) => {
+      // Check if user already voted on this review
+      const existingVote = await tx
+        .select()
+        .from(reviewVotes)
+        .where(and(eq(reviewVotes.ratingId, ratingId), eq(reviewVotes.userId, userId)))
+        .limit(1);
+
+      if (existingVote.length > 0) {
+        const currentVote = existingVote[0];
+        
+        // If same vote type, remove the vote (toggle off)
+        if (currentVote.voteType === voteType) {
+          await tx
+            .delete(reviewVotes)
+            .where(eq(reviewVotes.id, currentVote.id));
+          
+          // Update counter
+          if (voteType === 'helpful') {
+            await tx
+              .update(ratings)
+              .set({ helpful: sql`${ratings.helpful} - 1` })
+              .where(eq(ratings.id, ratingId));
+          } else {
+            await tx
+              .update(ratings)
+              .set({ notHelpful: sql`${ratings.notHelpful} - 1` })
+              .where(eq(ratings.id, ratingId));
+          }
+        } else {
+          // Change vote type
+          await tx
+            .update(reviewVotes)
+            .set({ voteType })
+            .where(eq(reviewVotes.id, currentVote.id));
+          
+          // Update counters (subtract old, add new)
+          if (voteType === 'helpful') {
+            await tx
+              .update(ratings)
+              .set({ 
+                helpful: sql`${ratings.helpful} + 1`,
+                notHelpful: sql`${ratings.notHelpful} - 1`
+              })
+              .where(eq(ratings.id, ratingId));
+          } else {
+            await tx
+              .update(ratings)
+              .set({ 
+                helpful: sql`${ratings.helpful} - 1`,
+                notHelpful: sql`${ratings.notHelpful} + 1`
+              })
+              .where(eq(ratings.id, ratingId));
+          }
+        }
+      } else {
+        // New vote
+        await tx
+          .insert(reviewVotes)
+          .values({
+            ratingId,
+            userId,
+            voteType
+          });
+        
+        // Update counter
+        if (voteType === 'helpful') {
+          await tx
+            .update(ratings)
+            .set({ helpful: sql`${ratings.helpful} + 1` })
+            .where(eq(ratings.id, ratingId));
+        } else {
+          await tx
+            .update(ratings)
+            .set({ notHelpful: sql`${ratings.notHelpful} + 1` })
+            .where(eq(ratings.id, ratingId));
+        }
+      }
+    });
+  }
+
+  async getUserVoteOnReview(ratingId: number, userId: string): Promise<string | null> {
+    const vote = await db
+      .select({ voteType: reviewVotes.voteType })
+      .from(reviewVotes)
+      .where(and(eq(reviewVotes.ratingId, ratingId), eq(reviewVotes.userId, userId)))
+      .limit(1);
+    
+    return vote.length > 0 ? vote[0].voteType : null;
+  }
+
+  async getReviewVoteStats(ratingId: number): Promise<{ helpful: number; notHelpful: number }> {
+    const stats = await db
+      .select({
+        helpful: ratings.helpful,
+        notHelpful: ratings.notHelpful
+      })
+      .from(ratings)
+      .where(eq(ratings.id, ratingId))
+      .limit(1);
+    
+    return stats.length > 0 ? stats[0] : { helpful: 0, notHelpful: 0 };
   }
 }
 
