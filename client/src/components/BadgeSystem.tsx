@@ -166,10 +166,10 @@ const ShareDropdown: React.FC<{ badgeName: string; level: string }> = ({ badgeNa
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center">
+    <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-1.5 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 opacity-0 group-hover:opacity-100"
+        className="absolute bottom-2 right-2 p-1.5 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 opacity-0 group-hover:opacity-100"
       >
         <Share2 className="h-3 w-3 text-gray-700" />
       </button>
@@ -180,7 +180,7 @@ const ShareDropdown: React.FC<{ badgeName: string; level: string }> = ({ badgeNa
             className="fixed inset-0 z-10" 
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute top-12 left-1/2 transform -translate-x-1/2 z-20 bg-white rounded-lg shadow-lg border p-2 min-w-[120px]">
+          <div className="absolute bottom-10 right-0 z-20 bg-white rounded-lg shadow-lg border p-2 min-w-[120px]">
             <div className="space-y-1">
               <button
                 onClick={() => {
