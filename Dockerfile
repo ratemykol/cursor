@@ -12,8 +12,11 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build the application
-RUN npm run build
+# Build the frontend
+RUN npx vite build
+
+# Build the production server (without vite dependencies)
+RUN npx esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js
 
 # Production stage
 FROM node:20-alpine AS production
