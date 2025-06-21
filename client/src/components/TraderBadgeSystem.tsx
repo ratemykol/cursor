@@ -226,13 +226,19 @@ export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
               <div key={badge.id} className="relative group">
                 {/* Glow effect on hover */}
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-500 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-md transform scale-110"></div>
-                <div className="relative bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-4 text-white shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:from-blue-400 hover:to-blue-500 cursor-pointer group-hover:rotate-1 overflow-hidden">
+                <div className="relative bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-4 text-white shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:from-blue-400 hover:to-blue-500 cursor-pointer overflow-hidden" style={{ 
+                  willChange: 'transform', 
+                  backfaceVisibility: 'hidden',
+                  WebkitFontSmoothing: 'antialiased',
+                  MozOsxFontSmoothing: 'grayscale',
+                  transform: 'translateZ(0)'
+                }}>
                   {/* Shimmer effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transform -translate-x-full group-hover:translate-x-full transition-all duration-700 ease-in-out w-full h-full"></div>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <IconComponent className="h-5 w-5 text-white transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
-                      <span className="font-semibold text-sm transform transition-transform duration-300 group-hover:translate-x-1">{config.name}</span>
+                      <span className="font-semibold text-sm transition-colors duration-300">{config.name}</span>
                     </div>
                     {badge.badgeLevel > 1 && (
                       <div className="bg-white bg-opacity-20 rounded-full px-2 py-1 transform transition-all duration-300 group-hover:bg-opacity-30 group-hover:scale-110">
@@ -240,10 +246,10 @@ export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
                       </div>
                     )}
                   </div>
-                  <p className="text-xs text-blue-100 mb-1 transform transition-all duration-300 group-hover:text-white group-hover:translate-y-[-1px]">
+                  <p className="text-xs text-blue-100 mb-1 transition-colors duration-300 group-hover:text-white">
                     {config.description}
                   </p>
-                  <p className="text-xs text-blue-200 transform transition-all duration-300 group-hover:text-blue-100 group-hover:translate-y-[-1px]">
+                  <p className="text-xs text-blue-200 transition-colors duration-300 group-hover:text-blue-100">
                     {new Date(badge.earnedAt).toLocaleDateString()}
                   </p>
                 </div>
