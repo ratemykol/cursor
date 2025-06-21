@@ -14,7 +14,11 @@ import {
   Users, 
   Trophy,
   Calendar,
-  CheckCircle
+  CheckCircle,
+  Share2,
+  Twitter,
+  Facebook,
+  Linkedin
 } from 'lucide-react';
 
 interface UserBadge {
@@ -133,6 +137,89 @@ const levelNames = {
   3: 'Gold'
 };
 
+// Social media sharing utility functions
+const shareBadgeAchievement = (badgeName: string, level: string, platform: string) => {
+  const text = `🏆 Just earned the ${badgeName} ${level} badge on RateMyKOL! Join me in discovering top crypto traders. #RateMyKOL #CryptoTrading #Achievement`;
+  const url = window.location.origin;
+  
+  let shareUrl = '';
+  
+  switch (platform) {
+    case 'twitter':
+      shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+      break;
+    case 'facebook':
+      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
+      break;
+    case 'linkedin':
+      shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&summary=${encodeURIComponent(text)}`;
+      break;
+  }
+  
+  if (shareUrl) {
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+  }
+};
+
+// Share dropdown component
+const ShareDropdown: React.FC<{ badgeName: string; level: string }> = ({ badgeName, level }) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="absolute top-1 right-1 p-1 rounded-full bg-white/80 hover:bg-white shadow-sm transition-all duration-200 opacity-0 group-hover:opacity-100"
+      >
+        <Share2 className="h-3 w-3 text-gray-600" />
+      </button>
+      
+      {isOpen && (
+        <>
+          <div 
+            className="fixed inset-0 z-10" 
+            onClick={() => setIsOpen(false)}
+          />
+          <div className="absolute top-8 right-0 z-20 bg-white rounded-lg shadow-lg border p-2 min-w-[140px]">
+            <div className="space-y-1">
+              <button
+                onClick={() => {
+                  shareBadgeAchievement(badgeName, level, 'twitter');
+                  setIsOpen(false);
+                }}
+                className="flex items-center gap-2 w-full px-2 py-1 text-xs hover:bg-blue-50 rounded transition-colors"
+              >
+                <Twitter className="h-3 w-3 text-blue-500" />
+                Share on Twitter
+              </button>
+              <button
+                onClick={() => {
+                  shareBadgeAchievement(badgeName, level, 'facebook');
+                  setIsOpen(false);
+                }}
+                className="flex items-center gap-2 w-full px-2 py-1 text-xs hover:bg-blue-50 rounded transition-colors"
+              >
+                <Facebook className="h-3 w-3 text-blue-600" />
+                Share on Facebook
+              </button>
+              <button
+                onClick={() => {
+                  shareBadgeAchievement(badgeName, level, 'linkedin');
+                  setIsOpen(false);
+                }}
+                className="flex items-center gap-2 w-full px-2 py-1 text-xs hover:bg-blue-50 rounded transition-colors"
+              >
+                <Linkedin className="h-3 w-3 text-blue-700" />
+                Share on LinkedIn
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
 export const UserBadges: React.FC<{ userId: string }> = ({ userId }) => {
   const { data: badges = [], isLoading } = useQuery<UserBadge[]>({
     queryKey: [`/api/badges/user/${userId}`],
@@ -165,8 +252,12 @@ export const UserBadges: React.FC<{ userId: string }> = ({ userId }) => {
         return (
           <div
             key={badge.id}
-            className={`relative p-3 border-2 rounded-lg ${levelColor} transition-all duration-200 hover:scale-105`}
+            className={`group relative p-3 border-2 rounded-lg ${levelColor} transition-all duration-200 hover:scale-105`}
           >
+            <ShareDropdown 
+              badgeName={config.name} 
+              level={badge.badgeLevel > 1 ? levelName : ''} 
+            />
             <div className="flex flex-col items-center text-center">
               <div className={`p-2 rounded-full ${config.color} mb-2`}>
                 <Icon className={`h-4 w-4 ${config.iconColor}`} />
