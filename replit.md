@@ -201,6 +201,7 @@ Changelog:
 - June 21, 2025. Modified homepage trader scroll animation to center rank 1 trader card on page load using viewport-based positioning
 - June 21, 2025. Implemented comprehensive social media sharing functionality for achievements and badges across Twitter, Facebook, and LinkedIn platforms
 - June 21, 2025. Added hover-activated share buttons to both user badges and trader badges with customized share messages and proper URL encoding
+- June 21, 2025. Repositioned share buttons to bottom-right corner of achievement cards and removed Facebook option, keeping only Twitter and LinkedIn
 ```
 
 ## User Preferences
