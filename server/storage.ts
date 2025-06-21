@@ -675,16 +675,16 @@ export class DatabaseStorage implements IStorage {
       newBadges.push(badge);
     }
     
-    // Prolific Reviewer Badges (Bronze: 5, Silver: 15, Gold: 30)
+    // Prolific Reviewer Badges (Bronze: 5, Silver: 50, Gold: 100)
     if (reviewCount >= 5 && !badgeTypes.includes('prolific_reviewer_1')) {
       const badge = await this.awardBadge(userId, 'prolific_reviewer', 1, { reviewCount });
       newBadges.push(badge);
     }
-    if (reviewCount >= 15 && !badgeTypes.includes('prolific_reviewer_2')) {
+    if (reviewCount >= 50 && !badgeTypes.includes('prolific_reviewer_2')) {
       const badge = await this.awardBadge(userId, 'prolific_reviewer', 2, { reviewCount });
       newBadges.push(badge);
     }
-    if (reviewCount >= 30 && !badgeTypes.includes('prolific_reviewer_3')) {
+    if (reviewCount >= 100 && !badgeTypes.includes('prolific_reviewer_3')) {
       const badge = await this.awardBadge(userId, 'prolific_reviewer', 3, { reviewCount });
       newBadges.push(badge);
     }
