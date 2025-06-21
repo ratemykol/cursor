@@ -14,6 +14,7 @@ import { AdminPage } from "@/pages/AdminPage";
 import { SignUpPage } from "@/pages/SignUpPage";
 import { SignInPage } from "@/pages/SignInPage";
 import { UserProfilePage } from "@/pages/UserProfilePage";
+import { TraderProfileManagementPage } from "@/pages/TraderProfileManagementPage";
 
 function Router() {
   const [location] = useLocation();
