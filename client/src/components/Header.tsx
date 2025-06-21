@@ -113,6 +113,11 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
                 <DropdownMenuItem onClick={() => setLocation("/profile")}>
                   My Profile
                 </DropdownMenuItem>
+                {user?.userType === "trader" && (
+                  <DropdownMenuItem onClick={() => setLocation("/manage-trader-profile")}>
+                    Manage Trader Profile
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onClick={() => logoutMutation.mutate()}>
                   Sign Out
                 </DropdownMenuItem>
