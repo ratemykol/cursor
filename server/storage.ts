@@ -3,12 +3,15 @@ import {
   traders,
   ratings,
   reviewVotes,
+  userBadges,
   type User,
   type UpsertUser,
   type Trader,
   type InsertTrader,
   type Rating,
   type InsertRating,
+  type UserBadge,
+  type InsertUserBadge,
   type UserRegistration,
   type UserLogin,
 } from "@shared/schema";
@@ -61,6 +64,12 @@ export interface IStorage {
   voteOnReview(ratingId: number, userId: string, voteType: 'helpful' | 'not_helpful'): Promise<void>;
   getUserVoteOnReview(ratingId: number, userId: string): Promise<string | null>;
   getReviewVoteStats(ratingId: number): Promise<{ helpful: number; notHelpful: number }>;
+  
+  // Badge operations
+  getUserBadges(userId: string): Promise<UserBadge[]>;
+  awardBadge(userId: string, badgeType: string, badgeLevel?: number, metadata?: any): Promise<UserBadge>;
+  checkAndAwardBadges(userId: string): Promise<UserBadge[]>;
+  getBadgeProgress(userId: string): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
