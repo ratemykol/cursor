@@ -711,14 +711,7 @@ export class DatabaseStorage implements IStorage {
       newBadges.push(badge);
     }
     
-    // Quality Reviewer Badge (average rating given is between 3-4, showing balanced reviews)
-    if (reviewCount >= 5) {
-      const avgRating = userRatings.reduce((sum, r) => sum + r.overallRating, 0) / reviewCount;
-      if (avgRating >= 3 && avgRating <= 4 && !badgeTypes.includes('quality_reviewer_1')) {
-        const badge = await this.awardBadge(userId, 'quality_reviewer', 1, { avgRating: avgRating.toFixed(2) });
-        newBadges.push(badge);
-      }
-    }
+
     
     // Early Adopter Badge (for users who joined early)
     const user = await this.getUser(userId);
@@ -758,8 +751,7 @@ export class DatabaseStorage implements IStorage {
           silver: helpfulVotes >= 25,
           gold: helpfulVotes >= 50
         },
-        detailedReviewer: detailedReviews >= 5,
-        qualityReviewer: reviewCount >= 5 && avgRating >= 3 && avgRating <= 4
+        detailedReviewer: detailedReviews >= 5
       }
     };
   }
