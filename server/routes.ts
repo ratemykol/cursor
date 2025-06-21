@@ -738,6 +738,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Badge system routes
+  app.get('/api/badges/user/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const badges = await storage.getUserBadges(userId);
+      res.json(badges);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get('/api/badges/progress/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const progress = await storage.getBadgeProgress(userId);
+      res.json(progress);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post('/api/badges/check/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const newBadges = await storage.checkAndAwardBadges(userId);
+      res.json(newBadges);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
