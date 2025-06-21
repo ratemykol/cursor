@@ -54,14 +54,69 @@ app.use((req, res, next) => {
   next();
 });
 
-// IP obfuscation middleware
+// CORS configuration
+app.use(cors({
+  origin: function (origin, callback) {
+    const allowedOrigins = process.env.ALLOWED_ORIGINS ? 
+      process.env.ALLOWED_ORIGINS.split(',') : [];
+    
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Origin not allowed by CORS policy'));
+    }
+  },
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+}));
+
+// Rate limiting with simple fallback to avoid IP validation errors
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: {
+    error: "Too many requests from this IP, please try again later."
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => {
+    // Skip rate limiting if IP is invalid to prevent crashes
+    return !req.ip || req.ip === 'xxx.xxx.xxx.xxx';
+  }
+});
+
+app.use(limiter);
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: {
+    error: "Too many authentication attempts, please try again later."
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => {
+    // Skip rate limiting if IP is invalid to prevent crashes
+    return !req.ip || req.ip === 'xxx.xxx.xxx.xxx';
+  }
+});
+
+app.use('/api/auth', authLimiter);
+
+// IP obfuscation middleware (after rate limiting to avoid conflicts)
 app.use((req, res, next) => {
+  // Store original IP for logging if needed
+  const originalIP = req.ip;
+  
+  // Override IP with anonymized version
   Object.defineProperty(req, 'ip', {
     value: 'xxx.xxx.xxx.xxx',
     writable: false,
     configurable: false
   });
   
+  // Remove identifying headers
   delete req.headers['x-forwarded-for'];
   delete req.headers['x-real-ip'];
   delete req.headers['x-forwarded-host'];
@@ -85,48 +140,6 @@ app.use((req, res, next) => {
     next();
   }, delay);
 });
-
-// CORS configuration
-app.use(cors({
-  origin: function (origin, callback) {
-    const allowedOrigins = process.env.ALLOWED_ORIGINS ? 
-      process.env.ALLOWED_ORIGINS.split(',') : [];
-    
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Origin not allowed by CORS policy'));
-    }
-  },
-  credentials: true,
-  preflightContinue: false,
-  optionsSuccessStatus: 204
-}));
-
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: {
-    error: "Too many requests from this IP, please try again later."
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-app.use(limiter);
-
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: {
-    error: "Too many authentication attempts, please try again later."
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-app.use('/api/auth', authLimiter);
 
 // Body parsing
 app.use(express.json({ limit: '10mb' }));
