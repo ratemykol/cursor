@@ -186,9 +186,11 @@ export const TraderProfilePage = (): JSX.Element => {
                   </div>
 
                   {/* Specialty */}
-                  <p className="text-gray-600 mb-4 text-lg">
-                    {(trader as any)?.specialty || 'new pairs terrorist'}
-                  </p>
+                  {(trader as any)?.specialty && (
+                    <p className="text-gray-600 mb-4 text-lg">
+                      {(trader as any).specialty}
+                    </p>
+                  )}
 
                   {/* Rating Stars and Count */}
                   <div className="flex items-center gap-3 mb-4">

@@ -204,6 +204,7 @@ Changelog:
 - June 21, 2025. Repositioned share buttons to bottom-right corner of achievement cards and removed Facebook option, keeping only Twitter and LinkedIn
 - June 21, 2025. Simplified sharing to Twitter-only option and changed from new window to new tab opening behavior
 - June 21, 2025. Added automatic dropdown closing when cursor leaves badge area for improved user experience
+- June 21, 2025. Fixed inappropriate default text on trader profiles by removing "new pairs terrorist" fallback and changing review count and wallet text to black
 ```
 
 ## User Preferences
