@@ -36,6 +36,8 @@ export const users = pgTable("users", {
   profileImageUrl: varchar("profile_image_url"),
   bio: text("bio"),
   role: varchar("role", { length: 20 }).default("user"), // "admin" or "user"
+  userType: varchar("user_type", { length: 20 }).default("user"), // "user" or "trader"
+  traderId: integer("trader_id").references(() => traders.id), // Link to trader profile if user is a trader
   authType: varchar("auth_type", { length: 20 }).default("replit"), // "replit" or "local"
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -156,10 +158,14 @@ export const reviewVotesRelations = relations(reviewVotes, ({ one }) => ({
   }),
 }));
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ one, many }) => ({
   ratings: many(ratings),
   reviewVotes: many(reviewVotes),
   badges: many(userBadges),
+  traderProfile: one(traders, {
+    fields: [users.traderId],
+    references: [traders.id],
+  }),
 }));
 
 export const userBadgesRelations = relations(userBadges, ({ one }) => ({
@@ -206,6 +212,7 @@ export const userRegistrationSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters").max(50, "Username must be less than 50 characters"),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
   password: z.string().min(6, "Password must be at least 6 characters"),
+  userType: z.enum(["user", "trader"]).default("user"),
 });
 
 export const userLoginSchema = z.object({
