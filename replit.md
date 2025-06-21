@@ -179,6 +179,8 @@ Changelog:
 - June 20, 2025. Fixed rate limiting validation error causing white screen by reordering middleware and adding skip conditions for obfuscated IPs
 - June 20, 2025. Completed production deployment preparation with all security features intact and database connectivity configured
 - June 21, 2025. Reverted advanced security middleware and anti-doxxing measures from commit d61f092 while preserving all subsequent changes
+- June 21, 2025. Implemented review helpfulness voting system with database schema, API endpoints, and frontend voting buttons
+- June 21, 2025. Added purple hover effects to voting buttons matching site theme color (#AB9FF2)
 ```
 
 ## User Preferences

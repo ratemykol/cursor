@@ -446,7 +446,7 @@ export const TraderProfilePage = (): JSX.Element => {
                                         size="sm"
                                         onClick={() => voteMutation.mutate({ reviewId: rating.id, voteType: 'helpful' })}
                                         disabled={voteMutation.isPending}
-                                        className="flex items-center gap-1 text-gray-600 hover:text-green-600 hover:bg-green-50"
+                                        className="flex items-center gap-1 text-gray-600 hover:bg-[#AB9FF2] hover:text-white transition-colors duration-200"
                                       >
                                         <ThumbsUp size={16} />
                                         <span>{rating.helpful || 0}</span>
@@ -456,7 +456,7 @@ export const TraderProfilePage = (): JSX.Element => {
                                         size="sm"
                                         onClick={() => voteMutation.mutate({ reviewId: rating.id, voteType: 'not_helpful' })}
                                         disabled={voteMutation.isPending}
-                                        className="flex items-center gap-1 text-gray-600 hover:text-red-600 hover:bg-red-50"
+                                        className="flex items-center gap-1 text-gray-600 hover:bg-[#AB9FF2] hover:text-white transition-colors duration-200"
                                       >
                                         <ThumbsDown size={16} />
                                         <span>{rating.notHelpful || 0}</span>
