@@ -772,7 +772,20 @@ export class DatabaseStorage implements IStorage {
       .from(traderBadges)
       .where(eq(traderBadges.traderId, traderId))
       .orderBy(desc(traderBadges.earnedAt));
-    return badges;
+    
+    // Filter to only show the highest level badge for each badge type
+    const badgeMap = new Map<string, TraderBadge>();
+    
+    for (const badge of badges) {
+      const existingBadge = badgeMap.get(badge.badgeType);
+      if (!existingBadge || badge.badgeLevel > existingBadge.badgeLevel) {
+        badgeMap.set(badge.badgeType, badge);
+      }
+    }
+    
+    return Array.from(badgeMap.values()).sort((a, b) => 
+      new Date(b.earnedAt).getTime() - new Date(a.earnedAt).getTime()
+    );
   }
 
   async awardTraderBadge(traderId: number, badgeType: string, badgeLevel: number = 1, metadata: any = null): Promise<TraderBadge> {
