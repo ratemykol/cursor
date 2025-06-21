@@ -339,11 +339,13 @@ export const HomePage = (): JSX.Element => {
                       </div>
                       
                       {/* Specialty Tag */}
-                      <div className="mb-5">
-                        <span className="bg-white text-black px-4 py-2 rounded-full text-sm font-medium">
-                          {trader.specialty || 'Crypto Expert'}
-                        </span>
-                      </div>
+                      {trader.specialty && (
+                        <div className="mb-5">
+                          <span className="bg-white text-black px-4 py-2 rounded-full text-sm font-medium">
+                            {trader.specialty}
+                          </span>
+                        </div>
+                      )}
                       
                       {/* Rating Section */}
                       <div className="flex items-center justify-between w-full mb-3">
