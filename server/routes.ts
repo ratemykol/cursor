@@ -3,10 +3,8 @@ import { createServer, type Server } from "http";
 import rateLimit from "express-rate-limit";
 import { body, validationResult, param, query } from "express-validator";
 import { storage } from "./storage";
-import { insertTraderSchema, insertRatingSchema, userRegistrationSchema, userLoginSchema, users } from "@shared/schema";
+import { insertTraderSchema, insertRatingSchema, userRegistrationSchema, userLoginSchema } from "@shared/schema";
 import { upload } from "./upload";
-import { db } from "./db";
-import bcrypt from "bcryptjs";
 import path from "path";
 import express from "express";
 
@@ -659,8 +657,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         profileImageUrl: user.profileImageUrl,
         authType: user.authType,
         role: user.role,
-        userType: user.userType,
-        traderId: user.traderId,
       };
       
       // Remove password hash from response
@@ -810,150 +806,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(newBadges);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
-    }
-  });
-
-  // Admin-only trader account creation route
-  app.post("/api/auth/register-trader", isAdmin, [
-    body('username')
-      .isLength({ min: 3, max: 50 })
-      .withMessage('Username must be between 3 and 50 characters')
-      .matches(/^[a-zA-Z0-9._-]+$/)
-      .withMessage('Username can only contain letters, numbers, dots, hyphens, and underscores'),
-    body('password')
-      .isLength({ min: 6 })
-      .withMessage('Password must be at least 6 characters'),
-    body('traderId')
-      .isInt({ min: 1 })
-      .withMessage('Valid trader ID is required'),
-    handleValidationErrors
-  ], async (req: Request, res: Response) => {
-    try {
-      // Verify the trader exists
-      const trader = await storage.getTrader(req.body.traderId);
-      if (!trader) {
-        return res.status(404).json({ error: "Trader not found" });
-      }
-
-      // Check if username already exists
-      const existingUser = await storage.getUserByUsername(req.body.username);
-      if (existingUser) {
-        return res.status(400).json({ error: "Username already exists" });
-      }
-
-      // Create trader user account
-      const hashedPassword = await bcrypt.hash(req.body.password, 10);
-      const userId = `trader_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
-      const [user] = await db
-        .insert(users)
-        .values({
-          id: userId,
-          username: req.body.username,
-          email: "",
-          passwordHash: hashedPassword,
-          authType: "local",
-          userType: "trader",
-          role: "user",
-          traderId: req.body.traderId,
-        })
-        .returning();
-
-      res.json({
-        message: "Trader account created successfully",
-        user: {
-          id: user.id,
-          username: user.username,
-          userType: user.userType,
-          traderId: user.traderId
-        }
-      });
-    } catch (error: any) {
-      res.status(400).json({ error: error.message });
-    }
-  });
-
-  // Get trader profile for authenticated trader user
-  app.get("/api/user/trader-profile", isAuthenticated, async (req: Request, res: Response) => {
-    try {
-      const user = (req.session as any)?.user;
-      
-      if (user.userType !== "trader") {
-        return res.status(403).json({ error: "Access denied. Only trader accounts can access trader profiles." });
-      }
-      
-      const traderProfile = await storage.getUserTraderProfile(user.id);
-      if (!traderProfile) {
-        return res.status(404).json({ error: "Trader profile not found" });
-      }
-      
-      res.json(traderProfile);
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  // Update trader profile for authenticated trader user
-  app.put("/api/user/trader-profile", isAuthenticated, [
-    body('username')
-      .optional()
-      .isLength({ min: 3, max: 50 })
-      .withMessage('Username must be between 3 and 50 characters')
-      .matches(/^[a-zA-Z0-9._-]+$/)
-      .withMessage('Username can only contain letters, numbers, dots, hyphens, and underscores'),
-    body('name')
-      .optional()
-      .isLength({ min: 1, max: 100 })
-      .withMessage('Trader name must be between 1 and 100 characters'),
-    body('walletAddress')
-      .optional()
-      .isLength({ min: 1, max: 255 })
-      .withMessage('Wallet address must be between 1 and 255 characters'),
-    body('bio')
-      .optional()
-      .isLength({ max: 500 })
-      .withMessage('Bio must be less than 500 characters'),
-    body('twitterUrl')
-      .optional()
-      .isLength({ max: 255 })
-      .withMessage('Twitter URL must be less than 255 characters'),
-    handleValidationErrors
-  ], async (req: Request, res: Response) => {
-    try {
-      const user = (req.session as any)?.user;
-      if (user.userType !== "trader") {
-        return res.status(403).json({ error: "Access denied. Only trader accounts can edit trader profiles." });
-      }
-
-      // Handle username update if provided
-      if (req.body.username && req.body.username !== user.username) {
-        // Check if new username is already taken
-        const existingUser = await storage.checkUsernameExists(req.body.username.toLowerCase(), user.id);
-        if (existingUser) {
-          return res.status(400).json({ error: "Username Taken!" });
-        }
-
-        // Update username in users table
-        const updatedUser = await storage.updateUserUsername(user.id, req.body.username.toLowerCase());
-        
-        // Update session with new username
-        (req.session as any).user.username = updatedUser.username;
-      }
-      
-      // Update trader profile data
-      const { username, ...traderData } = req.body;
-      const updatedTrader = await storage.updateUserTraderProfile(user.id, traderData);
-      if (!updatedTrader) {
-        return res.status(404).json({ error: "Trader profile not found" });
-      }
-      
-      res.json({
-        message: "Trader profile updated successfully",
-        trader: updatedTrader,
-        user: { username: (req.session as any).user.username }
-      });
-    } catch (error: any) {
-      res.status(400).json({ error: error.message });
     }
   });
 

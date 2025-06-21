@@ -18,10 +18,6 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
   const { isAdmin } = useAdmin();
-  
-  // Debug logging
-  console.log('Header user object:', user);
-  console.log('User type:', user?.userType);
   const queryClient = useQueryClient();
 
   const logoutMutation = useMutation({
@@ -117,11 +113,6 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
                 <DropdownMenuItem onClick={() => setLocation("/profile")}>
                   My Profile
                 </DropdownMenuItem>
-                {user?.userType === "trader" && (
-                  <DropdownMenuItem onClick={() => setLocation("/manage-trader-profile")}>
-                    Manage Trader Profile
-                  </DropdownMenuItem>
-                )}
                 <DropdownMenuItem onClick={() => logoutMutation.mutate()}>
                   Sign Out
                 </DropdownMenuItem>

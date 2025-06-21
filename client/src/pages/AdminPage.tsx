@@ -17,20 +17,13 @@ import { Edit, Plus, Save, X, Upload, Image, Trash2, RefreshCw } from "lucide-re
 export const AdminPage = (): JSX.Element => {
   const { isAuthenticated } = useAuth();
   const { isAdmin, isLoading: adminLoading } = useAdmin();
-  const [view, setView] = useState<"list" | "create" | "edit" | "reviews" | "users" | "trader-accounts">("list");
+  const [view, setView] = useState<"list" | "create" | "edit" | "reviews" | "users">("list");
   const [editingTrader, setEditingTrader] = useState<any>(null);
   const [editingReview, setEditingReview] = useState<any>(null);
   const [reviewSearch, setReviewSearch] = useState("");
   const [editingUser, setEditingUser] = useState<any>(null);
   const [editingUsername, setEditingUsername] = useState("");
   const [userSearch, setUserSearch] = useState("");
-  
-  // Trader account creation state
-  const [traderAccountForm, setTraderAccountForm] = useState({
-    username: "",
-    password: "",
-    traderId: ""
-  });
   
   const [name, setName] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
@@ -43,43 +36,6 @@ export const AdminPage = (): JSX.Element => {
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
-
-  // Trader account creation mutation
-  const createTraderAccountMutation = useMutation({
-    mutationFn: async (accountData: { username: string; password: string; traderId: number }) => {
-      const response = await fetch("/api/auth/register-trader", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: accountData.username,
-          password: accountData.password,
-          traderId: accountData.traderId
-        }),
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to create trader account");
-      }
-      
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Trader account created successfully",
-      });
-      setTraderAccountForm({ username: "", password: "", traderId: "" });
-      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to create trader account",
-        variant: "destructive",
-      });
-    },
-  });
 
   // File upload mutation for trader profile pictures
   const uploadFileMutation = useMutation({
@@ -556,13 +512,6 @@ export const AdminPage = (): JSX.Element => {
             >
               Manage Users
             </Button>
-            <Button 
-              variant={view === "trader-accounts" ? "default" : "outline"}
-              onClick={() => setView("trader-accounts")}
-              className="text-lg px-6 py-3"
-            >
-              Trader Accounts
-            </Button>
           </div>
 
           <div className="flex justify-between items-center mb-8">
@@ -865,144 +814,6 @@ export const AdminPage = (): JSX.Element => {
               )}
             </div>
           )}
-        </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (view === "trader-accounts") {
-    return (
-      <div className="bg-white w-full min-h-screen">
-        <div className="bg-white min-h-screen max-w-[1920px] mx-auto">
-        <Header currentPage="admin" />
-        <div className="container mx-auto px-16 py-12">
-          {/* Navigation Tabs */}
-          <div className="flex gap-6 mb-8">
-            <Button 
-              variant={view === "list" ? "default" : "outline"}
-              onClick={() => setView("list")}
-              className="text-lg px-6 py-3"
-            >
-              Manage Traders
-            </Button>
-            <Button 
-              variant={view === "reviews" ? "default" : "outline"}
-              onClick={() => setView("reviews")}
-              className="text-lg px-6 py-3"
-            >
-              Manage Reviews
-            </Button>
-            <Button 
-              variant={view === "users" ? "default" : "outline"}
-              onClick={() => setView("users")}
-              className="text-lg px-6 py-3"
-            >
-              Manage Users
-            </Button>
-            <Button 
-              variant={view === "trader-accounts" ? "default" : "outline"}
-              onClick={() => setView("trader-accounts")}
-              className="text-lg px-6 py-3"
-            >
-              Trader Accounts
-            </Button>
-          </div>
-
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold">Admin Panel - Create Trader Accounts</h1>
-            <p className="text-gray-600 mt-2">Create login credentials for existing trader profiles</p>
-          </div>
-
-          <Card className="max-w-2xl">
-            <CardHeader>
-              <CardTitle>Create Trader Account</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form 
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!traderAccountForm.username.trim() || !traderAccountForm.password.trim() || !traderAccountForm.traderId.trim()) {
-                    toast({
-                      title: "Required Fields",
-                      description: "All fields are required",
-                      variant: "destructive",
-                    });
-                    return;
-                  }
-                  
-                  createTraderAccountMutation.mutate({
-                    username: traderAccountForm.username.trim(),
-                    password: traderAccountForm.password.trim(),
-                    traderId: parseInt(traderAccountForm.traderId)
-                  });
-                }}
-                className="space-y-6"
-              >
-                <div className="space-y-2">
-                  <Label htmlFor="trader-select">Select Trader Profile</Label>
-                  <select
-                    id="trader-select"
-                    value={traderAccountForm.traderId}
-                    onChange={(e) => setTraderAccountForm(prev => ({ ...prev, traderId: e.target.value }))}
-                    className="w-full p-3 border-2 border-[#9f98b3] rounded-md"
-                    required
-                  >
-                    <option value="">Select a trader...</option>
-                    {typedTraders?.map((trader: any) => (
-                      <option key={trader.id} value={trader.id}>
-                        {trader.name} ({trader.walletAddress})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="trader-username">Username</Label>
-                  <Input
-                    id="trader-username"
-                    type="text"
-                    value={traderAccountForm.username}
-                    onChange={(e) => setTraderAccountForm(prev => ({ ...prev, username: e.target.value }))}
-                    className="border-2 border-[#9f98b3]"
-                    placeholder="Enter username for trader login"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="trader-password">Password</Label>
-                  <Input
-                    id="trader-password"
-                    type="password"
-                    value={traderAccountForm.password}
-                    onChange={(e) => setTraderAccountForm(prev => ({ ...prev, password: e.target.value }))}
-                    className="border-2 border-[#9f98b3]"
-                    placeholder="Enter password for trader login"
-                    required
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={createTraderAccountMutation.isPending}
-                  className="w-full bg-[#ab9ff2] text-[#3c315b] hover:bg-[#DCDAF0] transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
-                >
-                  {createTraderAccountMutation.isPending ? "Creating Account..." : "Create Trader Account"}
-                </Button>
-              </form>
-              
-              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                <h3 className="font-semibold text-[#3c315b] mb-2">Instructions:</h3>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• Select an existing trader profile from the dropdown</li>
-                  <li>• Create unique login credentials for the trader</li>
-                  <li>• Traders can use these credentials to manage their own profile</li>
-                  <li>• Only admins can create trader accounts</li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
         </div>
         </div>
       </div>
