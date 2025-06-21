@@ -300,7 +300,23 @@ export const TraderProfilePage = (): JSX.Element => {
                     <div key={rating.id} className="border-b border-gray-100 pb-6 last:border-b-0 last:pb-0">
                       {/* User avatar and header */}
                       <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-medium" style={{ backgroundColor: '#AB9FF2' }}>
+                        {rating.userProfileImage ? (
+                          <img 
+                            src={rating.userProfileImage} 
+                            alt={`${rating.reviewerName || 'Anonymous'} profile`}
+                            className="w-12 h-12 rounded-full object-cover"
+                            onError={(e) => {
+                              // Fall back to initial avatar if image fails to load
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              target.nextElementSibling?.classList.remove('hidden');
+                            }}
+                          />
+                        ) : null}
+                        <div 
+                          className={`w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-medium ${rating.userProfileImage ? 'hidden' : ''}`}
+                          style={{ backgroundColor: '#AB9FF2' }}
+                        >
                           {rating.reviewerName ? rating.reviewerName.charAt(0).toUpperCase() : 'A'}
                         </div>
                         <div className="flex-1">
