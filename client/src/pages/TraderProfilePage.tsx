@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { Header } from "@/components/Header";
-import { ArrowLeft, Star, Image as ImageIcon, Edit, Trash2, ExternalLink } from "lucide-react";
+import { ArrowLeft, Star, Image as ImageIcon, Edit, Trash2, ExternalLink, ThumbsUp, ThumbsDown } from "lucide-react";
 
 export const TraderProfilePage = (): JSX.Element => {
   const { id } = useParams();
@@ -18,6 +18,37 @@ export const TraderProfilePage = (): JSX.Element => {
   const { toast } = useToast();
   const { isAuthenticated, user } = useAuth();
   const queryClient = useQueryClient();
+
+  // Vote on review helpfulness
+  const voteMutation = useMutation({
+    mutationFn: async ({ reviewId, voteType }: { reviewId: number; voteType: 'helpful' | 'not_helpful' }) => {
+      const response = await fetch(`/api/reviews/${reviewId}/vote`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ voteType }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to vote on review');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      // Refresh the ratings to get updated vote counts
+      queryClient.invalidateQueries({ queryKey: [`/api/traders/${id}/ratings`] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   const { data: trader, isLoading: traderLoading } = useQuery({
     queryKey: [`/api/traders/${id}`],

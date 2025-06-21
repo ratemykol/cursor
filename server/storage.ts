@@ -2,6 +2,7 @@ import {
   users,
   traders,
   ratings,
+  reviewVotes,
   type User,
   type UpsertUser,
   type Trader,
@@ -585,7 +586,13 @@ export class DatabaseStorage implements IStorage {
       .where(eq(ratings.id, ratingId))
       .limit(1);
     
-    return stats.length > 0 ? stats[0] : { helpful: 0, notHelpful: 0 };
+    if (stats.length > 0) {
+      return { 
+        helpful: Number(stats[0].helpful) || 0, 
+        notHelpful: Number(stats[0].notHelpful) || 0 
+      };
+    }
+    return { helpful: 0, notHelpful: 0 };
   }
 }
 
