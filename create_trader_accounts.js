@@ -48,7 +48,7 @@ async function createTraderAccounts() {
           await pool.query(`
             INSERT INTO users (id, username, email, password_hash, auth_type, user_type, role, trader_id) 
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-          `, [userId, username, '', hashedPassword, 'local', 'trader', 'user', trader.id]);
+          `, [userId, username, `${username}@trader.local`, hashedPassword, 'local', 'trader', 'user', trader.id]);
           
           credentials.push({
             traderId: trader.id,
