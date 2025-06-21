@@ -205,6 +205,8 @@ Changelog:
 - June 21, 2025. Simplified sharing to Twitter-only option and changed from new window to new tab opening behavior
 - June 21, 2025. Added automatic dropdown closing when cursor leaves badge area for improved user experience
 - June 21, 2025. Fixed inappropriate default text on trader profiles by removing "new pairs terrorist" fallback and changing review count and wallet text to black
+- June 21, 2025. Updated specialty and bio text colors to black for better readability and consistency
+- June 21, 2025. Removed "Crypto Expert" fallback text from homepage trader cards for cleaner profile display
 ```
 
 ## User Preferences
