@@ -17,6 +17,7 @@ export const TraderProfileManagementPage = (): JSX.Element => {
   const { toast } = useToast();
   const { user } = useAuth();
   const [formData, setFormData] = useState({
+    username: "",
     name: "",
     walletAddress: "",
     bio: "",
@@ -39,6 +40,7 @@ export const TraderProfileManagementPage = (): JSX.Element => {
   React.useEffect(() => {
     if (traderProfile && typeof traderProfile === 'object') {
       setFormData({
+        username: user?.username || "",
         name: (traderProfile as any).name || "",
         walletAddress: (traderProfile as any).walletAddress || "",
         bio: (traderProfile as any).bio || "",
@@ -46,7 +48,7 @@ export const TraderProfileManagementPage = (): JSX.Element => {
         profileImageUrl: (traderProfile as any).profileImageUrl || ""
       });
     }
-  }, [traderProfile]);
+  }, [traderProfile, user]);
 
   const updateProfileMutation = useMutation({
     mutationFn: async (updatedData: typeof formData) => {
@@ -64,13 +66,19 @@ export const TraderProfileManagementPage = (): JSX.Element => {
       
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Success",
         description: "Your trader profile has been updated successfully",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/user/trader-profile"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/traders"] });
+      
+      // If username was updated, refresh all queries to update the auth context
+      if (data.user?.username) {
+        queryClient.invalidateQueries();
+      } else {
+        queryClient.invalidateQueries({ queryKey: ["/api/user/trader-profile"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/traders"] });
+      }
     },
     onError: (error: any) => {
       toast({
@@ -88,6 +96,33 @@ export const TraderProfileManagementPage = (): JSX.Element => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.username.trim()) {
+      toast({
+        title: "Error",
+        description: "Username is required",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (formData.username.length < 3 || formData.username.length > 50) {
+      toast({
+        title: "Error",
+        description: "Username must be between 3 and 50 characters",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!/^[a-zA-Z0-9._-]+$/.test(formData.username)) {
+      toast({
+        title: "Error",
+        description: "Username can only contain letters, numbers, dots, hyphens, and underscores",
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (!formData.name.trim()) {
       toast({
@@ -137,6 +172,20 @@ export const TraderProfileManagementPage = (): JSX.Element => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="username">Username *</Label>
+                  <Input
+                    id="username"
+                    name="username"
+                    type="text"
+                    value={formData.username}
+                    onChange={handleInputChange}
+                    required
+                    className="border-2 border-[#9f98b3]"
+                    placeholder="Your unique username"
+                  />
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="name">Trader Name *</Label>
                   <Input

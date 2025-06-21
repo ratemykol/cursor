@@ -892,6 +892,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Update trader profile for authenticated trader user
   app.put("/api/user/trader-profile", isAuthenticated, [
+    body('username')
+      .optional()
+      .isLength({ min: 3, max: 50 })
+      .withMessage('Username must be between 3 and 50 characters')
+      .matches(/^[a-zA-Z0-9._-]+$/)
+      .withMessage('Username can only contain letters, numbers, dots, hyphens, and underscores'),
     body('name')
       .optional()
       .isLength({ min: 1, max: 100 })
@@ -915,15 +921,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (user.userType !== "trader") {
         return res.status(403).json({ error: "Access denied. Only trader accounts can edit trader profiles." });
       }
+
+      // Handle username update if provided
+      if (req.body.username && req.body.username !== user.username) {
+        // Check if new username is already taken
+        const existingUser = await storage.checkUsernameExists(req.body.username.toLowerCase(), user.id);
+        if (existingUser) {
+          return res.status(400).json({ error: "Username Taken!" });
+        }
+
+        // Update username in users table
+        const updatedUser = await storage.updateUserUsername(user.id, req.body.username.toLowerCase());
+        
+        // Update session with new username
+        (req.session as any).user.username = updatedUser.username;
+      }
       
-      const updatedTrader = await storage.updateUserTraderProfile(user.id, req.body);
+      // Update trader profile data
+      const { username, ...traderData } = req.body;
+      const updatedTrader = await storage.updateUserTraderProfile(user.id, traderData);
       if (!updatedTrader) {
         return res.status(404).json({ error: "Trader profile not found" });
       }
       
       res.json({
         message: "Trader profile updated successfully",
-        trader: updatedTrader
+        trader: updatedTrader,
+        user: { username: (req.session as any).user.username }
       });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
