@@ -493,6 +493,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Review voting endpoints
+  app.post("/api/reviews/:id/vote", isAuthenticated, async (req, res) => {
+    try {
+      const user = (req.session as any)?.user;
+      const reviewId = parseInt(req.params.id);
+      const { voteType } = req.body;
+
+      if (!['helpful', 'not_helpful'].includes(voteType)) {
+        return res.status(400).json({ error: "Invalid vote type" });
+      }
+
+      await storage.voteOnReview(reviewId, user.id, voteType);
+      const stats = await storage.getReviewVoteStats(reviewId);
+      const userVote = await storage.getUserVoteOnReview(reviewId, user.id);
+
+      res.json({ 
+        ...stats,
+        userVote 
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/reviews/:id/vote-status", async (req, res) => {
+    try {
+      const reviewId = parseInt(req.params.id);
+      const user = (req.session as any)?.user;
+      
+      const stats = await storage.getReviewVoteStats(reviewId);
+      let userVote = null;
+      
+      if (user) {
+        userVote = await storage.getUserVoteOnReview(reviewId, user.id);
+      }
+
+      res.json({ 
+        ...stats,
+        userVote 
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Admin routes for review management
   app.get("/api/admin/ratings", isAdmin, async (req, res) => {
     try {
