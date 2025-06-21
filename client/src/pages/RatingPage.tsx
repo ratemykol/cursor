@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { Header } from "@/components/Header";
 import { ArrowLeft, Image as ImageIcon } from "lucide-react";
+import { BadgeNotification } from "@/components/BadgeSystem";
 
 export const RatingPage = (): JSX.Element => {
   const { id } = useParams();
@@ -24,6 +25,7 @@ export const RatingPage = (): JSX.Element => {
   const [reliabilityRating, setReliabilityRating] = useState([3]);
   const [review, setReview] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [newBadges, setNewBadges] = useState<any[]>([]);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -73,11 +75,21 @@ export const RatingPage = (): JSX.Element => {
       }
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
+      // Check for new badges from the response
+      if (data.newBadges && data.newBadges.length > 0) {
+        setNewBadges(data.newBadges);
+        // Clear badges after 5 seconds
+        setTimeout(() => setNewBadges([]), 5000);
+      }
+      
       // Invalidate and refetch trader data to refresh the profile page
       queryClient.invalidateQueries({ queryKey: [`/api/traders/${id}`] });
       queryClient.invalidateQueries({ queryKey: [`/api/traders/${id}/ratings`] });
       queryClient.invalidateQueries({ queryKey: ['/api/traders'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/reviews'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/badges/user/${user?.id}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/badges/progress/${user?.id}`] });
       
       toast({
         title: "Success",

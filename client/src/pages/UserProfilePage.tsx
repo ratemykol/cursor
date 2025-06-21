@@ -464,6 +464,19 @@ export const UserProfilePage = (): JSX.Element => {
                     )}
                   </div>
                 </TabsContent>
+                
+                <TabsContent value="badges" className="mt-6">
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4">Your Achievements</h3>
+                      {user?.id && <UserBadges userId={user.id} />}
+                    </div>
+                    
+                    <div className="mt-8">
+                      {user?.id && <BadgeProgress userId={user.id} />}
+                    </div>
+                  </div>
+                </TabsContent>
               </Tabs>
             </CardContent>
           </Card>
