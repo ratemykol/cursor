@@ -208,6 +208,9 @@ Changelog:
 - June 21, 2025. Updated signup form to only allow regular user registration with simplified fields
 - June 21, 2025. Added "Trader Accounts" tab in admin panel for creating login credentials for existing trader profiles
 - June 21, 2025. Implemented secure trader account creation system where only admins can assign login credentials to trader profiles
+- June 21, 2025. Added username change functionality for trader profiles with validation and uniqueness checks
+- June 21, 2025. Implemented backend API to handle trader username updates with proper session management
+- June 21, 2025. Updated trader profile management form to include username field with client-side validation
 ```
 
 ## User Preferences
