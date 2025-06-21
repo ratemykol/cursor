@@ -185,6 +185,7 @@ Changelog:
 - June 21, 2025. Updated username validation error message to "Username Taken!" for improved user experience
 - June 21, 2025. Enhanced username validation to allow dots and hyphens while maintaining security requirements
 - June 21, 2025. Added client-side password validation with real-time error message "Password must be greater than 6 characters"
+- June 21, 2025. Updated Detailed Reviewer badge requirements to 5 detailed reviews with 80+ characters (previously 3 reviews with 100+ characters)
 ```
 
 ## User Preferences

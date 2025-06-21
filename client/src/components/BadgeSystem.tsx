@@ -259,8 +259,8 @@ export const BadgeProgress: React.FC<{ userId: string }> = ({ userId }) => {
       label: 'Detailed Reviewer',
       completed: progress.progress.detailedReviewer,
       current: progress.detailedReviews,
-      target: 3,
-      description: 'Write 3 detailed reviews (100+ characters)'
+      target: 5,
+      description: 'Write 5 detailed reviews (80+ characters)'
     },
     {
       label: 'Quality Reviewer',
