@@ -55,6 +55,7 @@ export interface IStorage {
   }>;
   getUserRating(userId: string, traderId: number): Promise<Rating | undefined>;
   getUserRatings(userId: string): Promise<Rating[]>;
+  checkUsernameExists(username: string, excludeUserId?: string): Promise<boolean>;
   
   // Review vote operations
   voteOnReview(ratingId: number, userId: string, voteType: 'helpful' | 'not_helpful'): Promise<void>;
@@ -95,8 +96,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async registerUser(userData: UserRegistration): Promise<User> {
-    // Check if username already exists
-    const existingUsername = await this.getUserByUsername(userData.username);
+    // Check if username already exists (case-insensitive)
+    const existingUsername = await this.checkUsernameExists(userData.username);
     if (existingUsername) {
       throw new Error("Username already exists");
     }
@@ -481,6 +482,20 @@ export class DatabaseStorage implements IStorage {
       .leftJoin(traders, eq(ratings.traderId, traders.id))
       .where(eq(ratings.userId, userId))
       .orderBy(desc(ratings.createdAt));
+  }
+
+  async checkUsernameExists(username: string, excludeUserId?: string): Promise<boolean> {
+    let query = db
+      .select({ id: users.id })
+      .from(users)
+      .where(sql`LOWER(${users.username}) = LOWER(${username})`);
+    
+    if (excludeUserId) {
+      query = query.where(sql`${users.id} != ${excludeUserId}`);
+    }
+    
+    const result = await query.limit(1);
+    return result.length > 0;
   }
 
   // Review vote operations
