@@ -421,7 +421,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const validatedData = insertRatingSchema.parse(ratingData);
       const rating = await storage.createRating(validatedData);
-      res.status(201).json(rating);
+      
+      // Check and award badges after rating submission
+      const newBadges = await storage.checkAndAwardBadges(user.id);
+      
+      res.status(201).json({ 
+        rating, 
+        newBadges: newBadges.length > 0 ? newBadges : undefined 
+      });
     } catch (error: any) {
       console.error('Rating validation error:', error);
       res.status(400).json({ 
