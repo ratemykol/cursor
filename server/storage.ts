@@ -767,28 +767,40 @@ export class DatabaseStorage implements IStorage {
 
   // Trader badge system operations
   async getTraderBadges(traderId: number): Promise<TraderBadge[]> {
-    const result = await db.execute(
-      sql`SELECT * FROM trader_badges WHERE trader_id = ${traderId} ORDER BY earned_at DESC`
-    );
-    return result.rows as TraderBadge[];
+    const badges = await db
+      .select()
+      .from(traderBadges)
+      .where(eq(traderBadges.traderId, traderId))
+      .orderBy(desc(traderBadges.earnedAt));
+    return badges;
   }
 
   async awardTraderBadge(traderId: number, badgeType: string, badgeLevel: number = 1, metadata: any = null): Promise<TraderBadge> {
     try {
-      const result = await db.execute(
-        sql`INSERT INTO trader_badges (trader_id, badge_type, badge_level, metadata) 
-            VALUES (${traderId}, ${badgeType}, ${badgeLevel}, ${JSON.stringify(metadata)}) 
-            RETURNING *`
-      );
-      return result.rows[0] as TraderBadge;
+      const [badge] = await db
+        .insert(traderBadges)
+        .values({
+          traderId,
+          badgeType,
+          badgeLevel,
+          metadata
+        })
+        .returning();
+      return badge;
     } catch (error) {
       if (error instanceof Error && error.message.includes('duplicate key')) {
-        const existingResult = await db.execute(
-          sql`SELECT * FROM trader_badges 
-              WHERE trader_id = ${traderId} AND badge_type = ${badgeType} AND badge_level = ${badgeLevel}
-              LIMIT 1`
-        );
-        return existingResult.rows[0] as TraderBadge;
+        const [existingBadge] = await db
+          .select()
+          .from(traderBadges)
+          .where(
+            and(
+              eq(traderBadges.traderId, traderId),
+              eq(traderBadges.badgeType, badgeType),
+              eq(traderBadges.badgeLevel, badgeLevel)
+            )
+          )
+          .limit(1);
+        return existingBadge;
       }
       throw error;
     }
