@@ -51,34 +51,128 @@ interface TraderBadgeProgress {
   };
 }
 
+// Function to get unique styling for each badge type
+const getBadgeStyles = (badgeType: string, badgeLevel: number) => {
+  const styles = {
+    rising_star: {
+      gradient: 'from-yellow-400 to-orange-500',
+      hoverGradient: 'hover:from-yellow-300 hover:to-orange-400',
+      glow: 'from-yellow-300 to-orange-400',
+      shadow: 'shadow-yellow-300/20',
+      border: 'border-yellow-300/30'
+    },
+    top_performer: {
+      gradient: badgeLevel === 1 ? 'from-amber-600 to-amber-700' : // Bronze
+                badgeLevel === 2 ? 'from-gray-400 to-gray-500' : // Silver  
+                'from-yellow-400 to-yellow-600', // Gold
+      hoverGradient: badgeLevel === 1 ? 'hover:from-amber-500 hover:to-amber-600' :
+                     badgeLevel === 2 ? 'hover:from-gray-300 hover:to-gray-400' :
+                     'hover:from-yellow-300 hover:to-yellow-500',
+      glow: badgeLevel === 1 ? 'from-amber-400 to-amber-500' :
+            badgeLevel === 2 ? 'from-gray-300 to-gray-400' :
+            'from-yellow-300 to-yellow-400',
+      shadow: badgeLevel === 1 ? 'shadow-amber-400/20' :
+              badgeLevel === 2 ? 'shadow-gray-400/20' :
+              'shadow-yellow-400/20',
+      border: badgeLevel === 1 ? 'border-amber-300/30' :
+              badgeLevel === 2 ? 'border-gray-300/30' :
+              'border-yellow-300/30'
+    },
+    community_favorite: {
+      gradient: 'from-blue-500 to-indigo-600',
+      hoverGradient: 'hover:from-blue-400 hover:to-indigo-500',
+      glow: 'from-blue-400 to-indigo-500',
+      shadow: 'shadow-blue-400/20',
+      border: 'border-blue-300/30'
+    },
+    consistent_gains: {
+      gradient: 'from-green-500 to-emerald-600',
+      hoverGradient: 'hover:from-green-400 hover:to-emerald-500',
+      glow: 'from-green-400 to-emerald-500',
+      shadow: 'shadow-green-400/20',
+      border: 'border-green-300/30'
+    },
+    diamond_hands: {
+      gradient: 'from-cyan-400 to-blue-500',
+      hoverGradient: 'hover:from-cyan-300 hover:to-blue-400',
+      glow: 'from-cyan-300 to-blue-400',
+      shadow: 'shadow-cyan-400/20',
+      border: 'border-cyan-300/30'
+    },
+    veteran_trader: {
+      gradient: 'from-purple-600 to-violet-700',
+      hoverGradient: 'hover:from-purple-500 hover:to-violet-600',
+      glow: 'from-purple-500 to-violet-600',
+      shadow: 'shadow-purple-400/20',
+      border: 'border-purple-300/30'
+    },
+    market_wizard: {
+      gradient: 'from-pink-500 to-rose-600',
+      hoverGradient: 'hover:from-pink-400 hover:to-rose-500',
+      glow: 'from-pink-400 to-rose-500',
+      shadow: 'shadow-pink-400/20',
+      border: 'border-pink-300/30'
+    },
+    profit_legend: {
+      gradient: 'from-teal-500 to-cyan-600',
+      hoverGradient: 'hover:from-teal-400 hover:to-cyan-500',
+      glow: 'from-teal-400 to-cyan-500',
+      shadow: 'shadow-teal-400/20',
+      border: 'border-teal-300/30'
+    },
+    alpha_caller: {
+      gradient: 'from-red-500 to-orange-600',
+      hoverGradient: 'hover:from-red-400 hover:to-orange-500',
+      glow: 'from-red-400 to-orange-500',
+      shadow: 'shadow-red-400/20',
+      border: 'border-red-300/30'
+    },
+    whale_trader: {
+      gradient: 'from-slate-600 to-slate-700',
+      hoverGradient: 'hover:from-slate-500 hover:to-slate-600',
+      glow: 'from-slate-500 to-slate-600',
+      shadow: 'shadow-slate-400/20',
+      border: 'border-slate-300/30'
+    },
+    community_leader: {
+      gradient: 'from-indigo-500 to-purple-600',
+      hoverGradient: 'hover:from-indigo-400 hover:to-purple-500',
+      glow: 'from-indigo-400 to-purple-500',
+      shadow: 'shadow-indigo-400/20',
+      border: 'border-indigo-300/30'
+    },
+    innovative_strategist: {
+      gradient: 'from-violet-500 to-purple-600',
+      hoverGradient: 'hover:from-violet-400 hover:to-purple-500',
+      glow: 'from-violet-400 to-purple-500',
+      shadow: 'shadow-violet-400/20',
+      border: 'border-violet-300/30'
+    }
+  };
+  
+  return styles[badgeType as keyof typeof styles] || styles.rising_star;
+};
+
 const traderBadgeConfig = {
   rising_star: {
     name: 'Rising Star',
     description: 'New trader with excellent performance',
     icon: TrendingUp,
-    color: 'bg-yellow-100 text-yellow-800',
-    iconColor: 'text-yellow-600'
   },
   top_performer: {
     name: 'Top Performer',
     description: 'Consistently high ratings from community',
     icon: Star,
-    color: 'bg-purple-100 text-purple-800',
-    iconColor: 'text-purple-600'
   },
   community_favorite: {
     name: 'Community Favorite',
     description: 'Widely reviewed and trusted trader',
     icon: Users,
-    color: 'bg-blue-100 text-blue-800',
-    iconColor: 'text-blue-600'
   },
   consistent_gains: {
     name: 'Consistent Gains',
     description: 'Exceptional profitability track record',
     icon: DollarSign,
-    color: 'bg-green-100 text-green-800',
-    iconColor: 'text-green-600'
   },
   diamond_hands: {
     name: 'Diamond Hands',
@@ -221,12 +315,13 @@ export const TraderBadges: React.FC<{ traderId: number }> = ({ traderId }) => {
 
             const IconComponent = config.icon;
             const level = levelLabels[badge.badgeLevel as keyof typeof levelLabels];
+            const badgeStyles = getBadgeStyles(badge.badgeType, badge.badgeLevel);
 
             return (
               <div key={badge.id} className="relative group">
                 {/* Glow effect on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-500 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-md transform scale-110"></div>
-                <div className="relative bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-4 text-white shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:from-blue-400 hover:to-blue-500 cursor-pointer overflow-hidden" style={{ 
+                <div className={`absolute inset-0 bg-gradient-to-br ${badgeStyles.glow} rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-md transform scale-110`}></div>
+                <div className={`relative bg-gradient-to-br ${badgeStyles.gradient} ${badgeStyles.hoverGradient} rounded-2xl p-4 text-white shadow-lg ${badgeStyles.shadow} transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl cursor-pointer overflow-hidden border ${badgeStyles.border}`} style={{ 
                   willChange: 'transform', 
                   backfaceVisibility: 'hidden',
                   WebkitFontSmoothing: 'antialiased',
