@@ -18,6 +18,7 @@ git push -u origin main
 3. Connect your GitHub account if prompted
 4. Select your **ratemykol** repository
 5. Click **"Connect"**
+6. If you see any plan warnings, they're now fixed in the updated render.yaml
 
 Render will automatically:
 - Create a PostgreSQL database
