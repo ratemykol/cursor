@@ -36,7 +36,7 @@ After deployment:
 If Blueprint fails:
 1. Create **PostgreSQL Database** first
 2. Create **Web Service** with these settings:
-   - Build Command: `npm ci && npm run build`
+   - Build Command: `npm ci && npx vite build && npx esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outdir=dist --outfile=dist/index.js`
    - Start Command: `npm start`
    - Environment Variables:
      - `NODE_ENV`: production
