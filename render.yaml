@@ -21,4 +21,4 @@ databases:
   - name: ratemykol-db
     databaseName: ratemykol
     user: ratemykol_user
-    plan: starter
+    plan: free
