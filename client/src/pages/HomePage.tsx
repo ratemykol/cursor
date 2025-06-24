@@ -25,7 +25,9 @@ export const HomePage = (): JSX.Element => {
       const url = new URL('/api/traders', window.location.origin);
       url.searchParams.set('q', query);
       
-      const response = await fetch(url.toString());
+      const response = await fetch(url.toString(), {
+        credentials: "include",
+      });
       if (!response.ok) throw new Error('Search failed');
       return response.json();
     },
