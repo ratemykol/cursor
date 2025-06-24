@@ -669,6 +669,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         role: user.role,
       };
       
+      console.log("Saving session:", req.session);
+      
       // Force session save to database before responding
       req.session.save((err: any) => {
         if (err) {
