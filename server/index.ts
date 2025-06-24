@@ -31,9 +31,7 @@ app.use(helmet({
 }))
 
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? "https://testlivesite.onrender.com"
-    : true, // Allow all origins in development
+  origin: true, // Reflect the request origin
   credentials: true
 }));
 
