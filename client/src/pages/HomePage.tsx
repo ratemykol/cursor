@@ -338,13 +338,15 @@ export const HomePage = (): JSX.Element => {
                         )}
                       </div>
                       
-                      {/* Specialty Tag */}
-                      {trader.specialty && (
+                      {/* Specialty Tag or Spacer */}
+                      {trader.specialty ? (
                         <div className="mb-5">
                           <span className="bg-white text-black px-4 py-2 rounded-full text-sm font-medium">
                             {trader.specialty}
                           </span>
                         </div>
+                      ) : (
+                        <div className="mb-5 h-10"></div>
                       )}
                       
                       {/* Rating Section */}
