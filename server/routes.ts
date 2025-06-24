@@ -669,9 +669,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         role: user.role,
       };
       
-      // Remove password hash from response
-      const { passwordHash, ...userResponse } = user;
-      res.json(userResponse);
+      // Save session explicitly before responding
+      req.session.save((err) => {
+        if (err) {
+          console.error('Session save error:', err);
+          return res.status(500).json({ error: "Session save failed" });
+        }
+        
+        // Remove password hash from response
+        const { passwordHash, ...userResponse } = user;
+        res.json(userResponse);
+      });
     } catch (error: any) {
       if (error.issues) {
         return res.status(400).json({ error: "Validation error", details: error.issues });

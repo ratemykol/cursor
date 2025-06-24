@@ -35,18 +35,17 @@ export const SignInPage = (): JSX.Element => {
       
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      // Force refetch of auth data immediately
+      await queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      await queryClient.invalidateQueries({ queryKey: ["/api/auth/admin-status"] });
+      
       toast({
         title: "Welcome back!",
         description: "You have been signed in successfully",
       });
-      // Force refetch of auth data and wait for it to complete
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/admin-status"] });
-      // Small delay to ensure queries are refetched before navigation
-      setTimeout(() => {
-        setLocation("/");
-      }, 100);
+      
+      setLocation("/");
     },
     onError: (error: any) => {
       toast({
