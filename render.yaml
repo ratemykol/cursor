@@ -3,7 +3,7 @@ services:
     name: ratemykol-web
     env: node
     plan: starter
-    buildCommand: npm ci && npx vite build && npx esbuild server/production-simple.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js
+    buildCommand: npm ci && npm run build
     startCommand: npm start
     healthCheckPath: /
     envVars:
@@ -11,8 +11,6 @@ services:
         value: production
       - key: PORT
         value: 10000
-      - key: SESSION_SECRET
-        generateValue: true
       - key: DATABASE_URL
         fromDatabase:
           name: ratemykol-db
@@ -23,4 +21,4 @@ databases:
   - name: ratemykol-db
     databaseName: ratemykol
     user: ratemykol_user
-    plan: free
+    plan: starter
