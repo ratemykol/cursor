@@ -3,9 +3,9 @@ services:
     name: ratemykol-web
     env: node
     plan: starter
-    buildCommand: npm ci && node build.js
-    startCommand: cd dist && npm install --only=prod && npm start
-    healthCheckPath: /
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
@@ -17,7 +17,9 @@ services:
           property: connectionString
       - key: SESSION_SECRET
         generateValue: true
-    autoDeploy: false
+      - key: FRONTEND_URL
+        value: https://ratemykol-web.onrender.com
+    autoDeploy: true
 
 databases:
   - name: ratemykol-db
