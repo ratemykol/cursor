@@ -1,5 +1,5 @@
-import { Pool } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 import * as schema from "@shared/schema";
 
 if (!process.env.DATABASE_URL) {
@@ -8,11 +8,9 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-export const pool = new Pool({
+const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ssl: { rejectUnauthorized: false }
 });
 
 // Test database connection for logging
@@ -20,4 +18,5 @@ pool.query("SELECT NOW()")
   .then(() => console.log("✅ Connected to Postgres"))
   .catch((err) => console.error("❌ DB connection failed:", err));
 
-export const db = drizzle(pool, { schema });
+export const db = drizzle(pool);
+export { pool };
