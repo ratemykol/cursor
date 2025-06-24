@@ -13,7 +13,7 @@ async function buildProject() {
     bundle: true,
     platform: 'node',
     format: 'esm',
-    outdir: 'dist',
+    outfile: 'dist/production.js',
     external: [
       'vite',
       '@vitejs/plugin-react',
