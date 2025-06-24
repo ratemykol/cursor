@@ -1,29 +1,32 @@
-import { build } from 'esbuild';
+#!/usr/bin/env node
 import { execSync } from 'child_process';
+import { existsSync, mkdirSync } from 'fs';
 
-async function buildProject() {
-  // First build the frontend with Vite
-  console.log('Building frontend with Vite...');
-  execSync('npx vite build', { stdio: 'inherit' });
-  
-  // Then build the production server with esbuild
-  console.log('Building production server with esbuild...');
-  await build({
-    entryPoints: ['server/production.ts'],
-    bundle: true,
-    platform: 'node',
-    format: 'esm',
-    outfile: 'dist/production.js',
-    external: [
-      'vite',
-      '@vitejs/plugin-react',
-      './vite',
-      './vite.js'
-    ],
-    packages: 'external'
-  });
-  
-  console.log('Build completed successfully!');
+console.log('Starting production build...');
+
+// Ensure dist directory exists
+if (!existsSync('dist')) {
+  mkdirSync('dist', { recursive: true });
 }
 
-buildProject().catch(console.error);
+try {
+  // Build frontend
+  console.log('Building frontend with Vite...');
+  execSync('vite build', { stdio: 'inherit' });
+  
+  // Build backend
+  console.log('Building backend with esbuild...');
+  execSync('esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/production.js --target=node20', { stdio: 'inherit' });
+  
+  // Verify files exist
+  if (existsSync('dist/production.js')) {
+    console.log('✓ Production build completed successfully');
+    console.log('✓ dist/production.js created');
+  } else {
+    throw new Error('Failed to create dist/production.js');
+  }
+  
+} catch (error) {
+  console.error('Build failed:', error.message);
+  process.exit(1);
+}
