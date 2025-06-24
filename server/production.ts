@@ -145,7 +145,7 @@ app.use(session({
     secure: true, // Always true in production
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000,
-    sameSite: 'none', // Required for cross-site cookies in production
+    sameSite: 'lax', // Allows login cookies to persist across refreshes and navigations
   },
 }));
 
