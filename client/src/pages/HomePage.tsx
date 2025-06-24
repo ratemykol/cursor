@@ -259,8 +259,16 @@ export const HomePage = (): JSX.Element => {
           </div>
 
           {/* Trader Cards */}
-          <div className="relative w-full py-10">
-            <div className="flex gap-8 justify-center px-8 overflow-x-auto">
+          <div className="relative w-full overflow-hidden py-10">
+            <div 
+              className={`trader-scroll-container flex gap-8 will-change-transform ${rankedTraders.length > 0 ? `animate-scroll ${scrollPaused ? 'paused' : ''}` : ''}`}
+              style={{ 
+                width: rankedTraders.length > 0 ? `${rankedTraders.length * 3 * 300}px` : 'auto',
+                minWidth: '100vw',
+                paddingTop: '50px',
+                paddingBottom: '50px'
+              }}
+            >
               {isLoadingTraders ? (
                 // Loading skeleton
                 (Array.from({ length: 10 }).map((_, index) => (
@@ -281,11 +289,13 @@ export const HomePage = (): JSX.Element => {
                   <p className="text-gray-500 text-lg">No traders found</p>
                 </div>
               ) : (
-                // Show just the ranked traders (no duplication for now)
-                rankedTraders.map((trader, index) => (
+                // Duplicate cards for seamless scrolling
+                [...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
                   <Card
-                    key={trader.id}
-                    className={`flex-shrink-0 w-[280px] h-[500px] ${trader.rank === 1 ? 'diamond-background golden-shine' : trader.bgColor} rounded-[18px] border-none shadow-none relative cursor-pointer trader-card`}
+                    key={`${trader.id}-${index}`}
+                    className={`flex-shrink-0 w-[280px] h-[500px] ${trader.rank === 1 ? 'diamond-background golden-shine' : trader.bgColor} rounded-[18px] border-none shadow-none relative cursor-pointer trader-card ml-8`}
+                    onMouseEnter={() => setScrollPaused(true)}
+                    onMouseLeave={() => setScrollPaused(false)}
                   >
                     <CardContent className="p-0 flex flex-col items-center px-5">
                       {/* Profile Image with Crown for Rank 1 */}
