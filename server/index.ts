@@ -62,6 +62,12 @@ app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 const pgStore = connectPg(session);
 let sessionStore;
 
+// Temporarily use memory store to fix authentication issue
+// TODO: Debug PostgreSQL session store issue
+console.log("🔄 Using memory session store for now to fix authentication");
+sessionStore = undefined; // Force memory store
+
+/*
 try {
   sessionStore = new pgStore({
     conString: process.env.DATABASE_URL,
@@ -69,7 +75,10 @@ try {
     tableName: 'sessions',
     ssl: {
       rejectUnauthorized: false // required for Render's managed DBs
-    }
+    },
+    // Add these options for better reliability
+    pruneSessionInterval: false, // Disable automatic pruning
+    ttl: 86400, // 24 hours in seconds
   });
 
   // Add error logging for PostgreSQL session store
@@ -83,6 +92,7 @@ try {
   console.log("🔄 Falling back to memory session store");
   sessionStore = undefined; // Will use memory store
 }
+*/
 
 app.use(session({
   name: 'sessionId',
