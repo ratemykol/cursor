@@ -32,7 +32,9 @@ export const SearchPage = (): JSX.Element => {
       const url = new URL('/api/traders/search-by-name', window.location.origin);
       url.searchParams.set('q', query);
       
-      const response = await fetch(url.toString());
+      const response = await fetch(url.toString(), {
+        credentials: "include",
+      });
       if (!response.ok) throw new Error('Search failed');
       return response.json();
     },
