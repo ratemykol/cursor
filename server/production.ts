@@ -33,13 +33,6 @@ app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 // Session configuration
 const pgStore = connectPg(session);
 
-// Add database connection logging
-if (process.env.DATABASE_URL) {
-  log(`Database URL configured: ${process.env.DATABASE_URL.substring(0, 20)}...`);
-} else {
-  log('WARNING: DATABASE_URL not found in environment variables');
-}
-
 app.use(session({
   store: new pgStore({
     conString: process.env.DATABASE_URL,
@@ -91,15 +84,6 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Test database connection
-  try {
-    const { db } = await import("./db.js");
-    const testResult = await db.execute("SELECT 1 as test");
-    log(`Database connection successful: ${JSON.stringify(testResult.rows)}`);
-  } catch (error) {
-    log(`Database connection failed: ${error.message}`);
-  }
-
   const server = await registerRoutes(app);
 
   // Error handler
