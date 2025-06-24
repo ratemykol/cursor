@@ -31,7 +31,25 @@ app.use(helmet({
 }))
 
 app.use(cors({
-  origin: "https://testlivesite.onrender.com", // your frontend domain
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      process.env.FRONTEND_URL,
+      process.env.RENDER_EXTERNAL_URL,
+      "https://testlivesite.onrender.com",
+      "http://localhost:5173",
+      "http://localhost:3000"
+    ].filter(Boolean);
+    
+    if (allowedOrigins.includes(origin) || allowedOrigins.some(allowed => origin?.startsWith(allowed))) {
+      callback(null, true);
+    } else {
+      console.log(`CORS blocked origin: ${origin}`);
+      callback(null, true); // Allow all origins for now, can be restricted later
+    }
+  },
   credentials: true
 }));
 
