@@ -1,49 +1,40 @@
-# Render Deployment Fix
+# Production Deployment Fix Applied
 
-## Issue Diagnosis
-- API endpoint returning 404 Not Found
-- Database sync completed successfully (45 traders transferred)
-- Local development working perfectly
+## Issue Fixed
+- **Error**: `Cannot find package 'vite' imported from /app/dist/index.js`
+- **Root Cause**: Vite was being bundled into production build and imported at runtime
 
-## Root Cause
-Your Render service likely has deployment or configuration issues.
+## Changes Made
 
-## Step-by-Step Fix
+### 1. Created `server/static.ts`
+- Separated static file serving functionality from Vite dependencies
+- Moved `log` and `serveStatic` functions here for production use
 
-### 1. Check Render Service Status
-- Go to your Render dashboard
-- Verify your web service is "Live" (not "Build Failed" or "Deploy Failed")
+### 2. Updated `server/index.ts`
+- Changed from static import to dynamic import for Vite
+- Vite now only loads in development mode: `const { setupVite } = await import("./vite");`
+- Uses production-safe static serving in production
 
-### 2. Verify Environment Variables
-In your Render service Environment tab, ensure these are set:
-```
-DATABASE_URL=postgresql://username:password@host:port/database?sslmode=require
-SESSION_SECRET=any-secure-random-string
-NODE_ENV=production
-```
+### 3. Multi-Stage Dockerfile
+- **Build stage**: Installs all dependencies, builds the application
+- **Production stage**: Only installs production dependencies, copies built files
+- Eliminates Vite from final production image
 
-### 3. Check Build Configuration
-In your Render service Settings:
-- **Build Command**: `npm run build`
-- **Start Command**: `npm start`
-- **Root Directory**: `/` (leave empty)
+## Deployment Steps for Render
 
-### 4. Force Redeploy
-- Go to your Render service
-- Click "Manual Deploy" → "Deploy latest commit"
-- Watch deployment logs for errors
+1. **Push these changes** to your GitHub repository using Replit's version control
+2. **Go to Render dashboard** → Your web service
+3. **Click "Manual Deploy"** to redeploy with the fixes
+4. **Set up PostgreSQL database** if not already done
+5. **Add environment variables**:
+   - `DATABASE_URL` (from your Render PostgreSQL database)
+   - `NODE_ENV=production`
+   - `SESSION_SECRET` (any random string for sessions)
 
-### 5. Test After Deploy
-- Check logs for: "Database URL configured" and "serving on port"
-- Test API: `https://your-app.onrender.com/api/traders`
-- Visit site: traders should load instead of skeleton placeholders
+## Expected Results
+- ✅ Vite dependencies no longer in production build
+- ✅ Application starts successfully with `npm start`
+- ✅ Static files served correctly from `dist/public`
+- ✅ No more module import errors
 
-## Expected Deployment Logs
-```
-Database URL configured: postgresql://username:***@host...
-Environment check: { NODE_ENV: 'production', PORT: '10000', SESSION_SECRET: 'SET' }
-serving on port 10000
-```
-
-## If Still Failing
-Share the Render deployment logs - look for build errors or startup failures.
+The application should now deploy successfully on Render without the Vite module error.
