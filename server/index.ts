@@ -57,7 +57,7 @@ const pgStore = connectPg(session);
 app.use(session({
   store: new pgStore({
     conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
+    createTableIfMissing: true,
     tableName: 'sessions',
   }),
   secret: process.env.SESSION_SECRET || 'change-this-secret-in-production',
