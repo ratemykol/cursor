@@ -658,30 +658,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ error: "Invalid username or password" });
       }
       
-      // Store user in session
-      (req.session as any).user = {
+      // ✅ Save user to session
+      req.session.user = {
         id: user.id,
         username: user.username,
         email: user.email,
-        bio: user.bio,
-        profileImageUrl: user.profileImageUrl,
-        authType: user.authType,
         role: user.role,
+        authType: "local"
       };
-      
-      // Force session save to database before responding
+
       req.session.save((err: any) => {
         if (err) {
-          console.error("❌ SESSION SAVE ERROR:", err.message);
-          console.error(err.stack);
+          console.error("❌ Session save error:", err);
           return res.status(500).json({ error: "Session failed to save" });
         }
 
-        console.log("✅ Session saved successfully:", req.sessionID);
-        
-        // Remove password hash from response
-        const { passwordHash, ...userResponse } = user;
-        res.json(userResponse);
+        console.log("✅ Session saved successfully:", req.session);
+        res.status(200).json({ id: user.id, username: user.username });
       });
     } catch (error: any) {
       if (error.issues) {
