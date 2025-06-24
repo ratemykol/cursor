@@ -135,6 +135,9 @@ app.use(session({
     conString: process.env.DATABASE_URL,
     createTableIfMissing: true,
     tableName: 'sessions',
+    ssl: {
+      rejectUnauthorized: false
+    }
   }),
   secret: process.env.SESSION_SECRET,
   name: 'connect.sid',
