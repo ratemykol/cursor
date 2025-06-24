@@ -16,6 +16,8 @@ export function useAuth() {
       return response.json();
     },
     retry: false,
+    staleTime: 0, // Always refetch to ensure fresh auth state
+    refetchOnWindowFocus: true, // Refetch when window gains focus
   });
 
   return {
