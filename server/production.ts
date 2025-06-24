@@ -40,6 +40,11 @@ if (!process.env.DATABASE_URL) {
 }
 
 console.log('Database URL configured:', process.env.DATABASE_URL.replace(/:[^:@]*@/, ':***@'));
+console.log('Environment check:', {
+  NODE_ENV: process.env.NODE_ENV,
+  PORT: process.env.PORT,
+  SESSION_SECRET: process.env.SESSION_SECRET ? 'SET' : 'MISSING'
+});
 
 app.use(session({
   store: new pgStore({
@@ -97,8 +102,10 @@ app.use((req, res, next) => {
   // Error handler
   app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
     console.error('Production error:', err);
+    console.error('Error stack:', err.stack);
     res.status(500).json({ 
-      error: "Internal server error"
+      error: "Internal server error",
+      details: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
   });
 
