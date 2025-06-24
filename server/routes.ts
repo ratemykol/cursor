@@ -694,13 +694,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/auth/me", (req, res) => {
-    console.log("🧪 Session received in /me:", req.session);
+    console.log('🧪 Session in /me:', req.session);
 
-    if (!req.session || !req.session.user) {
-      return res.status(401).json({ error: "Not authenticated" });
+    if (req.session.user) {
+      return res.json(req.session.user);
+    } else {
+      return res.status(401).json({ error: 'Not authenticated' });
     }
-
-    return res.json({ user: req.session.user });
   });
 
   app.put("/api/auth/profile", async (req, res) => {

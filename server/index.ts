@@ -63,10 +63,10 @@ app.use(session({
   saveUninitialized: false,
   rolling: true, // Extend session on activity
   cookie: {
-    secure: true,               // Required on Render (HTTPS)
+    maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: "none",           // For cross-origin requests
-    maxAge: 24 * 60 * 60 * 1000 // 1 day
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   }
 }));
 
