@@ -52,7 +52,8 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 
-app.use(limiter);
+// Apply only to login
+app.use("/api/auth/login", limiter);
 
 // Body parsing with size limits
 app.use(express.json({ limit: '10mb' }));
