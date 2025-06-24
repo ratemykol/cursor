@@ -188,21 +188,24 @@ app.use((req, res, next) => {
     const timestamp = new Date().toISOString();
     const errorId = Math.random().toString(36).substring(7);
     
-    const genericMessages = [
-      "Service temporarily unavailable",
-      "Request could not be processed",
-      "An error occurred while processing your request",
-      "Service is currently experiencing issues",
-      "Unable to complete request at this time"
-    ];
-    
-    const randomMessage = genericMessages[Math.floor(Math.random() * genericMessages.length)];
-    
-    res.status(503).json({ 
-      error: randomMessage,
-      timestamp: timestamp,
-      reference: errorId
-    });
+    // Only send response if headers haven't been sent yet
+    if (!res.headersSent) {
+      const genericMessages = [
+        "Service temporarily unavailable",
+        "Request could not be processed",
+        "An error occurred while processing your request",
+        "Service is currently experiencing issues",
+        "Unable to complete request at this time"
+      ];
+      
+      const randomMessage = genericMessages[Math.floor(Math.random() * genericMessages.length)];
+      
+      res.status(503).json({ 
+        error: randomMessage,
+        timestamp: timestamp,
+        reference: errorId
+      });
+    }
   });
 
   // Serve static files in production - NO VITE
