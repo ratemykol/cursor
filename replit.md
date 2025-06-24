@@ -213,6 +213,7 @@ Changelog:
 - June 21, 2025. Cleaned database by removing all users except admin and deleting all 134 reviews for fresh platform state
 - June 24, 2025. Second database cleanup: removed all users except admin and deleted all reviews for completely fresh platform state
 - June 24, 2025. Fixed trader card alignment by adding spacer for cards without specialty tags to match positioning with cards that have specialty tags
+- June 24, 2025. Fixed traders not loading/displaying issue by correcting JSX syntax errors and restoring proper scroll animation container structure
 ```
 
 ## User Preferences
