@@ -158,7 +158,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Trader routes with validation
+  // Trader routes with validation and timeout
   app.get("/api/traders", [
     query('q')
       .optional()
@@ -168,17 +168,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       .escape(),
     handleValidationErrors
   ], async (req: Request, res: Response) => {
+    // Helper function to force timeout
+    const withTimeout = (promise: Promise<any>, ms: number) =>
+      Promise.race([
+        promise,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Database request timed out")), ms)
+        ),
+      ]);
+
     try {
       const { q } = req.query;
       if (q && typeof q === "string") {
-        const traders = await storage.searchTraders(q);
+        const traders = await withTimeout(storage.searchTraders(q), 10000);
         res.json(traders);
       } else {
-        const traders = await storage.getAllTraders();
+        const traders = await withTimeout(storage.getAllTraders(), 10000); // 10 sec timeout
         res.json(traders);
       }
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      console.error("❌ Error in /api/traders:", error);
+      res.status(500).json({ error: error.message || "Failed to fetch traders" });
     }
   });
 
