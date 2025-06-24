@@ -133,7 +133,7 @@ if (!process.env.SESSION_SECRET) {
 app.use(session({
   store: new pgStore({
     conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
+    createTableIfMissing: true, // Enable auto-table creation for reliability
     tableName: 'sessions',
   }),
   secret: process.env.SESSION_SECRET,
