@@ -56,7 +56,12 @@ export const HomePage = (): JSX.Element => {
 
   // Process and rank traders
   const rankedTraders = useMemo(() => {
-    if (!allTraders || !Array.isArray(allTraders)) return [];
+    if (!allTraders || !Array.isArray(allTraders)) {
+      console.log("No allTraders data or not array:", allTraders);
+      return [];
+    }
+    
+    console.log("Processing", allTraders.length, "traders");
     
     // Sort by average rating (desc), then by number of 5-star ratings (desc)
     const sorted = [...allTraders].sort((a: any, b: any) => {
@@ -69,11 +74,14 @@ export const HomePage = (): JSX.Element => {
     });
     
     // Add rank and background color to each trader
-    return sorted.slice(0, 10).map((trader: any, index: number) => ({
+    const ranked = sorted.slice(0, 10).map((trader: any, index: number) => ({
       ...trader,
       rank: index + 1,
       bgColor: cardColors[index] || "bg-gray-200"
     }));
+    
+    console.log("Ranked traders:", ranked.length, ranked.slice(0, 3));
+    return ranked;
   }, [allTraders]);
 
   // Handle clicks outside dropdown to close it
@@ -258,16 +266,8 @@ export const HomePage = (): JSX.Element => {
           </div>
 
           {/* Trader Cards */}
-          <div className="relative w-full overflow-hidden py-10">
-            <div 
-              className={`trader-scroll-container flex gap-8 will-change-transform animate-scroll ${scrollPaused ? 'paused' : ''}`}
-              style={{ 
-                width: `${rankedTraders.length * 3 * 300}px`,
-                minWidth: '100vw',
-                paddingTop: '50px',
-                paddingBottom: '50px'
-              }}
-            >
+          <div className="relative w-full py-10">
+            <div className="flex gap-8 justify-center px-8 overflow-x-auto">
               {isLoadingTraders ? (
                 // Loading skeleton
                 (Array.from({ length: 10 }).map((_, index) => (
@@ -283,14 +283,16 @@ export const HomePage = (): JSX.Element => {
                     </CardContent>
                   </Card>
                 )))
+              ) : rankedTraders.length === 0 ? (
+                <div className="flex items-center justify-center w-full h-40">
+                  <p className="text-gray-500 text-lg">No traders found</p>
+                </div>
               ) : (
-                // Duplicate cards for seamless scrolling
-                ([...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
+                // Show just the ranked traders (no duplication for now)
+                rankedTraders.map((trader, index) => (
                   <Card
-                    key={`${trader.id}-${index}`}
-                    className={`flex-shrink-0 w-[280px] h-[500px] ${trader.rank === 1 ? 'diamond-background golden-shine' : trader.bgColor} rounded-[18px] border-none shadow-none relative cursor-pointer trader-card ml-8`}
-                    onMouseEnter={() => setScrollPaused(true)}
-                    onMouseLeave={() => setScrollPaused(false)}
+                    key={trader.id}
+                    className={`flex-shrink-0 w-[280px] h-[500px] ${trader.rank === 1 ? 'diamond-background golden-shine' : trader.bgColor} rounded-[18px] border-none shadow-none relative cursor-pointer trader-card`}
                   >
                     <CardContent className="p-0 flex flex-col items-center px-5">
                       {/* Profile Image with Crown for Rank 1 */}
@@ -385,7 +387,7 @@ export const HomePage = (): JSX.Element => {
                       </div>
                     </CardContent>
                   </Card>
-                )))
+                ))
               )}
             </div>
           </div>
