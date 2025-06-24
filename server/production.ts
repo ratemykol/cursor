@@ -54,18 +54,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// CORS configuration
+// CORS configuration - allow all origins in production for simplicity
 app.use(cors({
-  origin: function (origin, callback) {
-    const allowedOrigins = process.env.ALLOWED_ORIGINS ? 
-      process.env.ALLOWED_ORIGINS.split(',') : [];
-    
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Origin not allowed by CORS policy'));
-    }
-  },
+  origin: true,
   credentials: true,
   preflightContinue: false,
   optionsSuccessStatus: 204
@@ -104,20 +95,8 @@ const authLimiter = rateLimit({
 
 app.use('/api/auth', authLimiter);
 
-// IP obfuscation middleware (after rate limiting to avoid conflicts)
+// Simple middleware without IP obfuscation for production stability
 app.use((req, res, next) => {
-  // Store original IP for logging if needed
-  const originalIP = req.ip;
-  
-  // Override IP with anonymized version
-  Object.defineProperty(req, 'ip', {
-    value: 'xxx.xxx.xxx.xxx',
-    writable: false,
-    configurable: false
-  });
-  
-  // Remove identifying headers
-  delete req.headers['x-forwarded-for'];
   delete req.headers['x-real-ip'];
   delete req.headers['x-forwarded-host'];
   delete req.headers['x-forwarded-proto'];
@@ -163,10 +142,10 @@ app.use(session({
   saveUninitialized: false,
   rolling: true,
   cookie: {
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000,
-    sameSite: 'strict',
+    sameSite: 'lax',
   },
 }));
 
