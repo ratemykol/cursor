@@ -258,7 +258,7 @@ export const HomePage = (): JSX.Element => {
           </div>
 
           {/* Trader Cards */}
-          <div className="relative w-full overflow-hidden py-10">
+          <div className="relative w-full overflow-hidden py-10" style={{ minHeight: '600px' }}>
             <div 
               className={`trader-scroll-container flex gap-8 will-change-transform ${rankedTraders.length > 0 ? `animate-scroll ${scrollPaused ? 'paused' : ''}` : ''}`}
               style={{ 
