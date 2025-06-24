@@ -30,8 +30,16 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// Session configuration
+// Session configuration with error handling
 const pgStore = connectPg(session);
+
+// Validate DATABASE_URL before creating session store
+if (!process.env.DATABASE_URL) {
+  console.error('ERROR: DATABASE_URL environment variable is not set');
+  process.exit(1);
+}
+
+console.log('Database URL configured:', process.env.DATABASE_URL.replace(/:[^:@]*@/, ':***@'));
 
 app.use(session({
   store: new pgStore({
@@ -45,7 +53,7 @@ app.use(session({
   saveUninitialized: false,
   rolling: true,
   cookie: {
-    secure: false, // Set to false for HTTP in development/testing
+    secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000,
     sameSite: 'lax',

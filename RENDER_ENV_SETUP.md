@@ -1,53 +1,56 @@
-# Render Environment Variables Setup
-
-## Success! Vite Error Fixed ✅
-
-The build completed successfully and the application started. You just need to add environment variables.
+# Render Environment Setup Guide
 
 ## Required Environment Variables
 
-Go to your Render web service dashboard → **Environment** tab and add these:
+Set these in your Render service's Environment tab:
 
-### 1. SESSION_SECRET (Required)
+### Database Configuration
 ```
-SESSION_SECRET=your-random-secret-string-here
+DATABASE_URL=postgresql://username:password@host:port/database?sslmode=require
 ```
-**Example**: `SESSION_SECRET=abc123xyz789secretkey456def`
+**Important:** Replace with your actual Render PostgreSQL connection string
 
-### 2. DATABASE_URL (Required) 
+### Session Security
 ```
-DATABASE_URL=your-postgresql-connection-string
+SESSION_SECRET=your-secure-random-string-here
 ```
-**Get this from**: Render → Create PostgreSQL database → Connection details
+**Important:** Generate a secure random string for production
 
-### 3. NODE_ENV (Required)
+### Node Environment
 ```
 NODE_ENV=production
 ```
 
-### 4. Optional Security Variables
+## Common Issues & Solutions
+
+### ECONNREFUSED Error
+- **Cause:** DATABASE_URL not set or incorrect
+- **Solution:** Verify DATABASE_URL matches your Render PostgreSQL service exactly
+
+### SSL Connection Issues
+- **Cause:** Missing SSL configuration
+- **Solution:** Ensure `?sslmode=require` is at the end of DATABASE_URL
+
+### Session Store Errors
+- **Cause:** Database connection issues or missing sessions table
+- **Solution:** The app automatically creates the sessions table on first run
+
+## Verification Steps
+
+1. Check Render logs for database connection success
+2. Verify traders API returns data: `GET /api/traders`
+3. Test authentication: `GET /api/auth/me`
+
+## Database Setup Commands
+
+If you need to populate the database:
+```bash
+# Export local database
+./db-export.sh
+
+# Set Render database URL
+export RENDER_DATABASE_URL="your_render_db_url"
+
+# Sync to Render
+./db-sync.sh
 ```
-ALLOWED_ORIGINS=https://your-app-name.onrender.com
-```
-
-## Quick Setup Steps
-
-1. **In Render Dashboard**:
-   - Go to your web service
-   - Click **"Environment"** tab
-   - Click **"Add Environment Variable"**
-   - Add each variable above
-
-2. **Create PostgreSQL Database** (if not done):
-   - Render Dashboard → **"New +"** → **"PostgreSQL"**
-   - Copy the **Internal Database URL**
-   - Use that as your `DATABASE_URL`
-
-3. **Redeploy**:
-   - After adding variables, click **"Manual Deploy"**
-   - Your app will restart with the environment variables
-
-## Expected Result
-Your RateMyKOL application will start successfully and be accessible at your Render URL.
-
-The SESSION_SECRET can be any random string - it's used for securing user sessions.
