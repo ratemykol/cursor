@@ -59,12 +59,19 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
 const pgStore = connectPg(session);
+const sessionStore = new pgStore({
+  conString: process.env.DATABASE_URL,
+  createTableIfMissing: true, // Enable auto-table creation for reliability
+  tableName: 'sessions',
+});
+
+// Add error logging for PostgreSQL session store
+sessionStore.on('error', (err: any) => {
+  console.error("❌ PG Session Store Error:", err);
+});
+
 app.use(session({
-  store: new pgStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: true, // Enable auto-table creation for reliability
-    tableName: 'sessions',
-  }),
+  store: sessionStore,
   secret: process.env.SESSION_SECRET || 'change-this-secret-in-production',
   resave: false,
   saveUninitialized: false,
