@@ -37,7 +37,6 @@ export const HomePage = (): JSX.Element => {
     queryKey: ["/api/traders"],
   });
 
-
   // Background colors for trader cards
   const cardColors = [
     "bg-[#ffdadc]",
@@ -54,9 +53,7 @@ export const HomePage = (): JSX.Element => {
 
   // Process and rank traders
   const rankedTraders = useMemo(() => {
-    if (!allTraders || !Array.isArray(allTraders)) {
-      return [];
-    }
+    if (!allTraders || !Array.isArray(allTraders)) return [];
     
     // Sort by average rating (desc), then by number of 5-star ratings (desc)
     const sorted = [...allTraders].sort((a: any, b: any) => {
@@ -258,11 +255,11 @@ export const HomePage = (): JSX.Element => {
           </div>
 
           {/* Trader Cards */}
-          <div className="relative w-full overflow-hidden py-10" style={{ minHeight: '600px' }}>
+          <div className="relative w-full overflow-hidden py-10">
             <div 
-              className={`trader-scroll-container flex gap-8 will-change-transform ${rankedTraders.length > 0 ? `animate-scroll ${scrollPaused ? 'paused' : ''}` : ''}`}
+              className={`trader-scroll-container flex gap-8 will-change-transform animate-scroll ${scrollPaused ? 'paused' : ''}`}
               style={{ 
-                width: rankedTraders.length > 0 ? `${rankedTraders.length * 3 * 300}px` : 'auto',
+                width: `${rankedTraders.length * 3 * 300}px`,
                 minWidth: '100vw',
                 paddingTop: '50px',
                 paddingBottom: '50px'
@@ -283,13 +280,9 @@ export const HomePage = (): JSX.Element => {
                     </CardContent>
                   </Card>
                 )))
-              ) : rankedTraders.length === 0 ? (
-                <div className="flex items-center justify-center w-full h-40">
-                  <p className="text-gray-500 text-lg">No traders found</p>
-                </div>
               ) : (
                 // Duplicate cards for seamless scrolling
-                [...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
+                ([...rankedTraders, ...rankedTraders, ...rankedTraders].map((trader, index) => (
                   <Card
                     key={`${trader.id}-${index}`}
                     className={`flex-shrink-0 w-[280px] h-[500px] ${trader.rank === 1 ? 'diamond-background golden-shine' : trader.bgColor} rounded-[18px] border-none shadow-none relative cursor-pointer trader-card ml-8`}
@@ -345,15 +338,13 @@ export const HomePage = (): JSX.Element => {
                         )}
                       </div>
                       
-                      {/* Specialty Tag or Spacer */}
-                      {trader.specialty ? (
+                      {/* Specialty Tag */}
+                      {trader.specialty && (
                         <div className="mb-5">
                           <span className="bg-white text-black px-4 py-2 rounded-full text-sm font-medium">
                             {trader.specialty}
                           </span>
                         </div>
-                      ) : (
-                        <div className="mb-5 h-10"></div>
                       )}
                       
                       {/* Rating Section */}
@@ -389,7 +380,7 @@ export const HomePage = (): JSX.Element => {
                       </div>
                     </CardContent>
                   </Card>
-                ))
+                )))
               )}
             </div>
           </div>
