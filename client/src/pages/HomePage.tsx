@@ -37,8 +37,7 @@ export const HomePage = (): JSX.Element => {
     queryKey: ["/api/traders"],
   });
 
-  // Debug logging
-  console.log("HomePage - allTraders:", allTraders, "isLoading:", isLoadingTraders, "error:", tradersError);
+
 
   // Background colors for trader cards
   const cardColors = [
@@ -57,11 +56,8 @@ export const HomePage = (): JSX.Element => {
   // Process and rank traders
   const rankedTraders = useMemo(() => {
     if (!allTraders || !Array.isArray(allTraders)) {
-      console.log("No allTraders data or not array:", allTraders);
       return [];
     }
-    
-    console.log("Processing", allTraders.length, "traders");
     
     // Sort by average rating (desc), then by number of 5-star ratings (desc)
     const sorted = [...allTraders].sort((a: any, b: any) => {
@@ -74,14 +70,11 @@ export const HomePage = (): JSX.Element => {
     });
     
     // Add rank and background color to each trader
-    const ranked = sorted.slice(0, 10).map((trader: any, index: number) => ({
+    return sorted.slice(0, 10).map((trader: any, index: number) => ({
       ...trader,
       rank: index + 1,
       bgColor: cardColors[index] || "bg-gray-200"
     }));
-    
-    console.log("Ranked traders:", ranked.length, ranked.slice(0, 3));
-    return ranked;
   }, [allTraders]);
 
   // Handle clicks outside dropdown to close it
