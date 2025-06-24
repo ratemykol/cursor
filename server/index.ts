@@ -112,7 +112,11 @@ app.use((req, res, next) => {
   app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
     const message = err.message || "Internal Server Error";
     console.error(message);
-    res.status(500).send("Something broke!");
+    
+    // Only send response if headers haven't been sent yet
+    if (!res.headersSent) {
+      res.status(500).send("Something broke!");
+    }
   });
 
   // importantly only setup vite in development and after
