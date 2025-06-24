@@ -216,6 +216,8 @@ Changelog:
 - June 24, 2025. Enhanced /api/traders route with 10-second timeout protection and improved error handling for database requests
 - June 24, 2025. Added database connection testing to db.ts with visual logging for Render deployment debugging
 - June 24, 2025. Updated database connection to use standard PostgreSQL driver with SSL for Render compatibility
+- June 24, 2025. Fixed authentication session persistence by adding credentials: "include" to all /api/auth/ fetch calls
+- June 24, 2025. Updated CORS and session configuration for proper cross-origin cookie handling in both development and production environments
 ```
 
 ## User Preferences
