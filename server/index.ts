@@ -2,7 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
 import helmet from "helmet";
-import rateLimit from "express-rate-limit";
+
 import cors from "cors";
 import { registerRoutes } from "./routes";
 import { serveStatic, log } from "./static";
@@ -37,23 +37,7 @@ app.use(cors({
   credentials: true,
 }));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // limit each IP to 1000 requests per windowMs
-  skip: (req) => {
-    // Skip rate limiting for localhost in development
-    return process.env.NODE_ENV === 'development' && req.ip === '127.0.0.1';
-  },
-  message: {
-    error: "Too many requests from this IP, please try again later."
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
 
-// Apply only to login
-app.use("/api/auth/login", limiter);
 
 // Body parsing with size limits
 app.use(express.json({ limit: '10mb' }));
