@@ -211,6 +211,7 @@ Changelog:
 - June 21, 2025. Fixed trader deletion functionality in admin panel by properly handling foreign key constraints for review votes, ratings, and trader badges
 - June 21, 2025. Resolved React hooks ordering error in AdminPage component that was causing "Rendered more hooks than during the previous render" crashes
 - June 21, 2025. Cleaned database by removing all users except admin and deleting all 134 reviews for fresh platform state
+- June 24, 2025. Fixed Render deployment issues: removed strict CSP, added proper MIME types for static files, simplified production server, updated build process to use production entry point
 ```
 
 ## User Preferences
