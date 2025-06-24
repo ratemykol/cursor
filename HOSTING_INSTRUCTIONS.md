@@ -40,6 +40,7 @@ If Blueprint fails:
    - Start Command: `npm start`
    - Environment Variables:
      - `NODE_ENV`: production
+     - `SESSION_SECRET`: any-random-secret-string
      - `DATABASE_URL`: (from your database)
 
 ## What's Included
