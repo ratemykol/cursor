@@ -338,15 +338,14 @@ export const HomePage = (): JSX.Element => {
                         )}
                       </div>
                       
-                      {/* View Profile Button in Specialty Tag Location */}
-                      <div className="mb-5">
-                        <Button 
-                          onClick={() => setLocation(`/trader/${trader.id}`)}
-                          className="bg-white text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-[#AB9FF2] hover:text-white transition-all duration-300"
-                        >
-                          View Profile
-                        </Button>
-                      </div>
+                      {/* Specialty Tag */}
+                      {trader.specialty && (
+                        <div className="mb-5">
+                          <span className="bg-white text-black px-4 py-2 rounded-full text-sm font-medium">
+                            {trader.specialty}
+                          </span>
+                        </div>
+                      )}
                       
                       {/* Rating Section */}
                       <div className="flex items-center justify-between w-full mb-3">
@@ -368,6 +367,16 @@ export const HomePage = (): JSX.Element => {
                         <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
                           Verified
                         </span>
+                      </div>
+                      
+                      {/* View Profile Button */}
+                      <div className="flex justify-center w-full">
+                        <Button 
+                          onClick={() => setLocation(`/trader/${trader.id}`)}
+                          className="w-[168px] h-12 bg-white text-black font-medium text-lg transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#AB9FF2] hover:shadow-lg transform-gpu"
+                        >
+                          View Profile
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
