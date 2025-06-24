@@ -62,12 +62,13 @@ const pgStore = connectPg(session);
 app.use(session({
   store: new pgStore({
     conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
+    createTableIfMissing: true, // Enable auto-table creation for reliability
     tableName: 'sessions',
   }),
   secret: process.env.SESSION_SECRET || 'change-this-secret-in-production',
   resave: false,
   saveUninitialized: false,
+  rolling: true, // Extend session on activity
   cookie: {
     secure: process.env.NODE_ENV === 'production', // true in production with HTTPS
     httpOnly: true,
