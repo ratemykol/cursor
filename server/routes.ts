@@ -764,6 +764,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log("🧪 Session in /me:", req.session);
     console.log("🍪 Session ID in /me:", req.sessionID);
     console.log("🔍 Headers in /me:", req.headers.cookie);
+    console.log("🌐 Origin:", req.headers.origin);
+    console.log("🔗 Referer:", req.headers.referer);
+    console.log("📱 User-Agent:", req.headers['user-agent']);
 
     if (req.session.user) {
       console.log("✅ User found in session:", req.session.user);
