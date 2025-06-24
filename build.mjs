@@ -6,14 +6,14 @@ async function buildProject() {
   console.log('Building frontend with Vite...');
   execSync('npx vite build', { stdio: 'inherit' });
   
-  // Then build the production server with esbuild
-  console.log('Building production server with esbuild...');
+  // Then build the backend with esbuild, excluding vite
+  console.log('Building backend with esbuild...');
   await build({
-    entryPoints: ['server/production.ts'],
+    entryPoints: ['server/index.ts'],
     bundle: true,
     platform: 'node',
     format: 'esm',
-    outfile: 'dist/production.js',
+    outdir: 'dist',
     external: [
       'vite',
       '@vitejs/plugin-react',
