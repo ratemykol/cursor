@@ -220,6 +220,7 @@ Changelog:
 - June 24, 2025. Updated CORS and session configuration for proper cross-origin cookie handling in both development and production environments
 - June 24, 2025. Fixed ERR_HTTP_HEADERS_SENT error by preventing double responses in error handlers
 - June 24, 2025. Updated session cookie sameSite setting to 'lax' for same-origin authentication persistence
+- June 24, 2025. Implemented explicit session.save() in login route to ensure PostgreSQL session persistence before response
 ```
 
 ## User Preferences
