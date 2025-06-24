@@ -116,6 +116,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Session test endpoint
+  app.get("/api/test-session", (req, res) => {
+    console.log("🧪 Test session endpoint");
+    console.log("📋 Session:", req.session);
+    console.log("🍪 Session ID:", req.sessionID);
+    console.log("🔍 Cookies:", req.headers.cookie);
+    
+    res.json({
+      sessionExists: !!req.session,
+      sessionID: req.sessionID,
+      userInSession: !!req.session.user,
+      cookies: req.headers.cookie
+    });
+  });
+
   // Serve uploaded files statically
   app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
@@ -660,12 +675,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     handleValidationErrors
   ], async (req, res) => {
     try {
+      console.log("🔐 Login attempt for:", req.body.username);
+      console.log("📋 Session before login:", req.session);
+      
       const credentials = userLoginSchema.parse(req.body);
       const user = await storage.authenticateUser(credentials);
       
       if (!user) {
+        console.log("❌ Authentication failed for:", req.body.username);
         return res.status(401).json({ error: "Invalid username or password" });
       }
+      
+      console.log("✅ User authenticated:", user.username);
       
       req.session.user = {
         id: user.id,
@@ -675,17 +696,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         authType: user.authType || "local"
       };
 
+      console.log("📝 Session data set:", req.session.user);
+
       // ✅ Save the session before sending response
       req.session.save((err: any) => {
         if (err) {
-          console.error("Session save error:", err);
+          console.error("❌ Session save error:", err);
           return res.status(500).json({ error: "Failed to save session" });
         }
 
         console.log("✅ Session saved successfully:", req.session);
+        console.log("🍪 Session ID:", req.sessionID);
         res.json(req.session.user); // ✅ only send response after save
       });
     } catch (error: any) {
+      console.error("❌ Login error:", error);
       if (error.issues) {
         return res.status(400).json({ error: "Validation error", details: error.issues });
       }
@@ -704,10 +729,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/auth/me", (req, res) => {
     console.log("🧪 Session in /me:", req.session);
+    console.log("🍪 Session ID in /me:", req.sessionID);
+    console.log("🔍 Headers in /me:", req.headers.cookie);
 
     if (req.session.user) {
+      console.log("✅ User found in session:", req.session.user);
       res.json(req.session.user);
     } else {
+      console.log("❌ No user in session");
       res.status(401).json({ error: "Not authenticated" });
     }
   });
