@@ -218,6 +218,7 @@ Changelog:
 - June 24, 2025. Updated database connection to use standard PostgreSQL driver with SSL for Render compatibility
 - June 24, 2025. Fixed authentication session persistence by adding credentials: "include" to all /api/auth/ fetch calls
 - June 24, 2025. Updated CORS and session configuration for proper cross-origin cookie handling in both development and production environments
+- June 24, 2025. Standardized session cookie naming across development and production servers for consistency
 ```
 
 ## User Preferences
