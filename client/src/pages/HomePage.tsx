@@ -33,9 +33,12 @@ export const HomePage = (): JSX.Element => {
   });
 
   // Fetch all traders for cards
-  const { data: allTraders, isLoading: isLoadingTraders } = useQuery({
+  const { data: allTraders, isLoading: isLoadingTraders, error: tradersError } = useQuery({
     queryKey: ["/api/traders"],
   });
+
+  // Debug logging
+  console.log("HomePage - allTraders:", allTraders, "isLoading:", isLoadingTraders, "error:", tradersError);
 
   // Background colors for trader cards
   const cardColors = [
