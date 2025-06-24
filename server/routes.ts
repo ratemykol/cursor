@@ -131,6 +131,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Session store test endpoint
+  app.get("/api/test-session-store", async (req, res) => {
+    try {
+      // Test if we can save and retrieve a session
+      const testData = { test: true, timestamp: Date.now() };
+      req.session.testData = testData;
+      
+      req.session.save((err) => {
+        if (err) {
+          console.error("❌ Session save test failed:", err);
+          return res.json({ 
+            success: false, 
+            error: err.message,
+            sessionID: req.sessionID 
+          });
+        }
+        
+        console.log("✅ Session save test successful");
+        res.json({ 
+          success: true, 
+          sessionID: req.sessionID,
+          testData: req.session.testData
+        });
+      });
+    } catch (error) {
+      console.error("❌ Session store test error:", error);
+      res.json({ 
+        success: false, 
+        error: error.message 
+      });
+    }
+  });
+
   // Serve uploaded files statically
   app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 

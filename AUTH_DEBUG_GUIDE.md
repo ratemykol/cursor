@@ -2,12 +2,17 @@
 
 ## Issue: User shows "Successfully signed in" but doesn't actually sign in
 
+### ⚠️ TEMPORARY FIX APPLIED:
+**Using Memory Session Store**: The PostgreSQL session store was causing issues where sessions weren't persisting between requests. I've temporarily switched to memory store to fix the immediate authentication issue.
+
+**Why this happened**: The logs showed that session IDs were changing between requests, indicating the PostgreSQL session store wasn't working properly in production.
+
 ### What I've Fixed:
 
 1. **Session Cookie Configuration**
    - Added `path: '/'` to ensure cookies are sent to all routes
    - Added session name `sessionId` for easier debugging
-   - Improved error handling for PostgreSQL session store
+   - Improved error handling for PostgreSQL session store with fallback to memory store
 
 2. **Enhanced Logging**
    - Added detailed logging to login route
@@ -18,6 +23,10 @@
    - Added immediate cache update after login
    - Enhanced error handling and debugging
 
+4. **Temporary Memory Store Fix**
+   - Forced use of memory session store to resolve immediate authentication issues
+   - This ensures sessions persist properly between requests
+
 ### Debugging Steps:
 
 #### 1. Test Session Endpoint
@@ -27,7 +36,11 @@ This will show you:
 - Current session state
 - Cookie information
 
-#### 2. Check Server Logs
+#### 2. Test Session Store
+Visit: `http://localhost:5000/api/test-session-store`
+This will test if the session store is working properly.
+
+#### 3. Check Server Logs
 When you try to sign in, look for these log messages:
 - `🔐 Login attempt for: [username]`
 - `✅ User authenticated: [username]`
@@ -35,13 +48,13 @@ When you try to sign in, look for these log messages:
 - `✅ Session saved successfully`
 - `🍪 Session ID: [session id]`
 
-#### 3. Check Browser Developer Tools
+#### 4. Check Browser Developer Tools
 1. Open Developer Tools (F12)
 2. Go to Application/Storage tab
 3. Check Cookies for your domain
 4. Look for `sessionId` cookie
 
-#### 4. Test Authentication Endpoint
+#### 5. Test Authentication Endpoint
 After signing in, visit: `http://localhost:5000/api/auth/me`
 This should return your user data if the session is working.
 
@@ -57,7 +70,7 @@ This should return your user data if the session is working.
 
 #### Issue 3: Database Connection Issues
 **Symptoms:** Session store errors in server logs
-**Solution:** The app will fall back to memory store if PostgreSQL fails
+**Solution:** Currently using memory store to avoid this issue
 
 #### Issue 4: Client-Side Cache Issues
 **Symptoms:** Login appears successful but UI doesn't update
@@ -103,4 +116,17 @@ For Render deployment, make sure these environment variables are set:
 The session configuration will automatically use:
 - `secure: true` (HTTPS only)
 - `sameSite: "none"` (for cross-site requests)
-- PostgreSQL session store 
+- **Memory session store** (temporarily, until PostgreSQL issue is resolved)
+
+### TODO: Fix PostgreSQL Session Store
+
+The PostgreSQL session store needs to be debugged. The issue appears to be:
+1. Sessions are being saved successfully
+2. But subsequent requests get different session IDs
+3. This suggests the session store isn't properly retrieving sessions
+
+**Next steps to fix PostgreSQL sessions:**
+1. Check if the sessions table exists in the database
+2. Verify the connection string is correct
+3. Test session store operations directly
+4. Check for any SSL/TLS issues with the database connection 
