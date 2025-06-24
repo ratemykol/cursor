@@ -60,21 +60,32 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
 const pgStore = connectPg(session);
-const sessionStore = new pgStore({
-  conString: process.env.DATABASE_URL,
-  createTableIfMissing: true, // Enable auto-table creation for reliability
-  tableName: 'sessions',
-  ssl: {
-    rejectUnauthorized: false // required for Render's managed DBs
-  }
-});
+let sessionStore;
 
-// Add error logging for PostgreSQL session store
-sessionStore.on('error', (err: any) => {
-  console.error("❌ PG Session Store Error:", err);
-});
+try {
+  sessionStore = new pgStore({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: true, // Enable auto-table creation for reliability
+    tableName: 'sessions',
+    ssl: {
+      rejectUnauthorized: false // required for Render's managed DBs
+    }
+  });
+
+  // Add error logging for PostgreSQL session store
+  sessionStore.on('error', (err: any) => {
+    console.error("❌ PG Session Store Error:", err);
+  });
+
+  console.log("✅ PostgreSQL session store initialized");
+} catch (error) {
+  console.error("❌ Failed to initialize PostgreSQL session store:", error);
+  console.log("🔄 Falling back to memory session store");
+  sessionStore = undefined; // Will use memory store
+}
 
 app.use(session({
+  name: 'sessionId',
   store: sessionStore,
   secret: process.env.SESSION_SECRET || 'change-this-secret-in-production',
   resave: false,
@@ -85,6 +96,7 @@ app.use(session({
     sameSite: process.env.NODE_ENV === 'production' ? "none" : "lax",
     maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
+    path: '/',
   }
 }));
 

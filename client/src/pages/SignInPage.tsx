@@ -35,14 +35,20 @@ export const SignInPage = (): JSX.Element => {
       
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (userData) => {
+      console.log("✅ Login successful:", userData);
       toast({
         title: "Welcome back!",
         description: "You have been signed in successfully",
       });
+      
       // Force refetch of auth data and wait for it to complete
       queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
       queryClient.invalidateQueries({ queryKey: ["/api/auth/admin-status"] });
+      
+      // Set the user data directly in the cache to ensure immediate UI update
+      queryClient.setQueryData(["/api/auth/me"], userData);
+      
       // Small delay to ensure queries are refetched before navigation
       setTimeout(() => {
         setLocation("/");
