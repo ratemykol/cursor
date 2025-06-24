@@ -672,9 +672,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Force session save to database before responding
       req.session.save((err: any) => {
         if (err) {
-          console.error("Session save error:", err);
+          console.error("❌ SESSION SAVE ERROR:", err.message);
+          console.error(err.stack);
           return res.status(500).json({ error: "Session failed to save" });
         }
+
+        console.log("✅ Session saved successfully:", req.sessionID);
         
         // Remove password hash from response
         const { passwordHash, ...userResponse } = user;
