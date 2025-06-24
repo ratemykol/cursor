@@ -12,4 +12,10 @@ if (!process.env.DATABASE_URL) {
 }
 
 export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+// Test database connection for logging
+pool.query("SELECT NOW()")
+  .then(() => console.log("✅ Connected to Postgres"))
+  .catch((err) => console.error("❌ DB connection failed:", err));
+
 export const db = drizzle({ client: pool, schema });
