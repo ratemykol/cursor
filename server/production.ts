@@ -134,6 +134,9 @@ const sessionStore = new pgStore({
   conString: process.env.DATABASE_URL,
   createTableIfMissing: true, // Enable auto-table creation for reliability
   tableName: 'sessions',
+  ssl: {
+    rejectUnauthorized: false // required for Render's managed DBs
+  }
 });
 
 // Add error logging for PostgreSQL session store
