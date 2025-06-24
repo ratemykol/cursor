@@ -2,8 +2,8 @@ import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
 import cors from "cors";
-import { registerRoutes } from "./routes";
-import { serveStatic, log } from "./static";
+import { registerRoutes } from "./routes.js";
+import { serveStatic, log } from "./static.js";
 
 const app = express();
 
