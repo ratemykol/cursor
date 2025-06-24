@@ -31,7 +31,9 @@ app.use(helmet({
 }))
 
 app.use(cors({
-  origin: "https://testlivesite.onrender.com", // your frontend domain
+  origin: process.env.NODE_ENV === 'production' 
+    ? "https://testlivesite.onrender.com"
+    : true, // Allow all origins in development
   credentials: true
 }));
 
@@ -63,8 +65,8 @@ app.use(session({
   saveUninitialized: false,
   rolling: true, // Extend session on activity
   cookie: {
-    secure: true,
-    sameSite: "none",
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? "none" : "lax",
     maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
   }
