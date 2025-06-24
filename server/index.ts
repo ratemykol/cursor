@@ -78,6 +78,11 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
+  console.log("🔍 SESSION LOADED:", req.session);
+  next();
+});
+
+app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
