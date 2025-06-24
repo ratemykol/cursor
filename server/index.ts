@@ -65,7 +65,6 @@ app.use(session({
     createTableIfMissing: false,
     tableName: 'sessions',
   }),
-  name: 'connect.sid',
   secret: process.env.SESSION_SECRET || 'change-this-secret-in-production',
   resave: false,
   saveUninitialized: false,
