@@ -701,11 +701,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/auth/me", (req, res) => {
-    const user = (req.session as any)?.user;
-    if (!user) {
+    console.log("🧪 Session received in /me:", req.session);
+
+    if (!req.session || !req.session.user) {
       return res.status(401).json({ error: "Not authenticated" });
     }
-    res.json(user);
+
+    return res.json({ user: req.session.user });
   });
 
   app.put("/api/auth/profile", async (req, res) => {
