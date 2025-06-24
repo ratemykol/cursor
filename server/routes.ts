@@ -669,6 +669,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         role: user.role,
       };
       
+      // Force session save for debugging
+      req.session.save((err: any) => {
+        if (err) {
+          console.error('Session save error:', err);
+        }
+      });
+      
       // Remove password hash from response
       const { passwordHash, ...userResponse } = user;
       res.json(userResponse);
@@ -692,6 +699,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/auth/me", (req, res) => {
     const user = (req.session as any)?.user;
     if (!user) {
+      console.log('No user in session, session ID:', req.sessionID);
       return res.status(401).json({ error: "Not authenticated" });
     }
     res.json(user);

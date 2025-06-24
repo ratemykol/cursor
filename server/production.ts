@@ -54,9 +54,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// CORS configuration for production
+// CORS configuration for production - allow all origins for broader compatibility
 app.use(cors({
-  origin: [process.env.REPLIT_DOMAINS?.split(',') || [], "https://*.replit.app", "https://*.replit.dev"].flat(),
+  origin: true,
   credentials: true,
   preflightContinue: false,
   optionsSuccessStatus: 204
@@ -133,19 +133,19 @@ if (!process.env.SESSION_SECRET) {
 app.use(session({
   store: new pgStore({
     conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
+    createTableIfMissing: true,
     tableName: 'sessions',
   }),
   secret: process.env.SESSION_SECRET,
-  name: 'sessionId',
-  resave: false,
-  saveUninitialized: false,
+  name: 'connect.sid',
+  resave: true, // Force session save
+  saveUninitialized: true, // Save uninitialized sessions
   rolling: true,
   cookie: {
-    secure: true, // Always true in production
+    secure: false, // Set to false for broader hosting compatibility
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000,
-    sameSite: 'none', // Required for cross-site cookies in production
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
+    sameSite: 'lax', // Use 'lax' for better compatibility
   },
 }));
 
