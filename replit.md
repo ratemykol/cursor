@@ -212,6 +212,7 @@ Changelog:
 - June 21, 2025. Resolved React hooks ordering error in AdminPage component that was causing "Rendered more hooks than during the previous render" crashes
 - June 21, 2025. Cleaned database by removing all users except admin and deleting all 134 reviews for fresh platform state
 - June 24, 2025. Second database cleanup: removed all users except admin and deleted all reviews for completely fresh platform state
+- June 24, 2025. Fixed trader card alignment by adding spacer for cards without specialty tags to match positioning with cards that have specialty tags
 ```
 
 ## User Preferences
