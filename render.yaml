@@ -3,8 +3,8 @@ services:
     name: ratemykol-web
     env: node
     plan: starter
-    buildCommand: npm ci && npm run build
-    startCommand: npm start
+    buildCommand: npm ci && node build.js
+    startCommand: cd dist && npm install --only=prod && npm start
     healthCheckPath: /
     envVars:
       - key: NODE_ENV
