@@ -94,21 +94,31 @@ try {
 }
 */
 
-app.use(session({
+// Session configuration based on environment
+const sessionConfig = {
   name: 'sessionId',
   store: sessionStore,
   secret: process.env.SESSION_SECRET || 'change-this-secret-in-production',
   resave: false,
   saveUninitialized: false,
-  rolling: true, // Extend session on activity
+  rolling: true,
   cookie: {
     secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? "none" : "lax",
+    sameSite: process.env.NODE_ENV === 'production' ? "lax" : "lax",
     maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
     path: '/',
   }
-}));
+};
+
+console.log("🔧 Session config:", {
+  secure: sessionConfig.cookie.secure,
+  sameSite: sessionConfig.cookie.sameSite,
+  name: sessionConfig.name,
+  store: sessionStore ? 'PostgreSQL' : 'Memory'
+});
+
+app.use(session(sessionConfig));
 
 
 
