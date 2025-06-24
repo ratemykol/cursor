@@ -668,18 +668,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         authType: user.authType,
         role: user.role,
       };
-
-      // Force session save to PostgreSQL before responding
-      req.session.save((err) => {
-        if (err) {
-          console.error("Session save error:", err);
-          return res.status(500).json({ error: "Session failed to save" });
-        }
-        
-        // Remove password hash from response
-        const { passwordHash, ...userResponse } = user;
-        res.status(200).json(userResponse);
-      });
+      
+      // Remove password hash from response
+      const { passwordHash, ...userResponse } = user;
+      res.json(userResponse);
     } catch (error: any) {
       if (error.issues) {
         return res.status(400).json({ error: "Validation error", details: error.issues });

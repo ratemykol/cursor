@@ -18,7 +18,6 @@ export function useAuth() {
     retry: false,
     staleTime: 0, // Always refetch to ensure fresh auth state
     refetchOnWindowFocus: true, // Refetch when window gains focus
-    refetchOnMount: true, // Always refetch when component mounts
   });
 
   return {
