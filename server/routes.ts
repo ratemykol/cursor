@@ -658,23 +658,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ error: "Invalid username or password" });
       }
       
-      // ✅ Save user to session
       req.session.user = {
         id: user.id,
         username: user.username,
         email: user.email,
         role: user.role,
-        authType: "local"
+        authType: user.authType || "local"
       };
 
+      // ✅ Save the session before sending response
       req.session.save((err: any) => {
         if (err) {
-          console.error("❌ Session save error:", err);
-          return res.status(500).json({ error: "Session failed to save" });
+          console.error("Session save error:", err);
+          return res.status(500).json({ error: "Failed to save session" });
         }
 
         console.log("✅ Session saved successfully:", req.session);
-        res.status(200).json({ id: user.id, username: user.username });
+        res.json(req.session.user); // ✅ only send response after save
       });
     } catch (error: any) {
       if (error.issues) {
@@ -694,12 +694,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/auth/me", (req, res) => {
-    console.log('🧪 Session in /me:', req.session);
+    console.log("🧪 Session in /me:", req.session);
 
     if (req.session.user) {
-      return res.json(req.session.user);
+      res.json(req.session.user);
     } else {
-      return res.status(401).json({ error: 'Not authenticated' });
+      res.status(401).json({ error: "Not authenticated" });
     }
   });
 
