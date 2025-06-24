@@ -113,7 +113,12 @@ app.use((req, res, next) => {
   serveStatic(app);
 
   const port = process.env.PORT || 5000;
+  console.log('Starting server on port:', port);
+  console.log('Environment PORT variable:', process.env.PORT);
+  
   server.listen(port, "0.0.0.0", () => {
     log(`serving on port ${port}`);
+    console.log(`✓ Server successfully started on port ${port}`);
+    console.log(`✓ Server listening on 0.0.0.0:${port}`);
   });
 })();
