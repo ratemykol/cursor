@@ -146,6 +146,7 @@ app.use(session({
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
     sameSite: 'lax', // Use 'lax' for better compatibility
+    domain: undefined, // Let browser handle domain automatically
   },
 }));
 

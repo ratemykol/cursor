@@ -669,10 +669,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         role: user.role,
       };
       
-      // Force session save for debugging
+      // Force session save and add debugging
       req.session.save((err: any) => {
         if (err) {
           console.error('Session save error:', err);
+        } else {
+          console.log('Session saved successfully, ID:', req.sessionID, 'User:', user.username);
         }
       });
       
