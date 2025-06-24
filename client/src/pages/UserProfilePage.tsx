@@ -58,6 +58,7 @@ export const UserProfilePage = (): JSX.Element => {
       const response = await fetch("/api/upload/profile-picture", {
         method: "POST",
         body: formData,
+        credentials: "include",
       });
       
       if (!response.ok) {
@@ -113,6 +114,7 @@ export const UserProfilePage = (): JSX.Element => {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profileData),
+        credentials: "include",
       });
       
       if (!response.ok) {
