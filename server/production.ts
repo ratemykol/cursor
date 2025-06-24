@@ -124,7 +124,7 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// Session configuration
+// Session configuration with connection timeout
 const pgStore = connectPg(session);
 if (!process.env.SESSION_SECRET) {
   throw new Error("SESSION_SECRET environment variable is required in production");
@@ -133,8 +133,9 @@ if (!process.env.SESSION_SECRET) {
 app.use(session({
   store: new pgStore({
     conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
+    createTableIfMissing: true, // Allow creating sessions table if missing
     tableName: 'sessions',
+    connectTimeout: 10000, // 10 second timeout
   }),
   secret: process.env.SESSION_SECRET,
   name: 'sessionId',
