@@ -219,6 +219,7 @@ Changelog:
 - June 24, 2025. Fixed authentication session persistence by adding credentials: "include" to all /api/auth/ fetch calls
 - June 24, 2025. Updated CORS and session configuration for proper cross-origin cookie handling in both development and production environments
 - June 24, 2025. Fixed production authentication persistence by updating session configuration: enabled session saving, set consistent cookie settings, added session debugging for live deployment troubleshooting
+- June 24, 2025. Fixed SSL/TLS connection error for session store in production by adding SSL configuration to PostgreSQL session store
 ```
 
 ## User Preferences

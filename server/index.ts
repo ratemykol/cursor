@@ -64,6 +64,9 @@ app.use(session({
     conString: process.env.DATABASE_URL,
     createTableIfMissing: true,
     tableName: 'sessions',
+    ssl: process.env.NODE_ENV === 'production' ? {
+      rejectUnauthorized: false
+    } : false
   }),
   secret: process.env.SESSION_SECRET || 'change-this-secret-in-production',
   name: 'connect.sid',
