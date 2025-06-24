@@ -27,6 +27,7 @@ export const SignUpPage = (): JSX.Element => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
+        credentials: "include",
       });
       
       if (!response.ok) {
