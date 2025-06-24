@@ -77,7 +77,6 @@ app.use(session({
   },
 }));
 
-
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
