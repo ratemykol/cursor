@@ -23,7 +23,7 @@ export const SearchPage = (): JSX.Element => {
     return () => clearTimeout(timer);
   }, [searchInput]);
 
-  const { data: searchResults = [], isLoading, error } = useQuery({
+  const { data: searchResults = [], isLoading } = useQuery({
     queryKey: ['/api/traders/search-by-name', debouncedSearch],
     queryFn: async () => {
       const query = debouncedSearch.trim();
@@ -32,15 +32,11 @@ export const SearchPage = (): JSX.Element => {
       const url = new URL('/api/traders/search-by-name', window.location.origin);
       url.searchParams.set('q', query);
       
-      const response = await fetch(url.toString(), {
-        credentials: 'include'
-      });
+      const response = await fetch(url.toString());
       if (!response.ok) throw new Error('Search failed');
       return response.json();
     },
-    enabled: !!debouncedSearch,
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    refetchOnWindowFocus: false
+    enabled: true
   });
 
   const handleSearch = () => {
@@ -134,39 +130,12 @@ export const SearchPage = (): JSX.Element => {
         {debouncedSearch && (
           <>
             {isLoading ? (
-              <div className="text-center py-8">
-                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#ab9ff2]"></div>
-                <p className="mt-2 text-gray-600">Searching...</p>
-              </div>
-            ) : error ? (
-              <div className="text-center py-8">
-                <p className="text-red-600">
-                  Error searching for traders. Please try again.
-                </p>
-              </div>
+              <div className="text-center py-8">Loading...</div>
             ) : !Array.isArray(searchResults) || searchResults.length === 0 ? (
-              <div className="max-w-4xl mx-auto">
-                <Card className="border border-gray-200 bg-white">
-                  <CardContent className="p-16 text-center">
-                    <h3 className="text-2xl font-semibold text-gray-900 mb-4">
-                      No traders found
-                    </h3>
-                    <p className="text-gray-600 text-lg mb-6">
-                      No traders found matching "{debouncedSearch}"
-                    </p>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => {
-                        setSearchInput("");
-                        setDebouncedSearch("");
-                        setLocation("/search");
-                      }}
-                      className="bg-[#ab9ff2] text-[#3c315b] hover:bg-[#DCDAF0]"
-                    >
-                      Clear Search
-                    </Button>
-                  </CardContent>
-                </Card>
+              <div className="text-center py-8">
+                <p className="text-gray-600">
+                  No traders found matching "{debouncedSearch}"
+                </p>
               </div>
             ) : (
               <div className="space-y-4">
