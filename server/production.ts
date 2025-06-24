@@ -130,12 +130,19 @@ if (!process.env.SESSION_SECRET) {
   throw new Error("SESSION_SECRET environment variable is required in production");
 }
 
+const sessionStore = new pgStore({
+  conString: process.env.DATABASE_URL,
+  createTableIfMissing: true, // Enable auto-table creation for reliability
+  tableName: 'sessions',
+});
+
+// Add error logging for PostgreSQL session store
+sessionStore.on('error', (err: any) => {
+  console.error("❌ PG Session Store Error:", err);
+});
+
 app.use(session({
-  store: new pgStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: true, // Enable auto-table creation for reliability
-    tableName: 'sessions',
-  }),
+  store: sessionStore,
   secret: process.env.SESSION_SECRET,
   name: 'sessionId',
   resave: false,
