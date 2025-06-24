@@ -1,51 +1,34 @@
-# Upload Your Code to GitHub - Manual Method
+# Manual Package.json Update for Render
 
-Since the git lock is preventing normal operations, follow these steps:
+Since the system prevents package.json editing, you need to manually update it:
 
-## Step 1: Download Your Code
+## Required Changes
 
-1. **In Replit file explorer**, click the **three dots (⋮)** at the top
-2. **Select "Download as ZIP"**
-3. **Save the ZIP file** to your computer
-4. **Extract/unzip** the downloaded file
+**Find this line in package.json:**
+```json
+"build": "vite build && esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/production.js",
+```
 
-## Step 2: Create GitHub Repository
+**Replace it with:**
+```json
+"build": "node build.mjs",
+```
 
-1. **Go to [github.com](https://github.com)** and sign in
-2. **Click the "+" icon** in top right corner
-3. **Select "New repository"**
-4. **Repository name**: `ratemykol`
-5. **Description**: `Crypto trader rating platform`
-6. **Set to Public** (so Render can access it)
-7. **DON'T check** "Add a README file"
-8. **Click "Create repository"**
+## Alternative Solution
 
-## Step 3: Upload Your Files
+If manual editing doesn't work, you can:
 
-1. **On your new GitHub repository page**, click **"uploading an existing file"**
-2. **Drag and drop** all the files from your extracted folder (NOT the .git folder)
-3. **Or click "choose your files"** and select all files
-4. **Important files to include**:
-   - All `.js`, `.ts`, `.tsx`, `.json` files
-   - `package.json` and `package-lock.json`
-   - `RENDER_DEPLOYMENT.md`
-   - `render.yaml`
-   - `Dockerfile`
-   - `client/` folder
-   - `server/` folder
-   - `shared/` folder
+1. **Copy build.mjs to your git repository**
+2. **Update package.json build command to use build.mjs**
+3. **Commit and push changes**
+4. **Redeploy on Render**
 
-## Step 4: Commit the Upload
+The build.mjs script ensures dist/production.js is properly created during Render's build process.
 
-1. **Add commit message**: `Initial commit - RateMyKOL application`
-2. **Click "Commit changes"**
+## Expected Result
 
-## Step 5: Get Repository URL
-
-Your repository URL will be: `https://github.com/yourusername/ratemykol`
-
-Copy this URL - you'll need it for Render deployment.
-
-## Next Steps
-
-Once uploaded, continue with the Render deployment from `RENDER_DEPLOYMENT.md` starting at Step 2.
+After this change, Render should successfully:
+- Run `node build.mjs` during build
+- Create `dist/production.js` 
+- Start the server with `node dist/production.js`
+- Display all 45 traders instead of skeleton placeholders
