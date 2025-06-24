@@ -54,9 +54,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// CORS configuration - allow all origins in production for simplicity
+// CORS configuration for production
 app.use(cors({
-  origin: true,
+  origin: [process.env.REPLIT_DOMAINS?.split(',') || [], "https://*.replit.app", "https://*.replit.dev"].flat(),
   credentials: true,
   preflightContinue: false,
   optionsSuccessStatus: 204
@@ -142,10 +142,10 @@ app.use(session({
   saveUninitialized: false,
   rolling: true,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: true, // Always true in production
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000,
-    sameSite: 'lax',
+    sameSite: 'none', // Required for cross-site cookies in production
   },
 }));
 
