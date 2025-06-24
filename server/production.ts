@@ -1,67 +1,172 @@
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import cors from "cors";
-import { registerRoutes } from "./routes.js";
-import { serveStatic, log } from "./static.js";
+import { registerRoutes } from "./routes";
+import { serveStatic, log } from "./static";
 
 const app = express();
 
-// Trust proxy for production environment
+// Trust proxy for rate limiting in production environment
 app.set('trust proxy', 1);
 
-// Basic CORS configuration for production
+// Production security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      scriptSrc: ["'self'", "'unsafe-eval'"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      connectSrc: ["'self'", "wss:", "ws:"],
+      mediaSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      frameSrc: ["'none'"],
+    },
+  },
+  crossOriginEmbedderPolicy: false,
+  hidePoweredBy: true,
+  frameguard: { action: 'deny' },
+  noSniff: true,
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  },
+  xssFilter: true,
+  referrerPolicy: { policy: 'no-referrer' }
+}));
+
+// Remove server signatures and identifying headers
+app.disable('x-powered-by');
+app.use((req, res, next) => {
+  res.removeHeader('X-Powered-By');
+  res.removeHeader('Server');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+  res.setHeader('Server-Timing', '');
+  next();
+});
+
+// CORS configuration
 app.use(cors({
-  origin: true, // Allow all origins in production for now
+  origin: function (origin, callback) {
+    const allowedOrigins = process.env.ALLOWED_ORIGINS ? 
+      process.env.ALLOWED_ORIGINS.split(',') : [];
+    
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Origin not allowed by CORS policy'));
+    }
+  },
   credentials: true,
   preflightContinue: false,
   optionsSuccessStatus: 204
 }));
 
-// Basic security headers without strict CSP
+// Rate limiting with simple fallback to avoid IP validation errors
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: {
+    error: "Too many requests from this IP, please try again later."
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => {
+    // Skip rate limiting if IP is invalid to prevent crashes
+    return !req.ip || req.ip === 'xxx.xxx.xxx.xxx';
+  }
+});
+
+app.use(limiter);
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: {
+    error: "Too many authentication attempts, please try again later."
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => {
+    // Skip rate limiting if IP is invalid to prevent crashes
+    return !req.ip || req.ip === 'xxx.xxx.xxx.xxx';
+  }
+});
+
+app.use('/api/auth', authLimiter);
+
+// IP obfuscation middleware (after rate limiting to avoid conflicts)
 app.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
+  // Store original IP for logging if needed
+  const originalIP = req.ip;
+  
+  // Override IP with anonymized version
+  Object.defineProperty(req, 'ip', {
+    value: 'xxx.xxx.xxx.xxx',
+    writable: false,
+    configurable: false
+  });
+  
+  // Remove identifying headers
+  delete req.headers['x-forwarded-for'];
+  delete req.headers['x-real-ip'];
+  delete req.headers['x-forwarded-host'];
+  delete req.headers['x-forwarded-proto'];
+  delete req.headers['x-forwarded-port'];
+  delete req.headers['forwarded'];
+  delete req.headers['via'];
+  delete req.headers['x-cluster-client-ip'];
+  delete req.headers['cf-connecting-ip'];
+  delete req.headers['true-client-ip'];
+  delete req.headers['x-original-forwarded-for'];
+  
   next();
+});
+
+// Server fingerprinting protection
+app.use((req, res, next) => {
+  res.setHeader('Server', 'nginx');
+  const delay = Math.floor(Math.random() * 50);
+  setTimeout(() => {
+    next();
+  }, delay);
 });
 
 // Body parsing
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// Session configuration with error handling
+// Session configuration
 const pgStore = connectPg(session);
-
-// Validate DATABASE_URL before creating session store
-if (!process.env.DATABASE_URL) {
-  console.error('ERROR: DATABASE_URL environment variable is not set');
-  process.exit(1);
+if (!process.env.SESSION_SECRET) {
+  throw new Error("SESSION_SECRET environment variable is required in production");
 }
-
-console.log('Database URL configured:', process.env.DATABASE_URL.replace(/:[^:@]*@/, ':***@'));
-console.log('Environment check:', {
-  NODE_ENV: process.env.NODE_ENV,
-  PORT: process.env.PORT,
-  SESSION_SECRET: process.env.SESSION_SECRET ? 'SET' : 'MISSING'
-});
 
 app.use(session({
   store: new pgStore({
     conString: process.env.DATABASE_URL,
-    createTableIfMissing: true,
+    createTableIfMissing: false,
     tableName: 'sessions',
   }),
-  secret: process.env.SESSION_SECRET || 'fallback-secret-change-in-production',
+  secret: process.env.SESSION_SECRET,
   name: 'sessionId',
   resave: false,
   saveUninitialized: false,
   rolling: true,
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
+    secure: true,
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000,
-    sameSite: 'lax',
+    sameSite: 'strict',
   },
 }));
 
@@ -101,11 +206,23 @@ app.use((req, res, next) => {
 
   // Error handler
   app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
-    console.error('Production error:', err);
-    console.error('Error stack:', err.stack);
-    res.status(500).json({ 
-      error: "Internal server error",
-      details: process.env.NODE_ENV === 'development' ? err.message : undefined
+    const timestamp = new Date().toISOString();
+    const errorId = Math.random().toString(36).substring(7);
+    
+    const genericMessages = [
+      "Service temporarily unavailable",
+      "Request could not be processed",
+      "An error occurred while processing your request",
+      "Service is currently experiencing issues",
+      "Unable to complete request at this time"
+    ];
+    
+    const randomMessage = genericMessages[Math.floor(Math.random() * genericMessages.length)];
+    
+    res.status(503).json({ 
+      error: randomMessage,
+      timestamp: timestamp,
+      reference: errorId
     });
   });
 
@@ -113,12 +230,11 @@ app.use((req, res, next) => {
   serveStatic(app);
 
   const port = process.env.PORT || 5000;
-  console.log('Starting server on port:', port);
-  console.log('Environment PORT variable:', process.env.PORT);
-  
-  server.listen(port, "0.0.0.0", () => {
+  server.listen({
+    port,
+    host: "0.0.0.0",
+    reusePort: true,
+  }, () => {
     log(`serving on port ${port}`);
-    console.log(`✓ Server successfully started on port ${port}`);
-    console.log(`✓ Server listening on 0.0.0.0:${port}`);
   });
 })();
