@@ -40,9 +40,13 @@ export const SignInPage = (): JSX.Element => {
         title: "Welcome back!",
         description: "You have been signed in successfully",
       });
-      // Invalidate user query to refresh authentication state
+      // Force refetch of auth data and wait for it to complete
       queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
-      setLocation("/");
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/admin-status"] });
+      // Small delay to ensure queries are refetched before navigation
+      setTimeout(() => {
+        setLocation("/");
+      }, 100);
     },
     onError: (error: any) => {
       toast({
