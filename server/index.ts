@@ -62,17 +62,19 @@ const pgStore = connectPg(session);
 app.use(session({
   store: new pgStore({
     conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
+    createTableIfMissing: true,
     tableName: 'sessions',
   }),
   secret: process.env.SESSION_SECRET || 'change-this-secret-in-production',
-  resave: false,
-  saveUninitialized: false,
+  name: 'connect.sid',
+  resave: true,
+  saveUninitialized: true,
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // true in production with HTTPS
+    secure: false, // Keep false for development and production compatibility
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-site in production
+    sameSite: 'lax', // Use 'lax' for both dev and production
     maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
+    domain: undefined, // Let browser handle domain automatically
   },
 }));
 
