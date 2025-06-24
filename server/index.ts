@@ -31,10 +31,8 @@ app.use(helmet({
 }))
 
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.REPLIT_DOMAINS?.split(',') || [], "https://*.replit.app", "https://*.replit.dev"].flat()
-    : true,
-  credentials: true,
+  origin: "https://testlivesite.onrender.com", // your frontend domain
+  credentials: true
 }));
 
 
@@ -65,11 +63,11 @@ app.use(session({
   saveUninitialized: false,
   rolling: true, // Extend session on activity
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // true in production with HTTPS
+    secure: true,               // Required on Render (HTTPS)
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-site in production
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
-  },
+    sameSite: "none",           // For cross-origin requests
+    maxAge: 24 * 60 * 60 * 1000 // 1 day
+  }
 }));
 
 
