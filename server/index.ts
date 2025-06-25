@@ -2,6 +2,20 @@ import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
 import helmet from "helmet";
+import rateLimit from 'express-rate-limit';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { neon } from '@neondatabase/serverless';
+import { eq, desc } from 'drizzle-orm';
+import { traders, ratings, users } from '../shared/schema.js';
+import bcrypt from 'bcryptjs';
+import { z } from 'zod';
+import { fromZodError } from 'zod-validation-error';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import { createClient } from '@neondatabase/serverless';
+import pgSimple from 'connect-pg-simple';
 
 import cors from "cors";
 import { registerRoutes } from "./routes";
@@ -121,6 +135,7 @@ console.log("🔧 Session config:", {
 
 console.log("🚀 DEPLOYMENT TIMESTAMP:", new Date().toISOString());
 console.log("🔧 FORCING NEW DEPLOYMENT - AUTH FIX v2");
+console.log("🔧 This should show secure: false and sameSite: 'lax'");
 
 app.use(session(sessionConfig));
 
