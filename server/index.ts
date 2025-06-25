@@ -119,6 +119,9 @@ console.log("🔧 Session config:", {
   NODE_ENV: process.env.NODE_ENV
 });
 
+console.log("🚀 DEPLOYMENT TIMESTAMP:", new Date().toISOString());
+console.log("🔧 FORCING NEW DEPLOYMENT - AUTH FIX v2");
+
 app.use(session(sessionConfig));
 
 
