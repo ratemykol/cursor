@@ -9,7 +9,10 @@
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc",
     "db:push": "drizzle-kit push",
-    "db:setup": "node setup-db.js"
+    "db:setup": "node setup-db.js",
+    "create-admin": "node create-admin.js",
+    "check-user": "node check-user.js",
+    "delete-user": "node delete-user.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

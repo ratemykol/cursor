@@ -922,6 +922,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin creation endpoint (for development/testing)
+  app.post("/api/admin/create", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ error: "Username and password required" });
+      }
+
+      // Check if user exists
+      const existingUser = await storage.getUserByUsername(username);
+      if (!existingUser) {
+        return res.status(404).json({ error: "User not found. Please create the account first." });
+      }
+
+      // Update user to admin
+      const updatedUser = await storage.updateUserProfile(existingUser.id, { role: 'admin' });
+      
+      res.json({ 
+        success: true, 
+        message: `User '${username}' is now an admin!`,
+        user: {
+          username: updatedUser.username,
+          role: updatedUser.role
+        }
+      });
+    } catch (error: any) {
+      console.error("Admin creation error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Admin setup page
+  app.get("/admin-setup", (req, res) => {
+    res.sendFile(path.join(process.cwd(), 'admin-setup.html'));
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
