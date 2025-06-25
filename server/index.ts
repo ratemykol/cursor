@@ -103,8 +103,8 @@ const sessionConfig = {
   saveUninitialized: false,
   rolling: true,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? "lax" : "lax",
+    secure: false, // Set to false to allow HTTP cookies in development and testing
+    sameSite: "lax",
     maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
     path: '/',
@@ -115,7 +115,8 @@ console.log("🔧 Session config:", {
   secure: sessionConfig.cookie.secure,
   sameSite: sessionConfig.cookie.sameSite,
   name: sessionConfig.name,
-  store: sessionStore ? 'PostgreSQL' : 'Memory'
+  store: sessionStore ? 'PostgreSQL' : 'Memory',
+  NODE_ENV: process.env.NODE_ENV
 });
 
 app.use(session(sessionConfig));
