@@ -145,7 +145,7 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
               <p 
                 className="text-2xl font-semibold text-gray-800 cursor-pointer hover:text-white transition-colors duration-200"
                 onClick={() => {
-                  navigator.clipboard.writeText("TESTING TESTING");
+                  navigator.clipboard.writeText("vYwsMHt4bBHwwagttZ4uvKBch6k1A3D5ntDtZ7xpump");
                   toast({
                     title: "Copied to clipboard",
                     description: "CA text copied successfully",
