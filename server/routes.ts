@@ -164,6 +164,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Simple cookie test endpoint
+  app.get("/api/test-cookie", (req, res) => {
+    console.log("🍪 Testing cookie functionality");
+    console.log("📋 All headers:", req.headers);
+    console.log("🔍 Cookie header:", req.headers.cookie);
+    
+    // Set a simple test cookie
+    res.cookie('testCookie', 'testValue', {
+      httpOnly: false, // Make it visible for testing
+      secure: false,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60000 // 1 minute
+    });
+    
+    res.json({
+      message: "Test cookie set",
+      receivedCookies: req.headers.cookie || 'none',
+      sessionID: req.sessionID,
+      allHeaders: Object.keys(req.headers)
+    });
+  });
+
   // Serve uploaded files statically
   app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
