@@ -144,20 +144,35 @@ sessionStore.on('error', (err: any) => {
   console.error("❌ PG Session Store Error:", err);
 });
 
-app.use(session({
-  store: sessionStore,
-  secret: process.env.SESSION_SECRET,
+// Session configuration based on environment
+const sessionConfig = {
   name: 'sessionId',
+  store: sessionStore,
+  secret: process.env.SESSION_SECRET || 'change-this-secret-in-production',
   resave: false,
   saveUninitialized: false,
   rolling: true,
   cookie: {
-    secure: true, // Always true in production
-    httpOnly: true,
+    secure: false, // Set to false to allow HTTP cookies in development and testing
+    sameSite: "lax",
     maxAge: 24 * 60 * 60 * 1000,
-    sameSite: 'none', // Required for cross-site cookies in production
-  },
-}));
+    httpOnly: true,
+    path: '/',
+  }
+};
+
+console.log("🔧 PRODUCTION Session config:", {
+  secure: sessionConfig.cookie.secure,
+  sameSite: sessionConfig.cookie.sameSite,
+  name: sessionConfig.name,
+  store: sessionStore ? 'PostgreSQL' : 'Memory',
+  NODE_ENV: process.env.NODE_ENV
+});
+
+console.log("🚀 PRODUCTION DEPLOYMENT TIMESTAMP:", new Date().toISOString());
+console.log("🔧 PRODUCTION FORCING NEW DEPLOYMENT - AUTH FIX v2");
+
+app.use(session(sessionConfig));
 
 // Logging middleware
 app.use((req, res, next) => {

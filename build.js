@@ -4,6 +4,9 @@ import { build } from 'vite';
 import { execSync } from 'child_process';
 import { writeFileSync } from 'fs';
 
+console.log('🚀 BUILD TIMESTAMP:', new Date().toISOString());
+console.log('🔧 FORCING NEW DEPLOYMENT - AUTH FIX v2');
+
 console.log('Building client...');
 await build();
 
@@ -40,4 +43,4 @@ const prodPackage = {
 
 writeFileSync('dist/package.json', JSON.stringify(prodPackage, null, 2));
 
-console.log('Build complete!');
+console.log('✅ Build complete with AUTH FIX v2!');
