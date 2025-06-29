@@ -397,14 +397,14 @@ export const HomePage = (): JSX.Element => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
               {/* Company Info */}
               <div className="col-span-1 md:col-span-2">
-                <h3 className="text-black font-bold text-xl mb-4">RateMyKOL</h3>
+                <h3 className="text-black font-bold text-xl mb-4">HowsMyKOL</h3>
                 <p className="text-black text-sm mb-4 leading-relaxed">
                   The premier platform for rating and reviewing crypto traders. 
                   Discover top performing KOLs with verified track records and 
                   make informed decisions about who to follow in the crypto space.
                 </p>
                 <div className="flex space-x-4">
-                  <span className="text-black text-xs">© 2025 RateMyKOL. All rights reserved.</span>
+                  <span className="text-black text-xs">© 2025 HowsMyKOL. All rights reserved.</span>
                 </div>
               </div>
 
@@ -438,7 +438,7 @@ export const HomePage = (): JSX.Element => {
               </div>
               <div className="flex space-x-6">
                 <span className="text-black text-xs">Follow us:</span>
-                <a href="https://x.com/RateMyKOLL" target="_blank" rel="noopener noreferrer" className="text-black text-xs hover:underline">Twitter</a>
+                <a href="https://x.com/HowsMyKOLL" target="_blank" rel="noopener noreferrer" className="text-black text-xs hover:underline">Twitter</a>
                 <a href="#" className="text-black text-xs hover:underline">Discord</a>
                 <a href="#" className="text-black text-xs hover:underline">Telegram</a>
               </div>

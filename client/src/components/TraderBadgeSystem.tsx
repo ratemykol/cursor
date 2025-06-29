@@ -160,7 +160,7 @@ const getBadgeStyles = (badgeType: string, badgeLevel: number) => {
 // Social media sharing utility functions for trader badges
 const shareTraderBadgeAchievement = (traderName: string, badgeName: string, level: string, platform: string) => {
   const levelText = level ? ` ${level}` : '';
-  const text = `🏆 ${traderName} just earned the${levelText} ${badgeName} badge on RateMyKOL! Check out this top crypto trader. #RateMyKOL #CryptoTrading #TopTrader`;
+  const text = `🏆 ${traderName} just earned the${levelText} ${badgeName} badge on HowsMyKOL! Check out this top crypto trader. #HowsMyKOL #CryptoTrading #TopTrader`;
   const url = window.location.href;
   
   let shareUrl = '';

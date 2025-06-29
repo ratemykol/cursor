@@ -139,7 +139,7 @@ const levelNames = {
 
 // Social media sharing utility functions
 const shareBadgeAchievement = (badgeName: string, level: string, platform: string) => {
-  const text = `🏆 Just earned the ${badgeName} ${level} badge on RateMyKOL! Join me in discovering top crypto traders. #RateMyKOL #CryptoTrading #Achievement`;
+  const text = `🏆 Just earned the ${badgeName} ${level} badge on HowsMyKOL! Join me in discovering top crypto traders. #HowsMyKOL #CryptoTrading #Achievement`;
   const url = window.location.origin;
   
   let shareUrl = '';

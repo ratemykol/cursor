@@ -57,7 +57,7 @@ export const Header = ({ currentPage }: HeaderProps): JSX.Element => {
             className="font-medium text-[#3c315b] text-[28px] cursor-pointer" 
             onClick={() => setLocation("/")}
           >
-            RateMyKOL
+            HowsMyKOL
           </h1>
           <Button 
             className="bg-[#ab9ff2] text-[#3c315b] rounded-full transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#DCDAF0] hover:shadow-lg transform-gpu px-6 py-2 text-base"
